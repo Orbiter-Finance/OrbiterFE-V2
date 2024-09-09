@@ -37,10 +37,13 @@
                 v-for="item in group"
                 :key="item.reward"
               >
-              <svg-icon iconName="lock"></svg-icon>
+                <svg-icon v-if="item.isLock" iconName="lock"></svg-icon>
+              </div>
+              <div v-if="isLast" class="progress-skeleton">
+                <div class="skeleton"></div>
               </div>
               <div class="progress" :style="`width: ${ratio}%;`">
-                <div class="skeleton"></div>
+                <div v-if="!isLast" class="skeleton"></div>
               </div>
             </div>
           </div>
@@ -76,13 +79,20 @@ export default {
 
   data() {
     return {
-      group: [
+    }
+  },
+  computed: {
+    group() {
+      const tx =this.totalTx
+     return [
         {
           tx: '0~2,499 Tx',
           reward: '',
           range: [0, 2499],
           bridge50Fee: 0,
           bridge100Fee: 0,
+          isLock: tx < 0,
+          isPromotion: tx>0,
         },
         {
           tx: '2,500~11,499 Tx',
@@ -90,6 +100,8 @@ export default {
           range: [2500, 11499],
           bridge50Fee: 5,
           bridge100Fee: 15,
+          isLock: tx < 2500,
+          isPromotion: tx>2500,
         },
         {
           tx: '11,500~25,999 Tx',
@@ -97,6 +109,8 @@ export default {
           range: [11500, 25999],
           bridge50Fee: 10,
           bridge100Fee: 30,
+          isLock: tx < 11500,
+          isPromotion: tx>11500,
         },
         {
           tx: '26,000~45,999 Tx',
@@ -104,6 +118,8 @@ export default {
           range: [26000, 45999],
           bridge50Fee: 20,
           bridge100Fee: 45,
+          isLock: tx < 26000,
+          isPromotion: tx>26000,
         },
         {
           tx: '46,000~99,999 Tx',
@@ -111,18 +127,32 @@ export default {
           range: [46000, 99999],
           bridge50Fee: 30,
           bridge100Fee: 60,
+          isLock: tx < 46000,
+          isPromotion: tx>46000,
         },
         {
-          tx: '≥100,000 Tx',
+          tx: '100,000~319,999 Tx',
           reward: '$35,000',
-          range: [100000, 999999],
+          range: [100000, 319999],
           bridge50Fee: 50,
           bridge100Fee: 95,
+          bridgeTop3Fee: 95,
+          isLock: tx < 100000,
+          isPromotion: tx>100000,
         },
-      ]
-    }
-  },
-  computed: {
+        {
+          tx: '≥320,000 Tx',
+          reward: '$40,000',
+          range: [320000, 999999],
+          bridge50Fee: 50,
+          bridge100Fee: 95,
+          bridgeTop3Fee: 98,
+          isColor: true,
+          isLock: tx<320000,
+          isPromotion: false,
+        },
+      ]  
+    },
     totalTx() {
       const tx = Number(prizesTotaltx.value) || 0
       return tx
@@ -133,24 +163,24 @@ export default {
     },
     currentPool() {
       const list = this.group
-      const tx = this.totalTx
-      if (tx >= 120000) return list[list.length - 1]?.reward || '$0'
       const group = list.filter((item) => {
-        const [first, last] = item.range
-        return first <= tx && last >= tx
+        return !item.isPromotion
       })?.[0]
       return group?.reward
     },
     totalPool() {
       return this.currentPool || "To be unlocked"
     },
+    isLast() {
+      const lastTx = this.group[this.group.length -1]?.range[0]
+      const tx = this.totalTx
+      return tx > lastTx
+    },
     ratio() {
       let ratioAmount = 0
       const list = this.group
-      const tx = this.totalTx
       list.forEach((item) => {
-        const [first, last] = item.range
-        if (first <= tx) {
+        if (item.isPromotion) {
           ratioAmount += 100 / this.group.length
         } else {
           ratioAmount += 0
@@ -271,7 +301,8 @@ export default {
             border-radius: 999px;
             background: linear-gradient(179.63deg, rgba(239, 47, 45, 0.04) 34.849%,rgba(255, 102, 101, 0.04) 57.408%);            
             backdrop-filter: blur(156px);
-            background-color: rgb(15, 34, 37);
+            // background-color: rgb(15, 34, 37);
+            background-color: #f3ba2f;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -279,11 +310,34 @@ export default {
             position: relative;
             top: 0;
             left: 0;
+            .progress-skeleton {
+              width: 100%;
+              height: 32px;
+              position: absolute;
+              top: 0;
+              left: 0;
+              z-index: 10;
+              .skeleton {
+                width: 100%;
+                height: 100%;
+                background-image: linear-gradient(
+                  90deg,
+                  rgba(#fff, 0),
+                  rgba(#fff, 0.4),
+                  rgba(#fff, 0)
+                );
+              background-size: 40px 100%; // width of the shine
+              background-repeat: no-repeat; // No need to repeat the shine effect
+              background-position: left -40px top 0; // Place shine on the left side, with offset on the left based on the width of the shine - see background-size
+              animation: shine 2.1s ease infinite;
+             }
+
+            }
             .progress-box-item {
               width: 100%;
               height: 100%;
               flex: 1;
-              border-right: 1px solid #414F51;
+              // border-right: 1px solid #414F51;
               display: flex;
               justify-content: center;
               align-items: center;
@@ -291,6 +345,7 @@ export default {
                 width: 20px;
                 height: 20px;
               }
+              
             }
 
             .progress {
@@ -317,7 +372,7 @@ export default {
                 background-size: 40px 100%; // width of the shine
                 background-repeat: no-repeat; // No need to repeat the shine effect
                 background-position: left -40px top 0; // Place shine on the left side, with offset on the left based on the width of the shine - see background-size
-                animation: shine 2s ease infinite;
+                animation: shine 1.8s ease 0.3s infinite;
               }
             }
           }
@@ -369,6 +424,7 @@ export default {
             font-size: 20px;
             font-family: GeneralSans-SemiBold;
             color: #ff4f4f;
+            white-space: nowrap;
           }
         }
       }

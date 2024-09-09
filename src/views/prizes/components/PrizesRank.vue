@@ -97,13 +97,20 @@ export default {
   data() {
     return {
       current: 1,
-      poolList: [
+    }
+  },
+  computed: {
+    poolList() {
+      const tx =this.totalTx
+     return [
         {
           tx: '0~2,499 Tx',
           reward: '',
           range: [0, 2499],
           bridge50Fee: 0,
           bridge100Fee: 0,
+          isLock: tx < 0,
+          isPromotion: tx>0,
         },
         {
           tx: '2,500~11,499 Tx',
@@ -111,6 +118,8 @@ export default {
           range: [2500, 11499],
           bridge50Fee: 5,
           bridge100Fee: 15,
+          isLock: tx < 2500,
+          isPromotion: tx>2500,
         },
         {
           tx: '11,500~25,999 Tx',
@@ -118,6 +127,8 @@ export default {
           range: [11500, 25999],
           bridge50Fee: 10,
           bridge100Fee: 30,
+          isLock: tx < 11500,
+          isPromotion: tx>11500,
         },
         {
           tx: '26,000~45,999 Tx',
@@ -125,6 +136,8 @@ export default {
           range: [26000, 45999],
           bridge50Fee: 20,
           bridge100Fee: 45,
+          isLock: tx < 26000,
+          isPromotion: tx>26000,
         },
         {
           tx: '46,000~99,999 Tx',
@@ -132,18 +145,32 @@ export default {
           range: [46000, 99999],
           bridge50Fee: 30,
           bridge100Fee: 60,
+          isLock: tx < 46000,
+          isPromotion: tx>46000,
         },
         {
-          tx: '≥100,000 Tx',
+          tx: '100,000~319,999 Tx',
           reward: '$35,000',
-          range: [100000, 999999],
+          range: [100000, 319999],
           bridge50Fee: 50,
           bridge100Fee: 95,
+          bridgeTop3Fee: 95,
+          isLock: tx < 100000,
+          isPromotion: tx>100000,
         },
-      ]
-    }
-  },
-  computed: {
+        {
+          tx: '≥320,000 Tx',
+          reward: '$40,000',
+          range: [320000, 999999],
+          bridge50Fee: 50,
+          bridge100Fee: 95,
+          bridgeTop3Fee: 98,
+          isColor: true,
+          isLock: tx<320000,
+          isPromotion: false,
+        },
+      ]  
+    },
     currentPool() {
       const list = this.poolList
       const tx = this.totalTx
@@ -300,7 +327,9 @@ export default {
       const fee = this.currentPool
       let bridgeFee = 0
       if (rank && rank <= 20) {
-        if (rank <= 8) {
+        if (rank <= 3) {
+          bridgeFee = fee?.bridgeTop3Fee
+        } else  if (rank <= 8) {
           bridgeFee = fee?.bridge100Fee
         } else {
           bridgeFee = fee?.bridge50Fee

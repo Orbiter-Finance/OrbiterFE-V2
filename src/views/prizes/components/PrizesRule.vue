@@ -35,7 +35,7 @@ export default {
           ],
         },
         {
-          label:'2. How to share the up to 35,000 USDC prize pool?',
+          label:'2. How to share the up to 40,000 USDC prize pool?',
           text: [
             '- Complete <span class="orbiter_global_prizes_rule_tag">≥3 transactions </span> to qualify for a share of the prize pool.',
             '- <span class="orbiter_global_prizes_rule_tag">Prize Pool Breakdown:</span>',

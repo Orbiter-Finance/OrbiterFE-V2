@@ -8,10 +8,13 @@
       </div>
     </div>
       <div class="group">
-        <div class="title orbiter-linear-text">$35,000 Prize Pool</div>
+        <div class="title orbiter-linear-text"><span class="chain orbiter-linear-text">Base</span> $40,000 prize pool</div>
       </div>
       <div class="group">
-        <div class="amount orbiter-linear-text"><span class="chain orbiter-linear-text">Base</span> Trading Frenzy</div>
+        <div class="amount orbiter-linear-text">
+          
+           Trading Frenzy Extended Session
+        </div>
       </div>
       <div class="group">
         <div class="time-card">
@@ -219,6 +222,13 @@ background: linear-gradient(206.24deg, rgba(255, 104, 104, 0.6) 9.711%,rgba(0, 8
         line-height: 1;
         font-family: GeneralSans-SemiBold;
         letter-spacing: 0px;
+        .chain {
+          background-image: linear-gradient(
+          to top,
+          rgb(0, 88, 255) 60%,
+          rgb(234, 242, 255)
+        );
+        }
       }
       .amount {
         margin-top: 16px;
