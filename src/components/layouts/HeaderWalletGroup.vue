@@ -278,6 +278,11 @@ export default {
           isConnect: false,
           icon: 'nightly',
           title: 'Nightly',
+        },
+        {
+            isConnect: false,
+            icon: 'bybitWallet',
+            title: "Bybit Wallet",
         }
         // {
         //     isConnect: false,
