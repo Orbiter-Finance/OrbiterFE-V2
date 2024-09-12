@@ -158,7 +158,11 @@
         @scroll="itemScroll"
         >
         <HeaderQuestsTaskList></HeaderQuestsTaskList>
-        <div >
+        <div>
+          <div v-if="!actDataList || actDataList.length<=0" id="no-quests">
+            <img :src="require('../../assets/NoQuests.png')" alt="">
+            <p class="no-quests-text">No Active Quests Available</p>
+          </div>
           <div :key="index" v-for="(item, index) in actDataList">
             <div class="activity-card">
               <div class="activity-card-title">
@@ -796,6 +800,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#no-quests{
+  padding-top:40px;
+  img{
+    width:160px;
+  }
+  .no-quests-text{
+    font-size:14px;
+    color: rgb(153, 153, 153);
+  }
+}
+
 .shake-top {
   -webkit-animation: shake-top 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
   animation: shake-top 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
