@@ -99,7 +99,8 @@ import walletDispatchers, {
   SAFEPAL,
   BINANCEWALLET,
   PHANTOMWALLET,
-  BACKPACKWALLET
+  BACKPACKWALLET,
+  BYBITWALLET
 } from '../../util/walletsDispatchers'
 
 import util, { isMobileDevice, isBrowserApp } from '../../util'
@@ -163,6 +164,11 @@ export default {
           isConnect: false,
           icon: 'binance wallet',
           title: BINANCEWALLET,
+        },
+        {
+          isConnect: false,
+          icon: BYBITWALLET,
+          title: BYBITWALLET,
         },
         {
           isConnect: false,
@@ -272,6 +278,11 @@ export default {
           isConnect: false,
           icon: 'nightly',
           title: 'Nightly',
+        },
+        {
+            isConnect: false,
+            icon: 'bybitWallet',
+            title: "Bybit Wallet",
         }
         // {
         //     isConnect: false,
@@ -292,6 +303,11 @@ export default {
           isConnect: false,
           icon: 'tronLink',
           title: 'TronLink',
+        },
+        {
+          isConnect: false,
+          icon: 'imtokenapp',
+          title: 'imTokenApp',
         }
       ]
       return wallets

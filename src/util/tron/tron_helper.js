@@ -48,11 +48,17 @@ const disConnect = async () => {
   updateWalletName('')
 }
 
-const tronEnable = async () => {
+const tronEnable = async (walletName) => {
   const tronLink = getTronLink()
   let group = {
     code: 0,
     message: 'Connect Wallet Error',
+  }
+  if (walletName === 'imtokenapp') {
+    return {
+      code: 200,
+      message: 'Current wallet not enable',
+    }
   }
   try {
     const res = await window.tron.request({ method: 'eth_requestAccounts' })
@@ -78,8 +84,9 @@ const tronEnable = async () => {
 
 const connect = async (walletName) => {
   updateWalletName(walletName)
-  const { code, message } = await tronEnable()
+  const { code, message } = await tronEnable(walletName)
   const tronWeb = getProvider()
+  console.log('tronWeb', tronWeb)
   if (code !== 200) {
     util.showMessage(message, 'error')
   }
@@ -108,10 +115,6 @@ const connect = async (walletName) => {
   console.log('code, message', code, message, address, ready, walletName)
 
   return !!address?.toString()
-}
-
-const isConnect = () => {
-  return getTronLink()?.ready
 }
 
 const tronAddress = () => {
@@ -230,7 +233,6 @@ const transfer = async ({
 }
 
 const tronHelper = {
-  isConnect,
   tronAddress,
   transfer,
   disConnect,
