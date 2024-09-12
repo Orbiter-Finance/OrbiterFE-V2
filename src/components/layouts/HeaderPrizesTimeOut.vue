@@ -21,7 +21,7 @@ export default {
   justify-content: flex-end;
   align-items: center;
   .time-content {
-    background-color: #3B7FFF;
+    background-color: #FFC47D;
     font-size: 12px;
     border-radius: 999px;
     padding: 0px 8px;
