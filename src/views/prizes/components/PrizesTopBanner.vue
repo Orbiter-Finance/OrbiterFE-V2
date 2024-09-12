@@ -2,7 +2,7 @@
   <div id="prizes-top-banner" class="prizes-top-banner">
     <div class="prizes-content">
       <div class="group">
-        <div class="badge">Mint Your Diamond Scroll Bridger Badge</div>
+        <div class="badge">Mint Scroll Alpha Badge</div>
       </div>
       <div class="group">
         <div class="title orbiter-linear-text">$50,000 Prize Pool</div>
@@ -107,7 +107,7 @@ export default {
     toBridgeCall() {
       const address = this.evmAddress
       if (!address || address === '0x' || this.isEnd) return
-      const name = 'PRIZES_V5_BANNER_TO_BRIDGE'
+      const name = 'PRIZES_V6_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
         event_category: name,
         event_label: 'to home',
@@ -182,7 +182,7 @@ export default {
 <style scoped lang="scss">
 .prizes-top-banner {
   width: 100%;
-  padding: 5% 0 30% 80px;
+  padding: 5% 0 15% 80px;
   background-image: url('../../../assets/prizes/bg.png');
   background-size: cover;
   background-position: 75% 0;
@@ -216,7 +216,7 @@ export default {
         white-space: nowrap;
         color: #ffc47d;
         background-image: linear-gradient(to right, #fff2f0 80%, #ffdeb5 100%);
-        font-size: 88px;
+        font-size: 72px;
         line-height: 1;
         font-family: GeneralSans-SemiBold;
         letter-spacing: 0px;
@@ -228,8 +228,8 @@ export default {
         margin-top: 16px;
         background-image: linear-gradient(to right, #fff2f0 80%, #ffdeb5 100%);
         color: #ffc47d;
-        font-size: 88px;
-        line-height: 1.5;
+        font-size: 72px;
+        line-height: 1.2;
         letter-spacing: 0px;
         font-family: GeneralSans-SemiBold;
         white-space: nowrap;
@@ -277,7 +277,7 @@ export default {
     .bridge {
       width: 240px;
       height: 56px;
-      margin-top: 46px;
+      margin-top: 32px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -310,7 +310,7 @@ export default {
 
 @media (max-width: 960px) {
   #prizes-top-banner {
-    padding: 5% 0 30%;
+    padding: 5% 0 15%;
 
     .prizes-content {
       .group {

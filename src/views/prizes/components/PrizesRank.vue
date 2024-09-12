@@ -166,7 +166,7 @@ export default {
           isPromotion: tx > 60000,
         },
         {
-          tx: '≥149,000 Tx',
+          tx: '≥150,000 Tx',
           reward: '$50,000',
           range: [149999, 999999],
           bridge50Fee: 50,

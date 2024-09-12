@@ -38,6 +38,7 @@
     <div class="prizes-allocation-card">
       <div class="title">
         <div>My progress</div>
+        <img @click="openScroll" :src="require(`../../../assets/prizes/marks.png`)" alt="" class="marks">
       </div>
 
       <div class="user-info">
@@ -96,7 +97,10 @@
         </div>
       </div>
       <div class="inv"></div>
-      <div class="task-title">Quest</div>
+      <div class="task-title">
+        <div>Quest</div>
+        <div class="update-time">Check-in update time：UTC xxxxxx</div>
+      </div>
 
       <div class="task-list-group">
         <div
@@ -259,7 +263,7 @@
                     Specific networks
                   </span>
                 </o-tooltip>
-                <span v-if="item.specificChain">from/to Base</span>
+                <span v-if="item.specificChain">from/to Scroll</span>
                 <span class="content-text" v-html="item.lastText"></span>
               </div>
             </div>
@@ -319,7 +323,7 @@
             <div v-else>
               <div
                 v-if="item.isSuccess"
-                @click.stop="toGalxeBtn"
+                @click.stop="toGalxeBtn(item)"
                 class="earn-nft"
               >
                 + 100 options
@@ -644,7 +648,7 @@ export default {
         {
           icon: 'bridge',
           color: '#6C979B',
-          reward: '20% prize pool &  Beta Badge',
+          reward: '18% prize pool &  Beta Badge',
           text: `Bridge <span class='orbiter_global_prizes_tx-color'>15 TX</span>`,
           specificChain: true,
           isPromotion: tx >= 20 && rank <= 100,
@@ -654,7 +658,7 @@ export default {
         {
           icon: 'bridge',
           color: '#A8E2EF',
-          reward: '30% prize pool & Alpha Badge',
+          reward: '32% prize pool & Alpha Badge',
           text: `Bridge`,
           specificChain: true,
           isPromotion: tx >= 20 && rank <= 8,
@@ -665,7 +669,7 @@ export default {
         {
           icon: 'bridge',
           color: '#ECC031',
-          reward: '35% prize pool & up to 95% bridging fee rebate',
+          reward: '35% prize pool & up to 96% bridging fee rebate',
           text: `Bridge`,
           specificChain: true,
           isPromotion: false,
@@ -677,30 +681,42 @@ export default {
     },
   },
   methods: {
+    openScroll(){
+      const name = "SCROLL_BADGE"
+      const url = "https://scroll.io/sessions"
+      try {
+        this.$gtag.event('PRIZES_V6_TO_' + name, {
+          event_category: name,
+          event_label: url,
+        })
+      } catch (error) {}
+      window.open(url, '_blank')
+    },
     decimalNumC(num, decimal, delimiter, symbol) {
       return decimalNum(num, decimal, delimiter, symbol)
     },
-    toGalxeBtn() {
+    toGalxeBtn(option) {
       console.log('toGalxeBtn')
-      this.$gtag.event('PRIZES_V5_ERAN_NFT', {
-        event_category: 'PRIZES_V5_ERAN_NFT',
-        event_label: 'to galxe',
-      })
-      const link = process.env.VUE_APP_PRIZES_V5_GLAXE_LINK
-      if (link) {
-        window.open(link, '_blank')
-      } else {
-        this.$notify.warning({
-          title: 'Comming Soon...',
-          duration: 3000,
-        })
-      }
+      // this.$gtag.event('PRIZES_V6_ERAN_NFT', {
+      //   event_category: 'PRIZES_V6_ERAN_NFT',
+      //   event_label: 'to galxe',
+      // })
+      // const link = process.env.VUE_APP_PRIZES_V5_GLAXE_LINK
+      // if (link) {
+      //   window.open(link, '_blank')
+      // } else {
+      //   this.$notify.warning({
+      //     title: 'Comming Soon...',
+      //     duration: 3000,
+      //   })
+      // }
+      this.openTelegram(option)
     },
     openTelegram(option) {
       const address = this.evmAddress
       if (!address || address === '0x' || this.isEnd || option.icon === 'task')
         return
-      const name = 'PRIZES_V5_BANNER_TO_BRIDGE'
+      const name = 'PRIZES_V6_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
         event_category: name,
         event_label: 'to home',
@@ -710,11 +726,11 @@ export default {
         JSON.stringify({
           params: {},
           path: '/',
-          query: { source: 'Ethereum', dest: 'Base', token: 'ETH' },
+          query: { source: 'Ethereum', dest: 'Scroll', token: 'ETH' },
         })
       )
 
-      const url = location.origin + '/?source=Ethereum&dest=Base&token=ETH'
+      const url = location.origin + '/?source=Ethereum&dest=Scroll&token=ETH'
 
       window.open(url, '_self')
     },
@@ -821,9 +837,10 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      .top800-orbguy {
-        width: 266px;
+      .marks {
+        width: 183px;
         height: 32px;
+        cursor: pointer;
       }
     }
     .user-info {
@@ -999,6 +1016,14 @@ export default {
       letter-spacing: 0px;
       text-align: left;
       padding: 24px 0 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .update-time {
+        white-space: nowrap;
+        font-size: 12px;
+        font-family: GeneralSans-Regular;
+      }
     }
     .task-list-group {
       width: 100%;
@@ -1248,6 +1273,9 @@ export default {
     .task-title {
       font-size: 16px;
       padding: 16px 0 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .task-card-options-group {
       padding: 12px;

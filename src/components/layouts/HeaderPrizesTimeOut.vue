@@ -26,7 +26,7 @@ export default {
     border-radius: 999px;
     padding: 0px 8px;
     scale: 0.8;
-    color: #EAF2FF;
+    color: #0a1313;
   }
   
 }
