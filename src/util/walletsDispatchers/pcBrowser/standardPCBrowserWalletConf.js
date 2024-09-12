@@ -12,6 +12,7 @@ import {
   TRUSTWALLET_APP,
   PHANTOMWALLET,
   BACKPACKWALLET,
+  BYBITWALLET,
 } from '../constants'
 import { Notification } from 'element-ui'
 import { isBraveWallet } from '../utils'
@@ -191,6 +192,23 @@ export default [
         duration: 3000,
         message:
           '<div style="font-family:Inter Regular;text-align: left;">If you already have Trust Wallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+      })
+    },
+  },
+  {
+    walletType: BYBITWALLET,
+    icon: 'bybit',
+    walletIsInstalledInvestigator: (provider) => provider?.isBybit,
+    shouldAddChainCode: -32603,
+    walletNotInstallReducer: () => {
+      return Notification({
+        title: 'Error: Bybit Wallet has not been installed.',
+        dangerouslyUseHTMLString: true,
+        type: 'warning',
+        customClass: 'installWalletTips',
+        duration: 3000,
+        message:
+          '<div style="font-family:Inter Regular;text-align: left;">If you already have Bybit Wallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
       })
     },
   },
