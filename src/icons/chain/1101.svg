@@ -1,1 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500"><defs><style>.cls-1{fill:#fff;}.cls-2{clip-path:url(#clippath);}.cls-3{fill:none;}.cls-4{fill:url(#linear-gradient);}</style><clipPath id="clippath"><circle class="cls-3" cx="250" cy="250" r="244.91"/></clipPath><linearGradient id="linear-gradient" x1="-116.09" y1="25.97" x2="437.45" y2="364.71" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#a229c5"/><stop offset="1" stop-color="#7b3fe4"/></linearGradient></defs><g class="cls-2"><rect class="cls-4" x="-18.1" y="-18.1" width="536.2" height="536.2"/></g><path class="cls-1" d="m320.83,302.85l69.29-40.01c3.67-2.12,5.94-6.06,5.94-10.3v-80.01c0-4.23-2.28-8.18-5.94-10.3l-69.29-40.01c-3.67-2.12-8.22-2.11-11.89,0l-69.29,40.01c-3.67,2.12-5.94,6.07-5.94,10.3v142.99l-48.59,28.05-48.59-28.05v-56.11l48.59-28.05,32.05,18.5v-37.64l-26.11-15.07c-1.8-1.04-3.86-1.59-5.95-1.59s-4.15.55-5.94,1.59l-69.29,40.01c-3.67,2.12-5.94,6.06-5.94,10.3v80.01c0,4.23,2.28,8.18,5.94,10.3l69.29,40.01c3.66,2.11,8.22,2.11,11.89,0l69.29-40c3.67-2.12,5.94-6.07,5.94-10.3v-142.99l.88-.5,47.71-27.55,48.59,28.05v56.11l-48.59,28.05-32-18.48v37.64l26.06,15.05c3.67,2.11,8.22,2.11,11.89,0Z"/></svg>
+<svg width="120.000000" height="120.000000" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<clipPath id="clip78_903">
+			<rect id="Polygon zkEVM" width="120.000000" height="120.000000" transform="matrix(-1 0 0 1 120 0)" fill="white" fill-opacity="0"/>
+		</clipPath>
+	</defs>
+	<g clip-path="url(#clip78_903)">
+		<rect id="rect" rx="60.000000" width="120.000000" height="120.000000" transform="matrix(-1 0 0 1 120 0)" fill="#EDF0F4" fill-opacity="1.000000"/>
+		<path id="path" d="M47.06 33.19L63.8 42.81L63.8 72.82L73.04 78.17L82.34 72.82L82.34 62.1L73.04 56.79L67.07 60.26L67.07 51.59L73.1 48.17L89.84 57.89L89.84 77.13L73.04 86.8L56.3 77.13L56.3 47.12L47 41.76L37.71 47.12L37.71 57.79L47 63.19L53.03 59.7L53.03 68.32L47.06 71.77L30.16 62.15L30.16 42.81L47.06 33.19Z" fill="#6C00F6" fill-opacity="1.000000" fill-rule="nonzero"/>
+	</g>
+</svg>

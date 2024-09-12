@@ -57,6 +57,23 @@
             </div>
           </div>
         </div>
+        <div
+        v-else-if="connectWalletGroupKey === 'TRON'"
+        class="wallet-group"
+      >
+        <div class="wallet-group-title">Tron Wallet</div>
+        <div class="wallet-group-list">
+          <div
+            v-for="item in tronWallet"
+            :key="item.title"
+            class="wallet-item"
+            @click="connectTronWallet(item)"
+          >
+            <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+            <span class="wallet-title">{{ item.title }}</span>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
   </div>
@@ -64,15 +81,11 @@
 
 <script>
 import {
-  isMobile,
-  starkAddress,
-  showAddress,
-  isStarkNetDialog,
   selectWalletDialogVisible,
   setSelectWalletDialogVisible,
-  web3State,
   connectWalletGroupKey,
   setConnectWalletGroupKey,
+  web3State,
 } from '../../composition/hooks'
 
 import walletDispatchers, {
@@ -84,7 +97,9 @@ import walletDispatchers, {
   FOXWALLET_APP,
   // TRUSTWALLET_APP,
   SAFEPAL,
-  BINANCEWALLET
+  BINANCEWALLET,
+  PHANTOMWALLET,
+  BACKPACKWALLET
 } from '../../util/walletsDispatchers'
 
 import util, { isMobileDevice, isBrowserApp } from '../../util'
@@ -103,12 +118,7 @@ import { walletConnectDispatcherOnInit } from '../../util/walletsDispatchers/pcB
 
 import { store } from '../../store'
 import solanaHelper from '../../util/solana/solana_helper'
-
-import { THEME, TonConnectUI } from '@tonconnect/ui'
-import * as TonconnectUI from '@tonconnect/ui'
-import * as TonconnectUiSdk from '@tonconnect/sdk'
-
-let ton
+import tronHelper from '../../util/tron/tron_helper';
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
   walletDispatchers
@@ -121,21 +131,6 @@ export default {
     },
     selectWalletDialogVisible() {
       return selectWalletDialogVisible.value
-    },
-    walletType() {
-      if (!isStarkNetDialog.value) {
-        const walletName = String(compatibleGlobalWalletConf.value.walletType)
-          .toLowerCase()
-          .replace('app', '')
-
-        return CURRENT_SUPPORT_WALLET.includes(walletName.toLocaleLowerCase())
-          ? walletName
-          : METAMASK.toLocaleLowerCase()
-      } else {
-        return getStarknet && getStarknet()?.id === 'braavos'
-          ? 'braavos'
-          : 'argent'
-      }
     },
     evmWallet() {
       const wallets = [
@@ -173,6 +168,16 @@ export default {
           isConnect: false,
           icon: 'imtokenapp',
           title: 'imTokenApp',
+        },
+        {
+          isConnect: false,
+          icon: 'phantom',
+          title: PHANTOMWALLET,
+        },
+        {
+          isConnect: false,
+          icon: 'backpack',
+          title: BACKPACKWALLET,
         },
         {
           isConnect: false,
@@ -258,11 +263,36 @@ export default {
           icon: 'phantom',
           title: 'Phantom',
         },
+        {
+          isConnect: false,
+          icon: 'backpack',
+          title: 'Backpack',
+        },
+        {
+          isConnect: false,
+          icon: 'nightly',
+          title: 'Nightly',
+        }
         // {
         //     isConnect: false,
         //     icon: 'trustwallet',
         //     title: TRUSTWALLET_APP,
         // }
+      ]
+      return wallets
+    },
+    tronWallet() {
+      const wallets = [
+        {
+          isConnect: false,
+          icon: 'okxwallet',
+          title: 'OKXWallet',
+        },
+        {
+          isConnect: false,
+          icon: 'tronLink',
+          title: 'TronLink',
+        }
       ]
       return wallets
     },
@@ -278,9 +308,16 @@ export default {
     checkIsMobileEnv() {
       return isMobileDevice()
     },
+    async connectTronWallet(item) {
+      const status = await tronHelper.connect(item.icon)
+
+      this.closeSelectWalletDialog()
+
+      return
+    },
     async connectSolanaWallet(item) {
       const status = await solanaHelper.connect(item.icon)
-      const fromPublicKey = solanaHelper.solanaAddress()
+      const fromPublicKey = web3State.solana.solanaAddress
 
       store.commit('updateSolanaAddress', fromPublicKey)
       store.commit('updateSolanaWalletName', item.icon.toLocaleLowerCase())

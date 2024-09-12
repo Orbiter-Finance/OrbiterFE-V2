@@ -1,41 +1,22 @@
 <template>
   <div id="prizes-top-banner" class="prizes-top-banner">
     <div class="prizes-content">
-      <div class="prizes-details">
-        <div class="prizes-to-chain">
-          <div class="prizes-chain">
-            <svg-icon
-              style="width: 28px; height: 32px; margin-right: 8px"
-              iconName="42161"
-            ></svg-icon>
-            Arbitrum Summer Bridging
-          </div>
-        </div>
-        <div class="prizes-label">
-          <span style="white-space: nowrap"
-            ><span class="prizes-total-pool-amount">$100,000 </span>
-            Bridging
-          </span>
-          <br />
-          Competition
-        </div>
-        <div class="prizes-orbguy">
-          TOP 800 will get
-          <svg-icon iconName="ORBGUY" class="orbguy-token-symbol"></svg-icon>
-          <span class="token-symbol">$ORBGUY </span>
-          randomly
-        </div>
-        <!-- <img
-          class="prizes-banner-image-mobile"
-          :src="require('../../../assets/prizes/v1/banner-bg-mobile.png')"
-        /> -->
+      <div class="group">
 
-        <div class="prizes-banner-image-mobile">
-          <PrizesClaimCard ></PrizesClaimCard>
+      <div class="badge">
+        Get Base × Orbiter NFT
+      </div>
+    </div>
+      <div class="group">
+        <div class="title orbiter-linear-text"><span class="chain orbiter-linear-text">Base</span> $40,000 prize pool</div>
+      </div>
+      <div class="group">
+        <div class="amount orbiter-linear-text">
+          
+           Trading Frenzy Extended Session
         </div>
-
-        <div class="prizes-banner-mobile-bg"></div>
-        <div class="time-label">Ends In</div>
+      </div>
+      <div class="group">
         <div class="time-card">
           <div
             class="time-card-item"
@@ -46,72 +27,69 @@
             <div class="card-item-symbol">{{ item.symbol }}</div>
           </div>
         </div>
-
-        <div class="prizes-to-bridge">
-          <div class="prizes-to-bridge-btn" @click="toBridgeCall"
-          :style="`opacity: ${isEnd ? '0.3' : '1'};`"
-          >
-            <!-- {{ isEnd ? 'In the statistics...' : 'Start Bridge' }} -->
-            {{ isEnd ? 'Claim' : 'Start Bridge' }}
-          </div>
+      </div>
+      <div class="group">
+        <div class="bridge" @click="toBridgeCall"
+        :style="`opacity:${isEnd ? '0.4' : '1'};`"
+        >
+          {{isEnd ? "In the statistics..." : "Start Bridge" }}
         </div>
       </div>
-      <!-- <img
-        class="prizes-banner-image"
-        :src="require('../../../assets/prizes/v1/banner-bg.png')"
-      /> -->
-      <div class="prizes-claim-group">
-        <PrizesClaimCard ></PrizesClaimCard>
-      </div>
-      <div class="prizes-banner-bg"></div>
     </div>
   </div>
 </template>
 
 <script>
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
-import { isDev } from '../../../util'
-import getUTCTime from '../../../util/time'
-import PrizesClaimCard from "./PrizesClaimCard.vue"
-import { prizesTimeEnd, setPrizesTimeEnd } from "../../../composition/hooks"
+import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
+import {
+  prizesTimeEnd,
+  setPrizesTimeEnd,
+  prizesProjectTime,
+} from '../../../composition/hooks'
+import dayjs from 'dayjs'
 
 let timer1
 
 const timeListDefault = [
   {
     value: '00',
-    symbol: 'D',
+    symbol: 'DAYS',
   },
   {
     value: '00',
-    symbol: 'H',
+    symbol: 'HOURS',
   },
   {
     value: '00',
-    symbol: 'M',
+    symbol: 'MIN',
   },
   {
     value: '00',
-    symbol: 'S',
+    symbol: 'SEC',
   },
 ]
 
 export default {
-  components: { 
+  components: {
     SvgIcon,
-    PrizesClaimCard
-   },
+  },
   name: 'PrizesTopBanner',
   data() {
     return {
-      timeStr: '2024-06-20T13:30:00.000Z',
       timeList: timeListDefault,
     }
   },
   computed: {
+    evmAddress() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
+    timeStr() {
+      return prizesProjectTime.value
+    },
     isEnd() {
       return prizesTimeEnd.value
-    }
+    },
   },
   methods: {
     open() {},
@@ -128,32 +106,41 @@ export default {
       return Date.parse(d2)
     },
     toBridgeCall() {
-      if(this.isEnd) return
+      const address = this.evmAddress
+      if (!address || address === '0x' || this.isEnd) return
+      const name = 'PRIZES_V5_BANNER_TO_BRIDGE'
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: 'to home',
+      })
       localStorage.setItem(
         'last_page_before_history',
         JSON.stringify({
           params: {},
           path: '/',
-          query: { source: 'Ethereum', dest: 'Arbitrum', token: 'ETH' },
+          query: { source: 'Ethereum', dest: 'Base', token: 'ETH' },
         })
       )
-      this.$router.push({
-        path: isDev()
-          ? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia'
-          : '/?source=Ethereum&dest=Arbitrum&token=ETH',
-      })
+
+      const url = location.origin + '/?source=Ethereum&dest=Base&token=ETH'
+
+      window.open(url, '_self')
+    },
+    toggleEnd() {
+      setPrizesTimeEnd(true)
     },
   },
   mounted() {
-    
+    const self = this
     timer1 = setInterval(() => {
-      const t = this.getUTCTime1(this.timeStr)
-      const timeS = Math.floor((t - getUTCTime()) / 1000)
+      if (!self.timeStr) return
+      const t = +dayjs.utc(self.timeStr)
+      const timeS = Math.floor((t - +dayjs()) / 1000)
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)
-        setPrizesTimeEnd(true)
-        this.timeList = timeListDefault
+        self.toggleEnd()
+        self.timeList = timeListDefault
         return
       }
       let d = Math.floor(time / 3600 / 24)
@@ -173,19 +160,19 @@ export default {
       this.timeList = [
         {
           value: d,
-          symbol: 'D',
+          symbol: 'DAYS',
         },
         {
           value: h,
-          symbol: 'H',
+          symbol: 'HOURS',
         },
         {
           value: m,
-          symbol: 'M',
+          symbol: 'MIN',
         },
         {
           value: s,
-          symbol: 'S',
+          symbol: 'SEC',
         },
       ]
     }, 1000)
@@ -196,306 +183,157 @@ export default {
 <style scoped lang="scss">
 .prizes-top-banner {
   width: 100%;
+  padding: 0 0 80px;
+  background-image: url('../../../assets/prizes/bg.png');
+  background-size: cover;
+  background-position: 75% 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-repeat: no-repeat;
+  height: 680px;
   .prizes-content {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-    position: relative;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    .prizes-details {
-      .prizes-to-chain {
-        width: 100%;
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        .prizes-chain {
-          display: flex;
-          justify-content: start;
-          align-items: center;
-          width: fit-content;
-          padding: 12px 20px;
-          border-radius: 999px;
-          box-shadow: inset 0px 0px 34px 0px rgba(239, 47, 45, 0.4);
-          backdrop-filter: blur(156px);
-          background: linear-gradient(
-            179.63deg,
-            rgba(239, 47, 45, 0.04) -15.508%,
-            rgba(255, 102, 101, 0.04) 116.073%
-          );
-        }
-      }
-
-      .prizes-label {
-        margin-top: 16px;
-        font-size: 64px;
-        font-weight: 700;
-        letter-spacing: 0px;
-        text-align: left;
-        font-family: GeneralSans-Bold;
-
-        .prizes-total-pool-amount {
-          color: #ef2f2d;
-        }
-      }
-
-      .prizes-orbguy {
-        white-space: nowrap;
-        font-size: 26px;
-        font-weight: 600;
-        line-height: 40px;
-        letter-spacing: 0px;
-        margin-top: 12px;
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        .orbguy-token-symbol {
-          width: 36px;
-          height: 36px;
-          margin: 0 8px;
-        }
-        .token-symbol {
-          background-image: linear-gradient(
-            90deg,
-            rgb(248, 242, 254),
-            rgb(239, 197, 250),
-            rgb(195, 167, 248)
-          );
-          -webkit-text-fill-color: transparent;
-          background-position-x: initial;
-          background-position-y: initial;
-          background-size: initial;
-          background-repeat-x: initial;
-          background-repeat-y: initial;
-          background-attachment: initial;
-          background-origin: initial;
-          -webkit-background-clip: text;
-          background-color: initial;
-          padding-right: 8px;
-        }
-      }
-
-      .prizes-banner-image-mobile {
-        width: 100%;
-        display: none;
-      }
-
-      .prizes-banner-mobile-bg {
-        display: none;
-        position: relative;
-        top: 0;
-        left: -100%;
-        width: 300%;
-        padding: 32%;
-        background-image: url('../../../assets/prizes/v1/banner-bg-bottom.png');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: 100% 100%;
-        transform: translateY(-50%);
-        z-index: -1;
-        margin-bottom: -64%;
-      }
-
-      .time-label {
-        width: 100%;
-        margin-top: 20px;
-        font-size: 16px;
-        font-weight: 500;
-        color: rgba(255, 2555, 255, 0.6);
-      }
-
-      .time-card {
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        width: 100%;
-        margin-top: 12px;
-        .time-card-item {
-          border-radius: 8px;
-          padding: 6px 12px;
-          box-shadow: inset 0px 0px 34px 0px rgba(239, 47, 45, 0.4);
-          backdrop-filter: blur(156px);
-          background: linear-gradient(
-            179.63deg,
-            rgba(239, 47, 45, 0.04) -25.155%,
-            rgba(255, 102, 101, 0.04) 127.31%
-          );
-          margin-right: 12px;
-          text-align: center;
-          .card-item-value {
-            width: 100%;
-            font-size: 28px;
-            font-weight: 600;
-            line-height: 32px;
-          }
-
-          .card-item-symbol {
-            margin-top: 4px;
-            width: 100%;
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 16px;
-            color: #ff6665;
-          }
-        }
-      }
-
-      .prizes-to-bridge {
-        width: 100%;
-        display: flex;
-        justify-content: start;
-        align-items: center;
-
-        .prizes-to-bridge-btn {
-          width: 320px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-
-          margin-top: 24px;
-          border-radius: 8px;
-          padding: 12px 0;
-          background: linear-gradient(
-            -2.9deg,
-            rgb(239, 47, 45) 32.367%,
-            rgb(255, 102, 101) 85.541%
-          );
-          font-size: 20px;
-          font-weight: 600;
-          line-height: 28px;
-          // cursor: pointer;
-        }
-      }
-    }
-
-    .prizes-claim-group {
-      flex: 1;
+   
+    .group {
+      width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
+      .badge {
+        border-radius: 999px;
+
+background: linear-gradient(206.24deg, rgba(255, 104, 104, 0.6) 9.711%,rgba(0, 88, 255, 0) 83.497%),linear-gradient(163.83deg, rgb(219, 231, 255) -5.987%,rgb(0, 88, 255) 31.747%);
+        padding: 12px 40px;
+        color: #EAF2FF;
+        font-family: GeneralSans-SemiBold;
+        font-size: 24px;
+      }
+      .title {
+        margin-top: 16px;
+        
+        color: rgb(255, 242, 240);
+        background-image: linear-gradient(
+          to right,
+          rgb(234, 242, 255) 80%,
+          rgb(255, 138, 138) 100%
+        );
+        font-size: 88px;
+        line-height: 1;
+        font-family: GeneralSans-SemiBold;
+        letter-spacing: 0px;
+        .chain {
+          background-image: linear-gradient(
+          to top,
+          rgb(0, 88, 255) 60%,
+          rgb(234, 242, 255)
+        );
+        }
+      }
+      .amount {
+        margin-top: 16px;
+        background-image: linear-gradient(
+          to right,
+          rgb(234, 242, 255) 80%,
+          rgb(255, 138, 138) 100%
+        );
+        color: rgb(255, 242, 240);
+        font-size: 88px;
+        line-height: 1.5;
+        letter-spacing: 0px;
+        font-family: GeneralSans-SemiBold;
+        .chain {
+          background-image: linear-gradient(
+          to top,
+          rgb(0, 88, 255) 60%,
+          rgb(234, 242, 255)
+        );
+        }
+      }
     }
 
-    .prizes-banner-image {
-      width: 68%;
-      margin-right: -8%;
-      margin-left: -24%;
+    .time-card {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .time-card-item {
+        width: 64px;
+        height: 64px;
+        border-radius: 8px;
+        backdrop-filter: blur(156px);
+        background: linear-gradient(180.00deg, rgba(21, 63, 66, 0),rgba(255, 21, 0, 0.2) 100%),rgb(21, 37, 71);
+        margin: 0 6px;
+        .card-item-value {
+          font-size: 28px;
+          font-family: GeneralSans-SemiBold;
+          line-height: 32px;
+          letter-spacing: 0px;
+          margin-top: 6px;
+        }
+        .card-item-symbol {
+          font-family: GeneralSans-Medium;
+          font-size: 14px;
+          line-height: 16px;
+          letter-spacing: 0px;
+          text-align: center;
+          margin-top: 4px;
+          color: #EAF2FF;
+        }
+      }
     }
-
-    .prizes-banner-bg {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 150%;
-      padding: 12%;
-      background-image: url('../../../assets/prizes/v1/banner-bg-bottom.png');
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: 100% 100%;
-      transform: translateY(30%);
-      z-index: -1;
+    .bridge {
+      width: 240px;
+      height: 56px;
+      margin-top: 46px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      box-shadow: 0px 0px 24px 0px rgba(255, 21, 0, 0.4);
+      backdrop-filter: blur(156px);
+      cursor: pointer;
+      background: linear-gradient(
+          310.65deg,
+          rgb(255, 255, 234) -11.715%,
+          rgb(143, 247, 255) -11.715%,
+          rgb(255, 79, 79) 29.554%
+        ),
+        rgb(255, 79, 79);
+      font-size: 18px;
+      font-family: GeneralSans-SemiBold;
+      line-height: 28px;
+      letter-spacing: 0px;
+      clip-path: polygon(
+        0 12px,
+        12px 0,
+        100% 0,
+        100% calc(100% - 12px),
+        calc(100% - 12px) 100%,
+        0 100%
+      );
     }
-
   }
 }
 
 @media (max-width: 1200px) {
   #prizes-top-banner {
-    .prizes-label {
-      font-size: 52px;
-    }
-    .prizes-orbguy {
-      font-size: 24px;
-      .orbguy-token-symbol {
-        width: 32px;
-        height: 32px;
-      }
-    }
-  }
-}
-@media (max-width: 960px) {
-  #prizes-top-banner {
-    .prizes-label {
-      font-size: 40px;
-    }
-    .prizes-orbguy {
-      font-size: 22px;
-      .orbguy-token-symbol {
-        width: 30px;
-        height: 30px;
-      }
-    }
-  }
-}
-@media (max-width: 840px) {
-  #prizes-top-banner {
-    .prizes-label {
-      font-size: 32px;
-    }
-  }
-}
-
-@media (max-width: 740px) {
-  #prizes-top-banner {
-    width: 100%;
+    height: 420px;
     .prizes-content {
-      width: 100%;
-      display: block;
-      text-align: center;
-      .prizes-details {
-        .prizes-banner-image-mobile {
-          padding: 24px 12px;
-          display: flex;
-        }
-
-        .prizes-banner-mobile-bg {
-          display: flex;
-        }
-        .prizes-to-chain {
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          align-content: center;
-        }
-        .prizes-label {
-          text-align: center;
-        }
-        .prizes-orbguy {
-          font-size: 20px;
-          width: 100%;
-          .orbguy-token-symbol {
-            width: 28px;
-            height: 28px;
-          }
-        }
-
-        .time-label {
-          text-align: center;
-        }
-
-        .time-card {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .prizes-to-bridge {
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
+      .badge {
+        font-size: 16px;
+        padding: 8px 16px;
       }
-      .prizes-banner-image {
-        display: none;
+      .title {
+        font-size: 24px;
+        line-height: 1;
       }
-      .prizes-claim-group {
-        display: none;
+      .amount {
+        font-size: 32px;
+        line-height: 1.5;
       }
-      .prizes-banner-bg {
-        display: none;
+      .bridge {
+        margin-top: 24px;
       }
     }
   }

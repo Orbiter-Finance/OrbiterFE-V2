@@ -1,75 +1,94 @@
 <template>
-  <div class="confirm-box">
-    <CommBoxHeader
-      :back="closerButton"
-      :style="isMobile ? '' : 'margin-bottom:30px;'"
-      >Confirm</CommBoxHeader
-    >
-    <div
-      v-for="item in confirmData"
-      :key="item.title"
-      class="confirm-item"
-      :style="{ marginBottom: '22px' }"
-    >
-      <div class="confirm-item-top-group">
-        <div class="item-left">
-          <SvgIconThemed :icon="item.icon" />
-          <span class="left-txt">{{ item.title }}</span>
-          <o-tooltip placement="topLeft">
-            <template v-slot:titleDesc>
-              <span class="o-tip">{{ item.notice }}</span>
-            </template>
-            <HelpIcon v-if="item.notice" size="sm" />
-          </o-tooltip>
-        </div>
-        <div class="item-right">
-          <div v-if="item.isCom">
-            <GasObSelect></GasObSelect>
+    <div class="confirm-box">
+      <CommBoxHeader
+        :back="closerButton"
+        :style="isMobile ? '' : 'margin-bottom:30px;'"
+        >Confirm</CommBoxHeader
+      >
+      <div
+        v-for="item in confirmData"
+        :key="item.title"
+        class="confirm-item"
+        :style="{ marginBottom: '22px' }"
+      >
+        <div class="confirm-item-top-group">
+          <div class="item-left">
+            <SvgIconThemed :icon="item.icon" />
+            <span class="left-txt">{{ item.title }}</span>
+            <o-tooltip placement="topLeft">
+              <template v-slot:titleDesc>
+                <span class="o-tip">{{ item.notice }}</span>
+              </template>
+              <HelpIcon v-if="item.notice" size="sm" />
+            </o-tooltip>
           </div>
-          <div>
-            <span
-              v-if="item.desc"
-              :class="`${item.lineThrough ? 'fee' : ''} ${
-                item.tieredFee || item.discount
-                  ? 'text-decoration-line-through'
-                  : ''
-              }`"
-              >{{ item.desc }}</span
-            >
-            <div v-if="item.tieredFee" class="n-withholding-fee">
-              <div>
-                {{ item.nWithholdingFee }}
-                <span class="tiered-fee-max">(↓{{ item.tieredFee }}%)</span>
+          <div class="item-right">
+            <div v-if="item.isCom">
+              <GasObSelect></GasObSelect>
+            </div>
+            <div>
+              <span
+                v-if="item.desc"
+                :class="`${item.lineThrough ? 'fee' : ''} ${
+                  item.isTieredFee || item.isDiscount
+                    ? 'text-decoration-line-through'
+                    : ''
+                }`"
+                >{{ item.desc }}</span>
+              <div v-if="item.isDiscount" class="tiered-fee-max">
+                +{{ item.discount }}
+                </div>
+              <div v-if="item.isTieredFee" class="n-withholding-fee">
+                <div>
+                  {{ item.nWithholdingFee }}
+                  <span class="tiered-fee-max">{{ item.tieredFee }}</span>
+                </div>
               </div>
             </div>
-          </div>
-          <span
-            :style="`text-decoration: line-through;${
-              !isMobile ? 'margin-left: 5px' : ''
-            }`"
-            v-if="item.lineThrough"
-          >
-            <span v-if="isMobile"><br /></span>
-            {{ item.lineThrough }}
-          </span>
-        </div>
-      </div>
-      <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
-        <div
-          v-for="(desc, index) in item.descInfo"
-          :key="desc.no"
-          style="margin-bottom: 1rem"
-        >
-          <span
-            style="width: 40px; display: -moz-inline-box; display: inline-block"
-          >
-            {{ index === 0 ? 'Send' : '' }}
-          </span>
-          <o-tooltip v-if="desc.fromTip" placement="topLeft">
-            <template v-slot:titleDesc>
-              <span class="o-tip">{{ desc.fromTip }}</span>
-            </template>
+            
             <span
+              :style="`text-decoration: line-through;${
+                !isMobile ? 'margin-left: 5px' : ''
+              }`"
+              v-if="item.lineThrough"
+            >
+              <span v-if="isMobile"><br /></span>
+              {{ item.lineThrough }}
+            </span>
+          </div>
+        </div>
+        <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
+          <div
+            v-for="(desc, index) in item.descInfo"
+            :key="desc.no"
+            style="margin-bottom: 1rem"
+          >
+            <span
+              style="width: 40px; display: -moz-inline-box; display: inline-block"
+            >
+              {{ index === 0 ? 'Send' : '' }}
+            </span>
+            <o-tooltip v-if="desc.fromTip" placement="topLeft">
+              <template v-slot:titleDesc>
+                <span class="o-tip">{{ desc.fromTip }}</span>
+              </template>
+              <span
+                style="
+                  margin-left: 0.7rem;
+                  margin-right: 0.7rem;
+                  color: #df2e2d;
+                  width: 100px;
+                  display: -moz-inline-box;
+                  display: inline-block;
+                  text-align: center;
+                  white-space: nowrap;
+                "
+              >
+                {{ desc.from }}
+              </span>
+            </o-tooltip>
+            <span
+              v-else
               style="
                 margin-left: 0.7rem;
                 margin-right: 0.7rem;
@@ -83,88 +102,72 @@
             >
               {{ desc.from }}
             </span>
-          </o-tooltip>
-          <span
-            v-else
-            style="
-              margin-left: 0.7rem;
-              margin-right: 0.7rem;
-              color: #df2e2d;
-              width: 100px;
-              display: -moz-inline-box;
-              display: inline-block;
-              text-align: center;
-              white-space: nowrap;
-            "
-          >
-            {{ desc.from }}
-          </span>
-          To
-          <o-tooltip placement="topLeft">
-            <template v-slot:titleDesc>
-              <span class="o-tip">{{ desc.toTip }}</span>
-            </template>
-            <span
-              style="
-                margin-left: 0.7rem;
-                color: #df2e2d;
-                width: 90px;
-                display: -moz-inline-box;
-                display: inline-block;
-                text-align: center;
-              "
-            >
-              {{ desc.to }}
+            To
+            <o-tooltip placement="topLeft">
+              <template v-slot:titleDesc>
+                <span class="o-tip">{{ desc.toTip }}</span>
+              </template>
+              <span
+                style="
+                  margin-left: 0.7rem;
+                  color: #df2e2d;
+                  width: 90px;
+                  display: -moz-inline-box;
+                  display: inline-block;
+                  text-align: center;
+                "
+              >
+                {{ desc.to }}
+              </span>
+            </o-tooltip>
+            <span style="margin-left: 0.3rem; vertical-align: -25%">
+              <SvgIconThemed :icon="desc.icon" />
             </span>
-          </o-tooltip>
-          <span style="margin-left: 0.3rem; vertical-align: -25%">
-            <SvgIconThemed :icon="desc.icon" />
-          </span>
+          </div>
         </div>
+        <div
+          v-if="item.haveSep"
+          style="border-bottom: 2px dashed rgba(0, 0, 0, 0.2); height: 43px"
+        ></div>
       </div>
       <div
-        v-if="item.haveSep"
-        style="border-bottom: 2px dashed rgba(0, 0, 0, 0.2); height: 43px"
-      ></div>
-    </div>
-    <div
-      v-if="isStarkNetChain"
-      style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
-    >
-      <SvgIconThemed style="margin-right: 10px" icon="info" />
-      <span style="color: #df2e2d; flex: 1"
-        >Starknet is still in alpha version, the transaction on it maybe will be
-        done in 1~2 hours. Orbiter keeps your funds safe.</span
+        v-if="isStarkNetChain"
+        style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
       >
-    </div>
-    <div
-      style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
-    >
-      <SvgIconThemed style="margin-right: 10px" icon="info" />
-      <span style="color: #df2e2d; flex: 1"
-        >Please do not modify the transaction or remove the last four digits on
-        the transfer amount in your wallet as this will cause the transaction to
-        fail.</span
+        <SvgIconThemed style="margin-right: 10px" icon="info" />
+        <span style="color: #df2e2d; flex: 1"
+          >Starknet is still in alpha version, the transaction on it maybe will be
+          done in 1~2 hours. Orbiter keeps your funds safe.</span
+        >
+      </div>
+      <div
+        style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
       >
+        <SvgIconThemed style="margin-right: 10px" icon="info" />
+        <span style="color: #df2e2d; flex: 1"
+          >Please do not modify the transaction or remove the last four digits on
+          the transfer amount in your wallet as this will cause the transaction to
+          fail.</span
+        >
+      </div>
+  
+      <CommBtn @click="RealTransfer" class="select-wallet-dialog">
+        <span
+          v-if="!transferLoading"
+          class="wbold s16"
+          style="letter-spacing: 0.1rem"
+          >CONFIRM AND SEND</span
+        >
+        <CommLoading
+          v-else
+          style="margin: auto"
+          loadingColor="white"
+          width="2rem"
+          height="2rem"
+        />
+      </CommBtn>
     </div>
-
-    <CommBtn @click="RealTransfer" class="select-wallet-dialog">
-      <span
-        v-if="!transferLoading"
-        class="wbold s16"
-        style="letter-spacing: 0.1rem"
-        >CONFIRM AND SEND</span
-      >
-      <CommLoading
-        v-else
-        style="margin: auto"
-        loadingColor="white"
-        width="2rem"
-        height="2rem"
-      />
-    </CommBtn>
-  </div>
-</template>
+  </template>
 
 <script>
 import {
@@ -231,16 +234,17 @@ import {
 import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
-import { CHAIN_ID } from '../../config'
-import { isBrowserApp, isProd } from '../../util'
 import {
   zksyncEraGasTokenETH,
   zksyncEraGasTokenERC20,
   zksyncEraGasTokenContract,
 } from '../../util/zksyncEraGasToken'
-import solanaHelper from '../../util/solana/solana_helper'
-import tonHelper from '../../util/ton/ton_helper'
-import { shortString } from 'starknet'
+import tronHelper from '../../util/tron/tron_helper.js';
+import orbiterHelper from '../../util/orbiter_helper.js';
+import { CHAIN_ID } from "../../config";
+import { isBrowserApp, isProd } from "../../util";
+import solanaHelper from '../../util/solana/solana_helper';
+import tonHelper from '../../util/ton/ton_helper';
 
 const {
   walletDispatchersOnSignature,
@@ -264,28 +268,29 @@ export default {
     isStarkNetChain() {
       const { fromChainID, toChainID } = transferDataState
       return (
-        fromChainID === CHAIN_ID.starknet ||
-        fromChainID === CHAIN_ID.starknet_test ||
-        toChainID === CHAIN_ID.starknet ||
-        toChainID === CHAIN_ID.starknet_test
+        orbiterHelper.isStarknetChain({ chainId: fromChainID }) || 
+        orbiterHelper.isStarknetChain({ chainId: toChainID })
       )
     },
     isSolanaChain() {
       const { fromChainID, toChainID } = transferDataState
       return (
-        fromChainID === CHAIN_ID.solana ||
-        fromChainID === CHAIN_ID.solana_test ||
-        toChainID === CHAIN_ID.solana ||
-        toChainID === CHAIN_ID.solana_test
+        orbiterHelper.isSolanaChain({ chainId: fromChainID }) || 
+        orbiterHelper.isSolanaChain({ chainId: toChainID })
+      )
+    },
+    isTronChain() {
+      const { fromChainID, toChainID } = transferDataState
+      return (
+        orbiterHelper.isTronChain({ chainId: fromChainID }) || 
+        orbiterHelper.isTronChain({ chainId: toChainID })
       )
     },
     isTonChain() {
       const { fromChainID, toChainID } = transferDataState
       return (
-        fromChainID === CHAIN_ID.ton ||
-        fromChainID === CHAIN_ID.ton_test ||
-        toChainID === CHAIN_ID.ton ||
-        toChainID === CHAIN_ID.ton_test
+        orbiterHelper.isTonChain({ chainId: fromChainID }) || 
+        orbiterHelper.isTonChain({ chainId: toChainID })
       )
     },
     currentFromChainID() {
@@ -317,26 +322,26 @@ export default {
 
       realTransferAmount = bridgeType1 ? transferValue : realTransferAmount
 
-      const originWithholdingFee = +(
+      const originWithholdingFee = (
         selectMakerConfig.originWithholdingFee || 0
       )
-      const withholdingFee = +(selectMakerConfig.tradingFee || 0)
 
-      const tieredFeeMax = transferCalculate.max()
+      const withholdingFee = (selectMakerConfig.tradingFee || 0)
 
       let discount = transferCalculate.discount().toString()
 
       let nWithholdingFee = ethers.utils.formatEther(
         ethers.utils
           .parseEther(withholdingFee + '')
-          .sub(ethers.utils.parseEther(discount))
+        //   .sub(ethers.utils.parseEther(discount))
       )
 
       if (
-        fromChainID === CHAIN_ID.solana ||
-        fromChainID === CHAIN_ID.solana_test ||
-        fromChainID === CHAIN_ID.ton ||
-        fromChainID === CHAIN_ID.ton_test
+        (
+          orbiterHelper.isSolanaChain({chainId: fromChainID}) ||
+          orbiterHelper.isTronChain({chainId: fromChainID}) ||
+          orbiterHelper.isTonChain({chainId: fromChainID})
+      ) && !bridgeType1
       ) {
         realTransferAmount = ethers.utils.formatEther(
           ethers.utils
@@ -349,6 +354,14 @@ export default {
         )
       }
 
+      const [revicedAmount, revicedSymbol] = this.expectValue.split(" ")
+
+      const nRevicedAmount = ethers.utils.formatEther(
+        ethers.utils.parseEther(revicedAmount.trim() || "0").add(
+            ethers.utils.parseEther(discount.trim()||"0")
+        )
+      )
+
       const isGasTokenChain = this.currentFromChainID === CHAIN_ID.zksync2
       const comm = [
         {
@@ -357,7 +370,9 @@ export default {
           notice:
             'The ‘Maker’ charges the ‘Sender’ a fixed fee to cover the fluctuating gas fees that incur when sending funds to the destination network.',
           desc: selectMakerConfig.tradingFee + ' ' + symbol,
-          tieredFee: tieredFeeMax,
+        //   tieredFee: type === TieredFeeKey.discountFee ? `(↓${tieredFeeMax}%)` : "",
+        //   isTieredFee: !!Number(tieredFeeMax),
+            isTieredFee: false,
           nWithholdingFee:
             nWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol,
           lineThrough:
@@ -388,6 +403,10 @@ export default {
         {
           icon: 'received',
           title: 'Received',
+          isDiscount: !!Number(discount),
+          discount:  nRevicedAmount +
+            ' ' +
+                revicedSymbol,
           desc: this.expectValue,
           ...(bridgeType1
             ? {
@@ -429,15 +448,9 @@ export default {
         web3State.coinbase
       const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
 
-      const contractGroup = chainInfo?.contract || {}
+      const contractList = chainInfo?.contracts || []
 
       try {
-        const contractList = Object.keys(contractGroup).map((key) => {
-          return {
-            name: contractGroup[key],
-            address: key,
-          }
-        })
 
         const contractAddress = contractList?.filter(
           (item) =>
@@ -513,95 +526,181 @@ export default {
       }
     },
     async BridgeType1Transfer() {
-      const { selectMakerConfig, fromChainID, transferValue } =
+      const { selectMakerConfig, fromChainID, transferValue, toChainID } =
         transferDataState
-      const safeCode = transferCalculate.safeCode()
 
-      const from =
+        const from =
         compatibleGlobalWalletConf.value.walletPayload.walletAddress ||
         web3State.coinbase
-
-      const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
-      const withholdingFee = selectMakerConfig.tradingFee
-
-      const tokenAddress = selectMakerConfig.fromChain.tokenAddress
-      const recipient = selectMakerConfig.recipient
-
-      console.log('transferValue', transferValue, chainInfo, safeCode)
-      const contractGroup = chainInfo?.contract || {}
-
-      const contractList = Object.keys(contractGroup).map((key) => {
-        return {
-          name: contractGroup[key],
-          address: key,
-        }
-      })
-
-      const contractAddress = contractList?.filter(
-        (item) =>
-          item?.name?.toLocaleLowerCase() === 'OPool'?.toLocaleLowerCase()
-      )[0]?.address
-
-      try {
-        const provider = new ethers.providers.Web3Provider(
-          compatibleGlobalWalletConf.value.walletPayload.provider
-        )
-
-        const signer = provider.getSigner()
 
         const amount = new BigNumber(transferValue).multipliedBy(
           new BigNumber(10 ** selectMakerConfig.fromChain.decimals)
         )
         const amountValue = amount.toFixed()
 
-        const tokenContract = new ethers.Contract(
-          tokenAddress,
-          Coin_ABI,
-          signer
-        )
+        const safeCode = transferCalculate.safeCode()
 
-        console.log('tokenContract', tokenContract)
+        const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
+        const withholdingFee = selectMakerConfig.tradingFee
 
-        const allowance = await tokenContract.allowance(from, contractAddress)
+        const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+        const recipient = selectMakerConfig.recipient
+        
+        const contractList = chainInfo?.contracts || []
 
-        console.log('allowance', allowance)
+        const contractInfo = contractList?.filter(
+          (item) =>
+            item?.name?.toLocaleLowerCase() === 'OPool'?.toLocaleLowerCase()
+        )[0]
 
-        if (allowance.lt(amountValue)) {
-          const approveRes = await tokenContract.approve(
-            contractAddress,
-            amountValue
-          )
-          console.log('approveRes', approveRes)
-          await approveRes.wait()
+        const contractAddress = contractInfo?.address
+
+        let hash = ""
+
+      try {
+          if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test){
+            const solanaAddress = web3State.solana.solanaAddress
+              const isConnected = await solanaHelper.isConnect()
+              if (!isConnected || !solanaAddress) {
+                setSelectWalletDialogVisible(true)
+                setConnectWalletGroupKey('SOLANA')
+                this.transferLoading = false
+                return
+              }
+            hash = await solanaHelper.bridgeType1transfer({
+              from: solanaAddress,
+              targetAddress: from,
+              tokenAddress,
+              toAddress: recipient,
+              safeCode,
+              withholdingFee,
+              contractAddress,
+              amount: amount.toString(),
+              chainId: fromChainID
+            })
+          } else {
+
+            let memo = `c=${safeCode}`
+
+            if (
+              toChainID === CHAIN_ID.solana ||
+              toChainID === CHAIN_ID.solana_test
+            ) {
+              const solanaAddress = web3State.solana.solanaAddress
+              const isConnected = await solanaHelper.isConnect()
+              if (!isConnected || !solanaAddress) {
+                setSelectWalletDialogVisible(true)
+                setConnectWalletGroupKey('SOLANA')
+                this.transferLoading = false
+                return
+              }
+              memo = `c=${safeCode}&t=${solanaAddress}`
+            }
+            const provider = new ethers.providers.Web3Provider(
+              compatibleGlobalWalletConf.value.walletPayload.provider
+            )
+
+            const signer = provider.getSigner()
+
+            const feeToken = contractInfo?.feeToken
+
+            const tokens = chainInfo?.tokens
+
+            let transferAmount = ethers.utils.parseUnits(
+                    String("0"),
+                    chainInfo.nativeCurrency.decimals
+                  )
+            if (!util.isEthTokenAddress(fromChainID, tokenAddress)) {
+              const tokenContract = new ethers.Contract(
+              tokenAddress,
+              Coin_ABI,
+              signer
+            )
+            const allowance = await tokenContract.allowance(from, contractAddress)
+            if (allowance.lt(amountValue)) {
+              const approveRes = await tokenContract.approve(
+                contractAddress,
+                amountValue
+              )
+              await approveRes.wait()
+            }
+            } else {
+              transferAmount = amountValue
+            }
+
+            let feeAmount = "0"
+
+            const decimals = (tokens.concat([chainInfo?.nativeCurrency || {}]))?.filter((item)=> item.address === feeToken)?.[0]?.decimals
+
+              if(!decimals){
+                this.$notify.error({
+                  title: "Coin decimals Error: " + decimals,
+                  duration: 3000,
+                })
+                this.transferLoading = false
+                return 
+              }
+
+            feeAmount = ethers.utils.parseUnits(String(withholdingFee), decimals)
+
+            if (!util.isEthTokenAddress(fromChainID, feeToken)) {
+              const tokenContract = new ethers.Contract(
+                feeToken,
+                Coin_ABI,
+                signer
+              )
+              const allowance = await tokenContract.allowance(from, contractAddress)
+
+              if (allowance.lt(amount)) {
+                const approveRes = await tokenContract.approve(
+                  contractAddress,
+                  amount
+                )
+                await approveRes.wait()
+                }
+            } else {
+              transferAmount = feeAmount.add(transferAmount)
+            }
+
+              const transferContract = new ethers.Contract(
+                contractAddress,
+                Orbiter_OPOOL_ABI,
+                signer
+              )
+
+            if(!util.isEthTokenAddress(fromChainID, tokenAddress)) {
+
+              const res = await transferContract.inbox(
+                recipient,
+                tokenAddress,
+                amountValue,
+                ethers.utils.hexlify(ethers.utils.toUtf8Bytes(memo)),
+                {
+                  value: transferAmount,
+                }
+              )
+
+              hash = res?.hash
+            } else {
+              const res = await transferContract.inboxNative(
+                recipient,
+                tokenAddress,
+                feeAmount,
+                amountValue,
+                ethers.utils.hexlify(ethers.utils.toUtf8Bytes(memo)),
+                {
+                  value: transferAmount,
+                }
+              )
+
+              hash = res?.hash
+            }
+
+            
         }
 
-        const transferContract = new ethers.Contract(
-          contractAddress,
-          Orbiter_OPOOL_ABI,
-          signer
-        )
-
-        console.log(
-          'transferContract',
-          withholdingFee,
-          transferContract,
-          chainInfo.nativeCurrency.decimals
-        )
-
-        const res = await transferContract.inbox(
-          recipient,
-          tokenAddress,
-          amountValue,
-          ethers.utils.hexlify(ethers.utils.toUtf8Bytes(`c=${safeCode}`)),
-          {
-            value: ethers.utils.parseUnits(
-              String(withholdingFee),
-              chainInfo.nativeCurrency.decimals
-            ),
-          }
-        )
-        if (res.hash) {
-          this.onTransferSucceed(from, amountValue, fromChainID, res.hash)
+        if (hash) {
+          this.onTransferSucceed(from, amountValue, fromChainID, hash)
         }
       } catch (err) {
         console.error('BridgeType1Transfer error', err)
@@ -632,12 +731,23 @@ export default {
       let isConnected = false
 
       if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        toAddress = solanaHelper.solanaAddress()
+        toAddress = web3State.solana.solanaAddress
         isConnected = await solanaHelper.isConnect()
 
         if (!toAddress || !isConnected) {
           setSelectWalletDialogVisible(true)
           setConnectWalletGroupKey('SOLANA')
+          return
+        }
+      }
+
+      if (orbiterHelper.isTronChain({chainId: toChainID})) {
+        toAddress = web3State.tron.tronAddress
+        isConnected = web3State.tron.tronIsConnected
+
+        if (!toAddress || !isConnected) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('TRON')
           return
         }
       }
@@ -666,14 +776,7 @@ export default {
 
       const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
 
-      const contractGroup = chainInfo?.contract || {}
-
-      const contractList = Object.keys(contractGroup).map((key) => {
-        return {
-          name: contractGroup[key],
-          address: key,
-        }
-      })
+      const contractList = chainInfo?.contracts || []
 
       const contractAddress = contractList?.filter(
         (item) =>
@@ -1289,23 +1392,27 @@ export default {
           toChainID === CHAIN_ID.solana ||
           toChainID === CHAIN_ID.solana_test
         ) {
-          const solanaAddress = solanaHelper.solanaAddress()
+          const solanaAddress = web3State.solana.solanaAddress
           const isConnected = await solanaHelper.isConnect()
           if (!isConnected || !solanaAddress) {
             setSelectWalletDialogVisible(true)
             setConnectWalletGroupKey('SOLANA')
             return
           }
-          // try {
-          //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-          //     if(res !== "created") {
-          //         return
-          //     }
-          // } catch (error) {
-          //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-          //     return
-          // }
           memo = `${p_text}_${solanaAddress}`
+        }
+
+        if (
+          orbiterHelper.isTronChain({chainId: toChainID})
+        ) {
+          const tronAddress = web3State.tron.tronAddress
+          const isConnected = web3State.tron.tronIsConnected
+          if (!isConnected || !tronAddress) {
+            setSelectWalletDialogVisible(true)
+            setConnectWalletGroupKey('TRON')
+            return
+          }
+          memo = `${p_text}_${tronAddress}`
         }
 
         if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
@@ -1493,11 +1600,12 @@ export default {
       }
     },
     async solanaTransfer(value) {
+      console.log("value", value)
       const { selectMakerConfig, fromChainID, toChainID, transferValue } =
         transferDataState
 
       const isConnected = await solanaHelper.isConnect()
-      let from = solanaHelper.solanaAddress()
+      let from = web3State.solana.solanaAddress
 
       if (!isConnected || !from) {
         setSelectWalletDialogVisible(true)
@@ -1526,6 +1634,20 @@ export default {
 
         if (!targetAddress || !isConnected) {
           await tonHelper.connect()
+          return
+        }
+      }
+
+      if (orbiterHelper.isTronChain({chainId: toChainID})) {
+        const tronAddress = web3State.tron.tronAddress
+        const isConnect = web3State.tron.tronIsConnected
+
+        targetAddress = tronAddress
+
+        if (!tronAddress || !isConnect) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('TRON')
+          this.transferLoading = false
           return
         }
       }
@@ -1559,6 +1681,7 @@ export default {
           targetAddress,
           amount: rAmountValue,
           safeCode,
+          chainId: fromChainID
         })
         try {
           this.$gtag.event('click', {
@@ -1633,7 +1756,7 @@ export default {
       }
 
       if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        const solanaAddress = solanaHelper.solanaAddress()
+        const solanaAddress = web3State.solana.solanaAddress
         const isConnect = solanaHelper.isConnect()
 
         targetAddress = solanaAddress
@@ -1641,6 +1764,19 @@ export default {
         if (!solanaAddress || !isConnect) {
           setSelectWalletDialogVisible(true)
           setConnectWalletGroupKey('SOLANA')
+          this.transferLoading = false
+          return
+        }
+      }
+      if (orbiterHelper.isTronChain({chainId: toChainID})) {
+        const tronAddress = web3State.tron.tronAddress
+        const isConnect = web3State.tron.tronIsConnected
+
+        targetAddress = tronAddress
+
+        if (!tronAddress || !isConnect) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('TRON')
           this.transferLoading = false
           return
         }
@@ -1679,6 +1815,118 @@ export default {
       } finally {
         this.transferLoading = false
       }
+    },
+    async tronTransfer(value) {
+
+      console.log('value', value)
+      const { selectMakerConfig, fromChainID, toChainID, transferValue } =
+        transferDataState
+
+      const isConnected = web3State.tron.tronIsConnected
+      let from = web3State.tron.tronAddress
+
+      if (!isConnected || !from) {
+        setSelectWalletDialogVisible(true)
+        setConnectWalletGroupKey('TRON')
+        this.transferLoading = false
+        return
+      }
+
+      const safeCode = transferCalculate.safeCode()
+
+      const { starkNetAddress, starkChain } = web3State.starkNet
+
+      const rAmount = new BigNumber(transferValue)
+        .plus(new BigNumber(selectMakerConfig.tradingFee))
+        .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+      const rAmountValue = rAmount.toFixed()
+
+      console.log("rAmountValue", rAmountValue)
+
+      const evmAddress =
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress
+
+      let targetAddress = evmAddress
+
+      if (
+        toChainID === CHAIN_ID.starknet ||
+        toChainID === CHAIN_ID.starknet_test
+      ) {
+        targetAddress = starkNetAddress
+
+        if (!starkChain || (isProd() && starkChain === 'unlogin')) {
+          util.showMessage('please connect Starknet Wallet', 'error')
+          this.transferLoading = false
+          return
+        }
+
+        if (!starkNetAddress) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('STARKNET')
+          this.transferLoading = false
+          return
+        }
+      }
+
+      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+        const solanaAddress = web3State.solana.solanaAddress
+        const isConnect = solanaHelper.isConnect()
+
+        targetAddress = solanaAddress
+
+        if (!solanaAddress || !isConnect) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('SOLANA')
+          this.transferLoading = false
+          return
+        }
+      }
+
+      if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+        targetAddress = tonHelper.account()
+        const isConnected = await tonHelper.isConnected()
+
+        if (!targetAddress || !isConnected) {
+          await tonHelper.connect()
+          return
+        }
+      }
+      try {
+        const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+
+        const hash = await tronHelper.transfer({
+          from,
+          to: selectMakerConfig.recipient,
+          tokenAddress,
+          targetAddress,
+          amount: rAmountValue,
+          safeCode,
+          chainId: fromChainID
+        })
+        try {
+          this.$gtag.event('click', {
+            event_category: 'Transfer',
+            event_label: selectMakerConfig.recipient,
+            userAddress: from,
+            hash: hash,
+          })
+        } catch (error) {
+          console.error('click error', error)
+        }
+
+        if (hash) {
+          this.onTransferSucceed(from, value, fromChainID, hash)
+        }
+      } catch (error) {
+        console.error('transfer error', error)
+        this.$notify.error({
+          title: error.message || String(error),
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+
     },
     async starknetTransfer(value) {
       const {
@@ -1725,10 +1973,9 @@ export default {
         }
       }
       if (
-        toChainID === CHAIN_ID.solana ||
-        toChainID === CHAIN_ID.solana_test ||
-        toChainID === CHAIN_ID.ton ||
-        toChainID === CHAIN_ID.ton_test
+        orbiterHelper.isSolanaChain({chainId: toChainID}) || 
+        orbiterHelper.isTonChain({chainId: toChainID}) || 
+        orbiterHelper.isTronChain({chainId: toChainID})
       ) {
         if (
           toChainID === CHAIN_ID.solana ||
@@ -1736,7 +1983,7 @@ export default {
         ) {
           const isConnectSolana = await solanaHelper.isConnect()
           if (isConnectSolana) {
-            to = solanaHelper.solanaAddress()
+            to = web3State.solana.solanaAddress
             if (!to) {
               util.showMessage('Solana Address Error: ' + to, 'error')
               this.transferLoading = false
@@ -1745,6 +1992,25 @@ export default {
           } else {
             setSelectWalletDialogVisible(true)
             setConnectWalletGroupKey('SOLANA')
+            this.transferLoading = false
+            return
+          }
+        }
+
+        if (
+          orbiterHelper.isTronChain({chainId: toChainID})
+        ) {
+          const isConnect = web3State.tron.tronIsConnected
+          if (isConnect) {
+            to = web3State.tron.tronAddress
+            if (!to) {
+              util.showMessage('Tron Address Error: ' + to, 'error')
+              this.transferLoading = false
+              return
+            }
+          } else {
+            setSelectWalletDialogVisible(true)
+            setConnectWalletGroupKey('TRON')
             this.transferLoading = false
             return
           }
@@ -2055,12 +2321,23 @@ export default {
       let toAddress = ''
 
       if (toChainID === CHAIN_ID.solana) {
-        toAddress = solanaHelper.solanaAddress()
+        toAddress = web3State.solana.solanaAddress
         const isConnected = await solanaHelper.isConnect()
 
         if (!toAddress || !isConnected) {
           setSelectWalletDialogVisible(true)
           setConnectWalletGroupKey('SOLANA')
+          return
+        }
+      }
+
+      if (orbiterHelper.isTronChain({chainId: toChainID})) {
+        toAddress = web3State.tron.tronAddress
+        const isConnected = web3State.tron.tronIsConnected
+
+        if (!toAddress || !isConnected) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('TRON')
           return
         }
       }
@@ -2159,12 +2436,7 @@ export default {
       const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
 
       if (
-        fromChainID !== CHAIN_ID.starknet &&
-        fromChainID !== CHAIN_ID.starknet_test &&
-        fromChainID !== CHAIN_ID.solana &&
-        fromChainID !== CHAIN_ID.solana_test &&
-        fromChainID !== CHAIN_ID.ton &&
-        fromChainID !== CHAIN_ID.ton_test
+        !orbiterHelper.isNotEVMChain({chainId: fromChainID})
       ) {
         if (
           compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
@@ -2272,10 +2544,16 @@ export default {
         }
 
         if (
-          fromChainID === CHAIN_ID.solana ||
-          fromChainID === CHAIN_ID.solana_test
+          orbiterHelper.isSolanaChain({chainId: fromChainID})
         ) {
           this.solanaTransfer(tValue.tAmount)
+          return
+        }
+
+        if (
+          orbiterHelper.isTronChain({chainId: fromChainID})
+        ) {
+          this.tronTransfer(tValue.tAmount)
           return
         }
 
@@ -2305,10 +2583,10 @@ export default {
         }
 
         if (
-          toChainID === CHAIN_ID.solana ||
-          toChainID === CHAIN_ID.solana_test ||
-          toChainID === CHAIN_ID.ton ||
-          toChainID === CHAIN_ID.ton_test
+          orbiterHelper.isSolanaChain({chainId: toChainID}) || 
+          orbiterHelper.isTonChain({chainId: toChainID}) || 
+          orbiterHelper.isTronChain({chainId: toChainID}) 
+
         ) {
           await this.transferToSolanaOrTon()
           this.transferLoading = false
@@ -2599,19 +2877,18 @@ export default {
 
       .n-withholding-fee {
         margin-top: -8px;
-
-        .tiered-fee-max {
-          margin-top: -8px;
-          font-size: 12px;
-          color: #df2e2d;
-          font-weight: 700;
-        }
-        .tiered-fee-discount {
-          margin-top: -8px;
-          font-size: 12px;
-          color: #3183ff;
-          font-weight: 700;
-        }
+      }
+      .tiered-fee-max {
+        margin-top: -8px;
+        font-size: 12px;
+        color: #df2e2d;
+        font-weight: 700;
+      }
+      .tiered-fee-discount {
+        margin-top: -8px;
+        font-size: 12px;
+        color: #3183ff;
+        font-weight: 700;
       }
     }
 

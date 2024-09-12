@@ -37,6 +37,8 @@ export default {
     [CHAIN_ID.zkspace_test]: 'https://v3-rinkeby.zkswap.info/transaction/',
     [CHAIN_ID.solana]: 'https://solscan.io/tx/',
     [CHAIN_ID.solana_test]: 'https://solscan.io/tx/',
+    [CHAIN_ID.tron_nile_test]: 'https://nile.tronscan.org/#/transaction/',
+    [CHAIN_ID.tron]: 'https://tronscan.org/#/transaction/',
   },
   accountExploreUrl: {
     [CHAIN_ID.zksync]: 'https://zkscan.io/explorer/accounts/',
@@ -55,6 +57,8 @@ export default {
     [CHAIN_ID.zkspace_test]: 'https://v3-rinkeby.zkswap.info/account/',
     [CHAIN_ID.solana]: 'https://solscan.io/account/',
     [CHAIN_ID.solana_test]: 'https://solscan.io/account/',
+    [CHAIN_ID.tron_nile_test]: 'https://nile.tronscan.org/#/address/',
+    [CHAIN_ID.tron]: 'https://tronscan.org/#/address/',
   },
   gasPriceMap: {
     [CHAIN_ID.mainnet]: 100,

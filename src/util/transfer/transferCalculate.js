@@ -31,6 +31,9 @@ import { isArgentApp, isBrowserApp, isDev } from '../env'
 
 import tonHelper from '../ton/ton_helper'
 import { zeroAddress } from 'viem'
+import tronHelper from '../tron/tron_helper'
+import orbiterHelper from '../orbiter_helper'
+import { TieredFeeKey } from '../../const'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -130,6 +133,12 @@ export default {
   // min ~ max
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
     const { selectMakerConfig } = transferDataState
+    if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
+      return null
+    }
+    if (orbiterHelper.isTronChain({ chainId: fromChainID })) {
+      return null
+    }
     if (
       fromChainID === CHAIN_ID.zksync ||
       fromChainID === CHAIN_ID.zksync_test
@@ -618,6 +627,16 @@ export default {
       // solana cost
       ethGas = 15 * 10 ** 3
     }
+    if (orbiterHelper.isTronChain({ chainId: fromChainID })) {
+      // trx cost
+      console.log('selectMakerConfig', selectMakerConfig)
+      await tronHelper.metisGas({
+        chainId: fromChainID,
+        tokenAddress: selectMakerConfig?.fromChain?.tokenAddress,
+        makerAddress: selectMakerConfig?.recipient,
+      })
+      ethGas = 0
+    }
     if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
       // solana cost
       ethGas = 1 * 10 ** 8
@@ -1066,6 +1085,19 @@ export default {
       } catch (error) {
         return '0'
       }
+    } else if (orbiterHelper.isTronChain({ chainId: localChainID })) {
+      try {
+        const tokenAccountBalance = await tronHelper.getBalance({
+          chainId: localChainID,
+          userAddress,
+          tokenAddress,
+        })
+
+        return String(tokenAccountBalance || '0')
+      } catch (error) {
+        console.log('error', error)
+        return '0'
+      }
     } else if (
       localChainID === CHAIN_ID.ton ||
       localChainID === CHAIN_ID.ton_test
@@ -1299,9 +1331,10 @@ export default {
 
   getTradingFee() {
     const { selectMakerConfig } = transferDataState
-    return new BigNumber(selectMakerConfig.tradingFee).minus(
-      new BigNumber(this.discount())
-    )
+    return new BigNumber(selectMakerConfig.tradingFee)
+    // .minus(
+    //   new BigNumber(this.discount())
+    // )
   },
 
   getTransferTValue() {
@@ -1398,33 +1431,76 @@ export default {
 
     const { tieredFee } = selectMakerConfig
 
-    const tieredFeeList = tieredFee
-      ?.filter((item) => {
-        const [min, max] = item?.range
-        return (
-          Number(min) <= Number(transferValue) &&
-          Number(max) >= Number(transferValue)
-        )
-      })
-      ?.map((item) => item?.discount || '0')
+    const tieredFeeList = tieredFee?.filter((item) => {
+      const [min, max] = item?.range
+      return (
+        Number(min) < Number(transferValue) &&
+        Number(max) >= Number(transferValue)
+      )
+    })
+    const discountList = (tieredFeeList || []).map(
+      (item) => item?.discount || '0'
+    )
+    let withholdingFeeList = []
+    if (tieredFeeList) {
+      withholdingFeeList = tieredFeeList?.map(
+        (item) => item?.withholdingFee || '0'
+      )
+    }
 
-    const tieredFeeMax = Math.max(...(tieredFeeList || []), 0)
-    return tieredFeeMax
+    let tieredFeeDiscountMax = 0
+    let tieredFeeWithholdingFeeMax = 0
+    if (discountList) {
+      discountList.forEach((item) => {
+        if (Number(item) >= tieredFeeDiscountMax) {
+          tieredFeeDiscountMax = item
+        }
+      })
+    }
+
+    if (withholdingFeeList) {
+      withholdingFeeList.forEach((item) => {
+        if (!tieredFeeWithholdingFeeMax) {
+          tieredFeeWithholdingFeeMax = item
+        } else {
+          if (Number(item) <= tieredFeeWithholdingFeeMax && Number(item)) {
+            tieredFeeWithholdingFeeMax = item
+          }
+        }
+      })
+    }
+
+    return Number(tieredFeeWithholdingFeeMax)
+      ? {
+          type: TieredFeeKey.withholdingFee,
+          value: tieredFeeWithholdingFeeMax,
+        }
+      : {
+          type: TieredFeeKey.discountFee,
+          value: tieredFeeDiscountMax,
+        }
   },
   discount() {
     const { selectMakerConfig } = transferDataState
 
-    const withholdingFee = +(selectMakerConfig.tradingFee || 0)
+    const withholdingFee = selectMakerConfig.tradingFee || 0
 
-    const tieredFeeMax = this.max()
+    const { type, value: tieredFeeMax } = this.max()
     let discount = '0'
+
     if (tieredFeeMax) {
       const w = ethers.utils.parseEther(withholdingFee + '')
-      discount = ethers.utils.formatEther(
-        w
-          .mul(ethers.utils.parseEther(tieredFeeMax / 100 + ''))
-          .div(ethers.utils.parseEther('1'))
-      )
+      if (type === TieredFeeKey.discountFee) {
+        discount = ethers.utils.formatEther(
+          w
+            .mul(ethers.utils.parseEther(tieredFeeMax / 100 + ''))
+            .div(ethers.utils.parseEther('1'))
+        )
+      } else {
+        discount = ethers.utils.formatEther(
+          w.sub(ethers.utils.parseEther(tieredFeeMax + ''))
+        )
+      }
     }
 
     return discount

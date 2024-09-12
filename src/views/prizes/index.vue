@@ -1,17 +1,15 @@
 <template>
   <div id="orbiter-prizes" class="orbiter-prizes">
     <PrizesTopNav></PrizesTopNav>
+    <PrizesTopBanner></PrizesTopBanner>
     <div class="prizes-content">
       <div class="content">
-        <PrizesTopBanner></PrizesTopBanner>
         <PrizesPool></PrizesPool>
         <PrizesAllocation></PrizesAllocation>
-        <PrizesRank ></PrizesRank>
+        <PrizesRank></PrizesRank>
         <PrizesRule></PrizesRule>
       </div>
     </div>
-    <div class="bg1"></div>
-    <div class="bg2"></div>
   </div>
 </template>
 
@@ -20,20 +18,21 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 
 import PrizesTopNav from './components/PrizesTopNav.vue'
 import PrizesTopBanner from './components/PrizesTopBanner.vue'
-import PrizesPool from './components/PrizesPool.vue'
-import PrizesAllocation from './components/PrizesAllocation.vue'
 import PrizesRank from './components/PrizesRank.vue'
 import PrizesRule from './components/PrizesRule.vue'
+import PrizesPool from './components/PrizesPool.vue'
+import PrizesAllocation from './components/PrizesAllocation.vue'
+
 
 export default {
-  name: 'Prizes',
+  name: 'Prizes2',
   components: {
     PrizesTopNav,
     PrizesTopBanner,
     PrizesPool,
-    PrizesAllocation,
     PrizesRank,
     PrizesRule,
+    PrizesAllocation
   },
   computed: {
     evmAddress() {
@@ -41,7 +40,10 @@ export default {
     },
   },
   created() {
-    this.$store.commit("getPrizesData")
+    this.$store.commit('getPrizesProjectDetail')
+    this.$store.commit('getPrizesProjectInfo')
+    this.$store.commit('getPrizesProjectRank')
+    this.getUserReward()
   },
   watch: {
     evmAddress(item1, item2) {
@@ -52,8 +54,14 @@ export default {
   },
   methods: {
     async getUserReward() {
-      if (!this.evmAddress || this.evmAddress === "0x") return
-      this.$store.commit("getPrizesuserInfo", this.evmAddress.toLocaleLowerCase())
+      if (!this.evmAddress || this.evmAddress === '0x') return
+      this.$store.commit(
+        'getPrizesUserInfo',
+        this.evmAddress.toLocaleLowerCase()
+      )
+      this.$store.commit("getPrizesUserRank", 
+        this.evmAddress.toLocaleLowerCase()
+      )
     },
   },
 }
@@ -72,6 +80,7 @@ export default {
   left: 0;
   padding: 0 0 32px;
   z-index: 1;
+  background-color: #010101;
 
   .prizes-content {
     display: flex;
@@ -81,38 +90,17 @@ export default {
 
     .content {
       width: 100%;
-      max-width: 1080px;
+      max-width: 1200px;
       height: 100%;
     }
-  }
-
-  .bg1 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 432px;
-    height: 298px;
-    transform: translate(-35%, -20%);
-    filter: blur(400px);
-    background-color: rgb(255, 187, 90);
-  }
-
-  .bg2 {
-    position: absolute;
-    top: 200px;
-    right: 0;
-    width: 432px;
-    height: 298px;
-    transform: translateX(35%);
-    filter: blur(400px);
-    background-color: #c20000;
   }
 }
 
 @media (max-width: 740px) {
   #orbiter-prizes {
-    .bg2 {
-      display: none;
+    .content {
+      width: 100%;
+      padding: 0 16px;
     }
   }
 }

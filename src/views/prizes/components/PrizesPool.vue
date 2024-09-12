@@ -2,12 +2,14 @@
   <div id="prizes-pool" class="prizes-pool">
     <div class="pool-total">
       <div class="pool">
-        <div>Prize pool (USDC)</div>
-        <div class="pool-total-amount">{{ totalPool }}</div>
+        <div>Prize Pool (USDC)</div>
+        <div class="pool-total-amount"
+        :style="`font-size: ${ !currentPool ? '32px' : '48px'};`"
+        >{{ totalPool }}</div>
       </div>
       <div class="participants">
-        <div>Participants</div>
-        <div class="participants-total-amount">{{ totalAddress }}</div>
+        <div>Tx Amount</div>
+        <div class="participants-total-amount">{{ totalTxAmount }}</div>
       </div>
     </div>
     <div class="progress-group">
@@ -16,157 +18,174 @@
         <div class="progress-info">
           <div class="progress-pool-amount-group">
             <div class="progress-pool-amount">
-              <div class="pool-item-first">0</div>
-              <div class="pool-item" v-for="item in poolAmount" :key="item">
-                {{ item }}
+              <div
+                :class="`pool-item ${
+                  totalPool === item.reward ? 'pool-item-active' : ''
+                }`"
+                v-for="item in group"
+                :key="item.reward"
+              >
+                {{ item.reward }}
               </div>
-              <div class="pool-item-last">100,000</div>
             </div>
           </div>
 
           <div class="progress-content">
-            <div
-              class="progress-tips"
-              :style="`padding-left: calc(${ratio}% - 4px);`"
-            >
-              <div class="pool-text">{{ totalPool }}</div>
-              <div class="progress-icon">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  width="8.489258"
-                  height="5.242645"
-                  viewBox="0 0 8.48926 5.24265"
-                  fill="none"
-                >
-                  <path
-                    d="M1 0L7.48 0C8.37 0 8.82 1.07 8.19 1.7L4.95 4.94C4.56 5.34 3.92 5.34 3.53 4.94L0.29 1.7C-0.34 1.07 0.11 0 1 0Z"
-                    fill="#FFA629"
-                    fill-opacity="1.000000"
-                    fill-rule="evenodd"
-                  />
-                </svg>
-              </div>
-            </div>
-
             <div class="progress-box">
               <div
                 class="progress-box-item"
-                v-for="(item, index) in new Array(9).fill(0)"
-                :key="index"
-              ></div>
-              <div class="progress" :style="`width: ${ratio}%;`"></div>
-            </div>
-            <div
-              class="progress-tips"
-              :style="`padding-left: calc(${ratio}% - 4px);`"
-            >
-              <div class="progress-icon">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  width="8.489258"
-                  height="5.242645"
-                  viewBox="0 0 8.48926 5.24265"
-                  fill="none"
-                >
-                  <path
-                    d="M1 5.24L7.48 5.24C8.37 5.24 8.82 4.16 8.19 3.53L4.95 0.29C4.56 -0.1 3.92 -0.1 3.53 0.29L0.29 3.53C-0.34 4.16 0.11 5.24 1 5.24Z"
-                    fill="#EF2F2D"
-                    fill-opacity="1.000000"
-                    fill-rule="evenodd"
-                  />
-                </svg>
+                v-for="item in group"
+                :key="item.reward"
+              >
+                <svg-icon v-if="item.isLock" iconName="lock"></svg-icon>
               </div>
-              <div class="participants-text">{{ totalAddress }}</div>
+              <div v-if="isLast" class="progress-skeleton">
+                <div class="skeleton"></div>
+              </div>
+              <div class="progress" :style="`width: ${ratio}%;`">
+                <div v-if="!isLast" class="skeleton"></div>
+              </div>
             </div>
           </div>
 
           <div class="progress-participants-amount-group">
-            <div class="participants-item-first">0</div>
             <div class="progress-participants-amount">
               <div
-                class="participants-item"
-                v-for="item in participantsAmount"
-                :key="item"
+                :class="`participants-item ${
+                  totalPool === item.reward ? 'participants-item-active' : ''
+                }`"
+                v-for="item in group"
+                :key="item.tx"
               >
-                {{ item }}
+                {{ item.tx }}
               </div>
             </div>
-            <div class="participants-item-last">45,000+</div>
           </div>
         </div>
       </div>
-      <div class="progress-participants-title">Participants</div>
+      <div class="progress-participants-title">Tx Amount</div>
     </div>
   </div>
 </template>
 
 <script>
-import { 
-  prizesTotalAddress,
-  prizesTotalRewards
- } from "../../../composition/hooks"
+import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
+import { prizesTotaltx } from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
 
-const invAccountNumber = 50000
-
 export default {
+  components: { SvgIcon },
   name: 'PrizesPool',
 
   data() {
     return {
-      poolAmount: [
-        '25,000',
-        '35,000',
-        '45,000',
-        '55,000',
-        '65,000',
-        '75,000',
-        '85,000',
-        '95,000',
-      ],
-      participantsAmount: [
-        '5,000',
-        '10,000',
-        '15,000',
-        '20,000',
-        '25,000',
-        '30,000',
-        '35,000',
-        '40,000',
-      ],
     }
   },
   computed: {
-    addressCount() {
-      return prizesTotalAddress.value
+    group() {
+      const tx =this.totalTx
+     return [
+        {
+          tx: '0~2,499 Tx',
+          reward: '',
+          range: [0, 2499],
+          bridge50Fee: 0,
+          bridge100Fee: 0,
+          isLock: tx < 0,
+          isPromotion: tx>0,
+        },
+        {
+          tx: '2,500~11,499 Tx',
+          reward: '$1,750',
+          range: [2500, 11499],
+          bridge50Fee: 5,
+          bridge100Fee: 15,
+          isLock: tx < 2500,
+          isPromotion: tx>2500,
+        },
+        {
+          tx: '11,500~25,999 Tx',
+          reward: '$5,250',
+          range: [11500, 25999],
+          bridge50Fee: 10,
+          bridge100Fee: 30,
+          isLock: tx < 11500,
+          isPromotion: tx>11500,
+        },
+        {
+          tx: '26,000~45,999 Tx',
+          reward: '$15,750',
+          range: [26000, 45999],
+          bridge50Fee: 20,
+          bridge100Fee: 45,
+          isLock: tx < 26000,
+          isPromotion: tx>26000,
+        },
+        {
+          tx: '46,000~99,999 Tx',
+          reward: '$28,000',
+          range: [46000, 99999],
+          bridge50Fee: 30,
+          bridge100Fee: 60,
+          isLock: tx < 46000,
+          isPromotion: tx>46000,
+        },
+        {
+          tx: '100,000~319,999 Tx',
+          reward: '$35,000',
+          range: [100000, 319999],
+          bridge50Fee: 50,
+          bridge100Fee: 95,
+          bridgeTop3Fee: 95,
+          isLock: tx < 100000,
+          isPromotion: tx>100000,
+        },
+        {
+          tx: '≥320,000 Tx',
+          reward: '$40,000',
+          range: [320000, 999999],
+          bridge50Fee: 50,
+          bridge100Fee: 95,
+          bridgeTop3Fee: 98,
+          isColor: true,
+          isLock: tx<320000,
+          isPromotion: false,
+        },
+      ]  
     },
-    totalRewards() {
-      return prizesTotalRewards.value
+    totalTx() {
+      const tx = Number(prizesTotaltx.value) || 0
+      return tx
     },
-    totalAddress() {
-      let addressCount = this.addressCount
-      if(Number(addressCount) >= invAccountNumber) {
-        return this.decimalNumC(invAccountNumber, 0, ',') + "+"
-      }
-      return this.decimalNumC(addressCount, 0, ',')
+    totalTxAmount() {
+      const tx = this.totalTx
+      return this.decimalNumC(tx, 0, ',')
+    },
+    currentPool() {
+      const list = this.group
+      const group = list.filter((item) => {
+        return !item.isPromotion
+      })?.[0]
+      return group?.reward
     },
     totalPool() {
-      return this.decimalNumC(this.totalRewards, 0, ',', '$')
+      return this.currentPool || "To be unlocked"
+    },
+    isLast() {
+      const lastTx = this.group[this.group.length -1]?.range[0]
+      const tx = this.totalTx
+      return tx > lastTx
     },
     ratio() {
-      let ratioAmount = '0'
-      if (Number(this.totalRewards) >= 25000) {
-        const otherAmount = this.decimalNumC(
-          Number(this.totalRewards) - 25000,
-          2
-        )
-        const otherRatio = this.decimalNumC((otherAmount / (75000 / 8)) * (100 / 9))
-        ratioAmount = this.decimalNumC(Number(otherRatio) + 100 / 9, 2)
-      } else {
-        ratioAmount = this.decimalNumC(100 / 9, 2)
-      }
+      let ratioAmount = 0
+      const list = this.group
+      list.forEach((item) => {
+        if (item.isPromotion) {
+          ratioAmount += 100 / this.group.length
+        } else {
+          ratioAmount += 0
+        }
+      })
 
       return Number(ratioAmount) > 100 ? '100' : ratioAmount
     },
@@ -187,36 +206,44 @@ export default {
   .pool-total {
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
+    font-family: GeneralSans-SemiBold;
     .pool {
       width: calc(50% - 12px);
       padding: 20px 0;
       box-sizing: border-box;
-      border-radius: 8px;
-      box-shadow: inset 0px 0px 34px 0px rgba(255, 166, 41, 0.4);
-      backdrop-filter: blur(156px);
-      background: rgb(0, 0, 0);
+      border-radius: 16px;
+      border-radius: 16px;
+      background: linear-gradient(-0.77deg, rgba(15, 34, 37, 0.2) 60.809%,rgba(209, 112, 85, 0.2) 117.632%),rgb(15, 34, 37);
       font-weight: 500;
       .pool-total-amount {
-        color: #ffa629;
-        font-weight: 600;
-        font-size: 48px;
+        color: #3B7FFF;
+        height: 72px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
     .participants {
       width: calc(50% - 12px);
       box-sizing: border-box;
-      border-radius: 8px;
       padding: 20px 0;
-      box-shadow: inset 0px 0px 34px 0px rgba(239, 47, 45, 0.4);
-      backdrop-filter: blur(156px);
-      background: rgb(0, 0, 0);
+      border-radius: 16px;
+      background: linear-gradient(
+          -0.77deg,
+          rgba(15, 34, 37, 0.2) 60.809%,
+          rgba(209, 112, 85, 0.2) 117.632%
+        ),
+        rgb(15, 34, 37);
       font-weight: 500;
       .participants-total-amount {
-        color: #ef2f2d;
-        font-weight: 600;
+        color: #ff4f4f;
         font-size: 48px;
+        height: 72px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
   }
@@ -227,7 +254,7 @@ export default {
     text-align: left;
 
     .progress-pool-title {
-      color: #ffa629;
+      color: #3B7FFF;
     }
 
     .progress-info-scroll {
@@ -252,14 +279,12 @@ export default {
               flex: 1;
               text-align: center;
             }
-          }
-          .pool-item-first {
-            width: 5.555%;
-            text-align: left;
-          }
-          .pool-item-last {
-            width: 5.555%;
-            text-align: right;
+
+            .pool-item-active {
+              font-size: 20px;
+              font-family: GeneralSans-SemiBold;
+              color: #3B7FFF;
+            }
           }
         }
 
@@ -270,11 +295,14 @@ export default {
             margin: 1px 0;
             width: 100%;
             height: 32px;
+            margin: 12px 0;
             box-sizing: border-box;
-            border: 1px solid rgb(239, 47, 45);
+            border: 1px solid rgb(65, 79, 81);
             border-radius: 999px;
-            box-shadow: inset 0px 0px 34px 0px rgba(239, 47, 45, 0.4);
+            background: linear-gradient(179.63deg, rgba(239, 47, 45, 0.04) 34.849%,rgba(255, 102, 101, 0.04) 57.408%);            
             backdrop-filter: blur(156px);
+            // background-color: rgb(15, 34, 37);
+            background-color: #f3ba2f;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -282,11 +310,42 @@ export default {
             position: relative;
             top: 0;
             left: 0;
+            .progress-skeleton {
+              width: 100%;
+              height: 32px;
+              position: absolute;
+              top: 0;
+              left: 0;
+              z-index: 10;
+              .skeleton {
+                width: 100%;
+                height: 100%;
+                background-image: linear-gradient(
+                  90deg,
+                  rgba(#fff, 0),
+                  rgba(#fff, 0.4),
+                  rgba(#fff, 0)
+                );
+              background-size: 40px 100%; // width of the shine
+              background-repeat: no-repeat; // No need to repeat the shine effect
+              background-position: left -40px top 0; // Place shine on the left side, with offset on the left based on the width of the shine - see background-size
+              animation: shine 2.1s ease infinite;
+             }
+
+            }
             .progress-box-item {
               width: 100%;
               height: 100%;
               flex: 1;
-              border-right: 1px solid rgba(239, 47, 45, 0.2);
+              // border-right: 1px solid #414F51;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              svg {
+                width: 20px;
+                height: 20px;
+              }
+              
             }
 
             .progress {
@@ -300,33 +359,48 @@ export default {
                 rgb(255, 102, 101) 100%
               );
               border-radius: 16px;
+              overflow: hidden;
+              .skeleton {
+                width: 100%;
+                height: 100%;
+                background-image: linear-gradient(
+                  90deg,
+                  rgba(#fff, 0),
+                  rgba(#fff, 0.4),
+                  rgba(#fff, 0)
+                );
+                background-size: 40px 100%; // width of the shine
+                background-repeat: no-repeat; // No need to repeat the shine effect
+                background-position: left -40px top 0; // Place shine on the left side, with offset on the left based on the width of the shine - see background-size
+                animation: shine 1.8s ease 0.3s infinite;
+              }
             }
           }
 
           .progress-tips {
-            width: 120px;
             font-size: 14px;
             font-weight: 600;
-            .pool-text {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              color: #ffa629;
-              text-align: center;
-            }
-            .participants-text {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              color: #ef2f2d;
-              text-align: center;
-            }
-            .progress-icon {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              width: 8px;
-              height: 8px;
+            .progress-tips-group {
+              width: 80px;
+              transform: translateX(-40px);
+              .participants-text {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: #ff4f4f;
+                text-align: center;
+              }
+              .progress-icon {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                svg {
+                  width: 8px;
+                  height: 8px;
+                }
+              }
             }
           }
         }
@@ -342,24 +416,22 @@ export default {
             justify-content: space-around;
             align-items: center;
           }
-          .participants-item-last {
-            width: 5.555%;
-            text-align: right;
-          }
-          .participants-item-first {
-            width: 5.555%;
-            text-align: left;
-          }
           .participants-item {
             flex: 1;
             text-align: center;
+          }
+          .participants-item-active {
+            font-size: 20px;
+            font-family: GeneralSans-SemiBold;
+            color: #ff4f4f;
+            white-space: nowrap;
           }
         }
       }
     }
 
     .progress-participants-title {
-      color: #ef2f2d;
+      color: #ff4f4f;
     }
   }
 }
@@ -372,9 +444,11 @@ export default {
       font-size: 14px;
       .pool-total-amount {
         font-size: 24px;
+        height: 36px;
       }
       .participants-total-amount {
         font-size: 24px;
+        height: 36px;
       }
     }
 

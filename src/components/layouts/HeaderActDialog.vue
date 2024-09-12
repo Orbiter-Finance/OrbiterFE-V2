@@ -157,18 +157,10 @@
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
         >
-        <!-- <PrizesCard></PrizesCard> -->
-         <LuckyTaskBagBanner></LuckyTaskBagBanner>
-        <div 
-        >
-          <!-- <div v-if="!actDataList.length">
-            <LuckyTaskCard></LuckyTaskCard>
-          </div> -->
+        <HeaderQuestsTaskList></HeaderQuestsTaskList>
+        <div >
           <div :key="index" v-for="(item, index) in actDataList">
-            <div v-if="!item">
-              <LuckyTaskCard></LuckyTaskCard>
-            </div>
-            <div v-else class="activity-card">
+            <div class="activity-card">
               <div class="activity-card-title">
                 <div class="activity-card-title-left">
                   <svg-icon
@@ -195,12 +187,19 @@
               <div>
               <template v-for="option in item.taskList">
                 <div class="task-card" 
-                :style="`opacity:${option.status === 0 ? '1' : '0.4'};`"
+                  @click="mintScrollNFT(option)"
                 >
-                  <div class="title">
+                  <div class="title"
+                    :style="`opacity:${option.status === 0 ? '1' : '0.4'};`"
+                  >
+                  <div class="title-info">
                     <div class="task-info">
-                    <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
-                    <div class="description" v-html="option.description"></div>
+                      <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
+                      <div class="description" v-html="option.description"></div>
+                    </div>
+                  </div>
+                    <div class="task-link" v-if="showScrollNFT(option)">
+                      <svg-icon-themed iconName="arrow_down"></svg-icon-themed>
                     </div>
                   </div>
                   <div class="group">
@@ -243,6 +242,7 @@
                     </div>
                     
                   </div>
+                    
                 </div>
               </template>
             </div>
@@ -270,26 +270,17 @@ import {
   setActDialogVisible,
   setActDialogHover,
   transferDataState,
-  showAddress,
-  starkAddress,
-  setSelectWalletDialogVisible,
-  isStarkNetDialog,
-  web3State,
   actAddPointVisible,
   actAddPoint,
   actTotalPoint,
   actPointRank,
   actNftList,
-  isSolanaDialog,
-  solAddress,
-  setConnectWalletGroupKey,
-  setSolanaDialog,
   updateActDataList,
-  isTonDialog,
-  tonAddress,
   setUserInfoDetailsCardModalShow,
   setOPointsCardModalShow,
-  setActPointRank
+  setActPointRank,
+  questsInfoList,
+  actConnectWalletInfo
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
@@ -315,12 +306,13 @@ import solanaHelper from '../../util/solana/solana_helper'
 import { CHAIN_ID } from '../../config'
 import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
-// import PrizesCard  from "./PrizesCard.vue"
-import LuckyTaskCard  from "./LuckyTaskCard.vue"
-import LuckyTaskBagBanner  from "./LuckyTaskBagBanner.vue"
+import HeaderQuestsTaskList  from "./HeaderQuestsTaskList"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
+import ScrollNftConfig from "../../const/scroll-NFT.json"
+import tronHelper from '../../util/tron/tron_helper';
+import { shortenAddress } from '../../util/shortenAddress'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 let time2 = 0
@@ -335,9 +327,7 @@ export default {
     EcosystemDappPro,
     ActDialogBanner,
     SvgIcon,
-    // PrizesCard,
-    LuckyTaskCard,
-    LuckyTaskBagBanner
+    HeaderQuestsTaskList,
   },
   data() {
     return {
@@ -382,10 +372,18 @@ export default {
           timeStamp: '2024-05-28 06:00:00',
         }
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
-      showEcosystemDapp: true
+      showEcosystemDapp: true,
+      currentAddress: "",
+      showWalletAddress: ""
     }
   },
   computed: {
+    connectWalletInfo(){
+      return actConnectWalletInfo.value
+    },
+    questsTaskList(){
+      return questsInfoList.value
+    },
     nftList() {
       const dragon = "0x98f2bf4408fae2b6acb7f875efd7c587b593615c".toLocaleLowerCase()
       const list = actNftList.value
@@ -446,98 +444,45 @@ export default {
         (item) => item.type !== 1 && +new Date(item.endTime) >= getUTCTime()
       )
     },
-    isStarknet() {
-      return isStarkNetDialog.value
-    },
-    isSolana() {
-      return isSolanaDialog.value
-    },
-    showWalletAddress() {
-      if(isTonDialog.value) {
-        return tonAddress()
-      }
-      if(isSolanaDialog.value) {
-        return solAddress()
-      }
-      if (!isStarkNetDialog.value) {
-        return showAddress()
-      }
-      return starkAddress()
-    },
     currentWalletAddress() {
-      if(isTonDialog.value) {
-        return tonHelper.account()
-      }
-      if(isSolanaDialog.value) {
-        return solanaHelper.solanaAddress()
-      }
-      if (!!isStarkNetDialog.value) {
-        return web3State.starkNet.starkNetAddress
-      }
-      const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      return evmAddress?.toLocaleLowerCase();
+      const address = this.connectWalletInfo?.address || ""
+      return address
     },
     networkId() {
-      if(isTonDialog.value) {
-        return CHAIN_ID.ton
-      }
-      if(isSolanaDialog.value) {
-        return CHAIN_ID.solana
-      }
-      if (!isStarkNetDialog.value) {
-        return compatibleGlobalWalletConf.value.walletPayload.networkId
-      } else {
-        return web3State.starkNet?.starkChain
-      }
+      const chainId = this.connectWalletInfo?.chainId
+      return chainId
     },
     networkName() {
-      if(!!isTonDialog.value) {
-        return util.netWorkName(
-          !!isProd() ? CHAIN_ID.ton : CHAIN_ID.ton_test
-        )
-      }
-      if(!!isSolanaDialog.value) {
-        return util.netWorkName(
-          CHAIN_ID.solana
-        )
-      }
-      if (!isStarkNetDialog.value) {
-        return util.netWorkName(
-          +compatibleGlobalWalletConf.value.walletPayload.networkId
-        )
-      } else {
-        return util.netWorkName(web3State.starkNet?.starkChain)
-      }
+      return util.netWorkName(this.networkId)
     },
     walletAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     walletType() {
-      if(isTonDialog.value) {
-        return CHAIN_ID.ton
-      }
-      if(!!isSolanaDialog.value) {       
-        return web3State.solana.solanaWalletName || solanaHelper.readWalletName() || "SOLANA_MAIN"
-      }
-      if (!isStarkNetDialog.value) {
-        const walletName = String(compatibleGlobalWalletConf.value.walletType)
-          .toLowerCase()
-          .replace('app', '')
-
-        return CURRENT_SUPPORT_WALLET.includes(walletName.toLocaleLowerCase())
+      const walletName = this.connectWalletInfo?.walletIcon
+      const type = this.connectWalletInfo?.type
+      let wallet = ""
+      if(type === "EVM") {
+        wallet = CURRENT_SUPPORT_WALLET.includes(walletName?.toLocaleLowerCase()) && walletName
+          ? walletName
+          : METAMASK.toLocaleLowerCase()
+      } else if(type === "Starknet") {
+        wallet = walletName
           ? walletName
           : METAMASK.toLocaleLowerCase()
       } else {
-        return getStarknet && getStarknet()?.id === 'braavos'
-          ? 'braavos'
-          : 'argent'
+        wallet = walletName
+          ? walletName
+          : METAMASK.toLocaleLowerCase()
       }
+      return wallet
     },
   },
   watch: {
     selectWalletDialogVisible(item1, item2) {
 
       if (item1) {
+        this.getUserTask()
         this.showPointsCall()
         this.getUserRank()
       } else {
@@ -545,20 +490,37 @@ export default {
       }
 
       if (item1 !== item2) {
+        this.showShortAddress()
         setTimeout(() => {
           this.getTaskHeight()
         }, 200)
       }
+    },
+    questsTaskList(item1, item2){
 
+      const list = item1.filter((item)=> !!item?.id)
+
+      if (list.length) {
+        this.getUserTask()
+      } 
+
+      if (item1 !== item2) {
+        setTimeout(() => {
+          this.getTaskHeight()
+        }, 200)
+      }
       
     },
     currentWalletAddress(item1, item2) {
-      if (!!item1 && !!item2) {
-        this.showPointsCall()
+      if (!!item1) {
+        if(!!item2) {
+          this.showPointsCall()
+        }
+        if( (item1 !== item2)) {
+          this.getUserRank()
+        }
       }
-      if(item1 && (item1 !== item2)) {
-        this.getUserRank()
-      }
+      
     },
     isMobile(item1, item2) {
       if (item1 !== item2) {
@@ -570,14 +532,45 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
+    async showShortAddress() {
+      const address = this.currentWalletAddress || ""
+      this.showWalletAddress = shortenAddress(address)
+    },
+    checkScrollConfig(group){
+      const id = group?.id 
+      return (Number(id) === 184 || Number(id) === 187)
+    },
+    mintScrollNFT(group){
+      if(!this.showScrollNFT(group)) return
+      const name = "MINT_SCROLl_NFT_BADGE"
+      const url = "https://scroll.io/canvas/badge-contract/0xfBe58B2E84eecA5DAeCbdcEB77B45481c6c88A5A"
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: url,
+      })
+      window.open(url, '_blank')
+    },
+    showScrollNFT(group){
+
+      return !!this.checkScrollConfig(group) && group?.status && (group?.status !== 0)
+    },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
+    },
+    async getUserTask() {
+      const address = this.currentWalletAddress
+      const list = this.questsTaskList.filter((item)=> !!item?.id && item?.status === "PROGRESS")
+      if(!list?.length || !address || address === "0x") return
+      this.$store.commit("getUserTaskInfoList", {
+        address,
+        projectList: list.map((item)=> item.id)
+      })
     },
     async getUserRank() {
       clearTimeout(time2)
       time2 = setTimeout(async () => {
 
-        const address = this.currentWalletAddress
+        const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if(address) {
           const response = await fetch(
             `${process.env.VUE_APP_OPEN_URL}/points_platform/rank/address/${address}`
@@ -692,38 +685,12 @@ export default {
     },
     async disconnect() {
       try {
-        if(!!isTonDialog.value) {
-          await tonHelper.disconnect()
-        }else if(!!isSolanaDialog.value) {
-          await solanaHelper.disConnect()
-          setConnectWalletGroupKey("SOLANA")
-          this.$store.commit('updateSolanaAddress', "")
-          this.$store.commit('updateSolanaWalletName', "")
-          this.$store.commit('updateSolanaWalletIcon', "")
-          this.$store.commit('updateSolanaIsConnect', false)
-          setSolanaDialog(false)
-        } else if (!isStarkNetDialog.value) {
-          this.selectedWallet = {}
-          localStorage.setItem('selectedWallet', JSON.stringify({}))
-          this.$store.commit('updateLocalLogin', false)
-          localStorage.setItem('localLogin', false)
-          if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
-            ethereumClient.disconnect()
-            localStorage.setItem('wc@2:client:0.3//session', null)
-          }
-          walletDispatchersOnDisconnect[
-            compatibleGlobalWalletConf.value.walletType
-          ]()
-          setConnectWalletGroupKey("EVM")
-        } else  {
-          disConnectStarkNetWallet()
-          setConnectWalletGroupKey("STARKNET")
-        }
+        await this.connectWalletInfo.disconnect()
       } catch (e) {
         console.error(e)
       }
       setActDialogVisible(false)
-      setSelectWalletDialogVisible(true)
+      await this.connectWalletInfo.open()
     },
     itemScroll(e) {
       if (new Date().valueOf() - this.scrollLastTime > 40) {
@@ -2196,6 +2163,12 @@ export default {
           display: flex;
           justify-content: space-between;
           align-items: center;
+          .title-info {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            flex: 1;
+          }
           .task-info {
             display: flex;
             justify-content: start;
@@ -2204,6 +2177,16 @@ export default {
               width: 20px;
               height: 20px;
               margin-right: 8px;
+            }
+          }
+
+          .task-link {
+            width: 20px;
+            height: 20px;
+            svg {
+              width: 20px;
+              height: 20px;
+              rotate: -90deg;
             }
           }
         }

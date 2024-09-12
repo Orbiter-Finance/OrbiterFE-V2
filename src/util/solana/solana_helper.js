@@ -4,6 +4,7 @@ import {
   PublicKey,
   TransactionInstruction,
   ComputeBudgetProgram,
+  SystemProgram,
 } from '@solana/web3.js'
 
 import {
@@ -12,14 +13,21 @@ import {
   createTransferInstruction,
   createAssociatedTokenAccountInstruction,
   getAssociatedTokenAddressSync,
+  getAssociatedTokenAddress,
 } from '@solana/spl-token'
 
 import { utils } from 'ethers'
 import util from '../util'
-import { isProd } from '../env'
-import { CHAIN_ID } from '../../config'
+import { BN, Program } from '@project-serum/anchor'
+import { SOLANA_OPOOL_ABI } from '../constants/contract/contract'
 
-const SOLNA_WALLET_NAME = ''
+import { Buffer } from 'buffer'
+import {
+  updateSolanaAddress,
+  updateSolanaConnectStatus,
+} from '../../composition/useCoinbase'
+
+const SOLNA_WALLET_NAME = 'SOLNA_WALLET_NAME'
 
 const readWalletName = () => {
   return sessionStorage.getItem(SOLNA_WALLET_NAME)
@@ -29,22 +37,24 @@ const updateWalletName = (str) => {
   sessionStorage.setItem(SOLNA_WALLET_NAME, str?.toLocaleLowerCase() || '')
 }
 
-const getConnection = () => {
-  const chainId = isProd() ? CHAIN_ID.solana : CHAIN_ID.solana_test
+const getConnection = (chainId) => {
+  if (!chainId) return null
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
   const rpc = chainInfo?.rpc?.[0]
-  return new Connection(rpc, 'confirmed')
+  return rpc ? new Connection(rpc, 'confirmed') : null
 }
 
 const getWallet = () => {
   const walletName = readWalletName()
-  const provider = window?.[walletName?.toLocaleLowerCase() || '']?.solana
+  const wallet = window?.[walletName?.toLocaleLowerCase() || '']
+  const provider = wallet?.solana || wallet
+  // const provider = window.solflare
+
   return provider
 }
 
 const getProvider = () => {
   const provider = getWallet()
-  // const provider = window.solflare
 
   if (!provider) {
     util.showMessage(
@@ -64,8 +74,13 @@ const disConnect = async () => {
 
 const connect = async (walletName) => {
   updateWalletName(walletName)
-  const res = await getProvider()?.connect()
-  return !!res?.toString()
+  const provider = getProvider()
+  const res = await provider?.connect()
+  const publicKey = res?.publicKey || provider?.publicKey || res
+  const address = publicKey?.toString()
+  updateSolanaAddress(address)
+  updateSolanaConnectStatus(!!address)
+  return address
 }
 
 const getPublicKey = (address) => {
@@ -77,12 +92,14 @@ const getTokenAccount = async ({
   fromPublicKey,
   tokenPublickey,
   toPublickey,
+  chainId,
 }) => {
   return await getOrCreateAssociatedTokenAccount(
-    connection || getConnection(),
+    connection || getConnection(chainId),
     fromPublicKey,
     tokenPublickey,
-    toPublickey
+    toPublickey,
+    true
   )
 }
 
@@ -103,12 +120,13 @@ const transfer = async ({
   targetAddress,
   amount,
   safeCode,
+  chainId,
 }) => {
   const provider = getProvider()
 
   const fromPublicKey = getPublicKey(from)
 
-  const connection = getConnection()
+  const connection = getConnection(chainId)
 
   const toPublicKey = new PublicKey(to)
 
@@ -163,16 +181,102 @@ const transfer = async ({
       })
     )
 
-  const res = await tokenTransaction.getEstimatedFee(connection)
-  console.log('res', res)
+  const signedTx = await provider.signTransaction(tokenTransaction)
 
-  const signature = await provider.signAndSendTransaction(tokenTransaction)
-  console.log('signature', signature)
+  const signature = await connection.sendRawTransaction(signedTx.serialize())
 
-  return signature.signature
+  return signature
 }
 
-const activationTokenAccount = async ({ toChainID, fromCurrency }) => {
+const bridgeType1transfer = async ({
+  from,
+  targetAddress,
+  tokenAddress,
+  toAddress,
+  safeCode,
+  withholdingFee,
+  amount,
+  chainId,
+}) => {
+  const chainInfo = util.getV3ChainInfoByChainId(chainId)
+  const group = (chainInfo?.contracts || []).filter(
+    (item) => item.name === 'OPool'
+  )?.[0]
+  const contractAddress = group.address
+  const feeToken = group.feeToken
+  const connection = getConnection(chainId)
+  const tokenPublicKey = getPublicKey(tokenAddress)
+  const fromPublicKey = getPublicKey(from)
+  const fromTokenAccount = await getAssociatedTokenAddress(
+    tokenPublicKey,
+    fromPublicKey
+  )
+  const makerTokenAccount = await getAssociatedTokenAddress(
+    tokenPublicKey,
+    getPublicKey(toAddress), // maker address
+    true
+  )
+
+  const tokens = chainInfo?.tokens || []
+  const decimals = tokens
+    .concat([chainInfo?.nativeCurrency || {}])
+    ?.filter((item) => item.address === feeToken)?.[0]?.decimals
+
+  const provider = getProvider()
+
+  const programId = getPublicKey(contractAddress)
+  const program = new Program(SOLANA_OPOOL_ABI, programId, provider)
+  const state = group.state
+  const feeReceiver = group.feeReceiver
+  const tokenToReceiver = group.tokenToReceiver
+
+  const memo = Buffer.from(
+    utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`)),
+    'utf-8'
+  )
+  const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
+    units: 1000000,
+  })
+
+  const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
+    microLamports: 100,
+  })
+  const recentBlockhash = await connection.getLatestBlockhash('confirmed')
+
+  const tokenTransaction = new Transaction({
+    recentBlockhash: recentBlockhash.blockhash,
+    feePayer: fromPublicKey,
+  })
+    .add(modifyComputeUnits)
+    .add(addPriorityFee)
+    .add(
+      await program.methods
+        .inbox(
+          new BN(amount),
+          new BN(utils.parseUnits(String(withholdingFee), decimals).toString()),
+          memo
+        )
+        .accounts({
+          state: getPublicKey(state),
+          user: fromPublicKey,
+          source: fromTokenAccount,
+          destination: makerTokenAccount,
+          tokenAddress: tokenPublicKey,
+          tokenToReceiver: getPublicKey(tokenToReceiver),
+          feeReceiver: getPublicKey(feeReceiver),
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+        })
+        .instruction()
+    )
+
+  const signedTx = await provider.signTransaction(tokenTransaction)
+
+  const signature = await connection.sendRawTransaction(signedTx.serialize())
+
+  return signature
+}
+const activationTokenAccount = async ({ toChainID, fromCurrency, chainId }) => {
   const chainInfo = await util.getV3ChainInfoByChainId(toChainID)
 
   const tokenAddress = chainInfo?.tokens?.filter(
@@ -180,7 +284,7 @@ const activationTokenAccount = async ({ toChainID, fromCurrency }) => {
       item?.symbol?.toLocaleLowerCase() === fromCurrency?.toLocaleLowerCase()
   )[0]?.address
 
-  const connection = getConnection()
+  const connection = getConnection(chainId)
 
   const provider = getProvider()
 
@@ -244,6 +348,7 @@ const solanaHelper = {
   activationTokenAccount,
   readWalletName,
   updateWalletName,
+  bridgeType1transfer,
 }
 
 export default solanaHelper

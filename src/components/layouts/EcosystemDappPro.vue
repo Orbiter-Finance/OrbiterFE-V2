@@ -66,26 +66,47 @@
         </svg>
       </div>
       <el-carousel :interval="6000" trigger="click" height="272px">
-        <!-- <el-carousel-item>
+        <el-carousel-item>
         <EcosystemDapp
-          :holders="holders"
+          :holders="totalUser"
+          :isTags="true"
+          :isHolders="true"
           :ratio="ratio"
           :showCard="showCard"
-          :banner="'likwid.png'"
-          :tag="'Vote to Earn'"
-          :tagStyle="'background:linear-gradient(172.41deg, rgb(242, 185, 255) 26.053%,rgb(254, 206, 210) 64.374%);'"
-          :description="`<span class='orbiter_global_ecosystem_dapp_condition_likwid'>3 Votes to qualify.</span> Each address can win 10-50 $ORBGUY randomly. FCFS!`"
+          :banner="'astra2.png'"
+          :tag="'Cross-chain Game'"
+          :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
+          :description="'🎉 OKX Cryptopedia Event is Now Live! 🚀 Claim 0.3% of the total $STAR supply on OKX!  🚀Earn 2x O-Points'"
           :isProgress="false"
-          :name="'likwid'"
-          :url="'https://0xastra.xyz/'"
+          :name="'0xastra'"
+          :url="'https://www.okx.com/web3/discover/cryptopedia/event/45'"
         />
-      </el-carousel-item> -->
+      </el-carousel-item>
+        <el-carousel-item>
+          <EcosystemDapp
+            :holders="bullishsTotal"
+            :isTags="true"
+            :isHolders="true"
+            :ratio="ratio"
+            :showCard="showCard"
+            :banner="'bitlayer-points.png'"
+            :tag="'Cross-chain Game'"
+            :tagStyle="'background: linear-gradient(to right, #ACCCFF ,#F590FF);'"
+            :description="'Earn 9 rewards per Tx. Also, grab 200 $BitlayerPoints at the Race Center.'"
+            :isProgress="false"
+            :name="'BitlayerPoints'"
+            :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
+          />
+        </el-carousel-item>
+      
+      
         <!-- <el-carousel-item>
         <EcosystemLikidDappPro
         :showCard="showCard"
         ></EcosystemLikidDappPro>
       </el-carousel-item> -->
-      <el-carousel-item>
+     
+      <!-- <el-carousel-item>
         <EcosystemDapp
           :holders="0"
           :isTags="true"
@@ -101,39 +122,9 @@
           :url="'https://xmint.pro/'"
           :btnLabel="'Mint'"
         />
-      </el-carousel-item>
-      <el-carousel-item>
-        <EcosystemDapp
-          :holders="totalUser"
-          :isTags="true"
-          :isHolders="true"
-          :ratio="ratio"
-          :showCard="showCard"
-          :banner="'astra2.png'"
-          :tag="'Cross-chain Game'"
-          :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
-          :description="'Complete quest to split 2M $MNT with 0xAstra.'"
-          :isProgress="false"
-          :name="'0xastra'"
-          :url="'https://0xastra.xyz/'"
-        />
-      </el-carousel-item>
-        <el-carousel-item>
-          <EcosystemDapp
-            :holders="bullishsTotal"
-            :isTags="true"
-            :isHolders="true"
-            :ratio="ratio"
-            :showCard="showCard"
-            :banner="'bullishs.png'"
-            :tag="'Cross-chain Game'"
-            :tagStyle="'background: linear-gradient(174.86deg, rgb(200, 129, 239) 28.525%,rgb(171, 70, 214) 57.649%);'"
-            :description="'Deposit 0.01 ETH to Earn Exclusive Mega Rewards for Orbiter Users!'"
-            :isProgress="false"
-            :name="'bullishs'"
-            :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
-          />
-        </el-carousel-item>
+      </el-carousel-item> -->
+
+    
         <el-carousel-item>
           <EcosystemDapp
             :holders="holders"

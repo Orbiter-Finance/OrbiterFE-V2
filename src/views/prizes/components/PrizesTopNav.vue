@@ -1,29 +1,39 @@
 <template>
-  <div class="prizes-top-nav" id="prizes-top-nav">
-    <div
-    @click="toHome"
-    >
+  <div>
+    <div class="prizes-top-nav-empty"></div>
+    <div class="prizes-top-nav" id="prizes-top-nav">
+      <div @click="toHome">
         <svg-icon
           class="logo"
           :style="navIcons.style"
           :icon="navIcons.logo"
           :iconName="navIcons.logo"
         ></svg-icon>
-    </div>
-    <div v-if="address" class="wallet">
+      </div>
+      <div v-if="address" class="wallet">
         <svg-icon class="wallet-icon" :iconName="connectWalletIcon"></svg-icon>
         {{ address }}
+      </div>
+      <div v-else class="connect-wallet" @click="connetcWallet">
+        Connect Wallet
+      </div>
     </div>
-    <div v-else class="connect-wallet" 
-    @click="connetcWallet"
-    >Connect Wallet</div>
   </div>
 </template>
 
 <script>
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
 import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
-import { showAddress, isMobile, setConnectWalletGroupKey, setSelectWalletDialogVisible } from '../../../composition/hooks'
+import {
+  showAddress,
+  isMobile,
+  setConnectWalletGroupKey,
+  setSelectWalletDialogVisible,
+  prizesUserRank,
+  prizesUserList,
+  prizesRankList,
+} from '../../../composition/hooks'
+
 import SvgIconThemed from '../../../components/SvgIconThemed.vue'
 export default {
   components: { SvgIcon, SvgIconThemed },
@@ -38,10 +48,10 @@ export default {
     connectWalletIcon() {
       return this.globalSelectWalletConf?.walletType?.toLocaleLowerCase() || ''
     },
-    isMobile () {
+    isMobile() {
       return isMobile.value
     },
-    navIcons () {
+    navIcons() {
       const icons = {
         logo: 'dark-logo-mobile',
         logoStyle: { width: '41px', height: '40px' },
@@ -59,32 +69,70 @@ export default {
           style: icons.logo_webStyle,
         }
       }
-    }
+    },
+    userList() {
+      return prizesUserList.value
+    },
+    userRank() {
+      return prizesUserRank.value || '--'
+    },
+    rankList() {
+      return prizesRankList.value
+    },
+    txTotal() {
+      const list = this.userList
+      const total = list?.reduce((prev, item) => {
+        return prev + Number(item?.task_result || 0)
+      }, 0)
+      return total
+    },
+    evmAddress() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
+    estiReward() {
+      const list = this.rankList
+      const option = list.filter(
+        (item) =>
+          item.address?.toLocaleLowerCase() ===
+          this.evmAddress?.toLocaleLowerCase()
+      )?.[0]
+      const amount = option?.reward?.amount
+      const refund = option?.refund
+      const total = (Number(amount) || 0) + (Number(refund) || 0)
+      return Number(total) ? this.decimalNumC(total, 2, ',') + ' USDC' : '--'
+    },
   },
   methods: {
     toHome() {
-        this.$router.push("/")
+      this.$router.push('/')
     },
     connetcWallet() {
-        setConnectWalletGroupKey("EVM")
-        setSelectWalletDialogVisible(true)
-    }
-  }
+      setConnectWalletGroupKey('EVM')
+      setSelectWalletDialogVisible(true)
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
+.prizes-top-nav-empty {
+  width: 100%;
+  height: 78px;
+}
+
 .prizes-top-nav {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  position: relative;
+  position: fixed;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 99;
 
+  backdrop-filter: blur(156px);
+  background: rgba(0, 0, 0, 0.1);
   .logo {
     cursor: pointer;
   }
@@ -97,12 +145,13 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #FFF;
     color: rgba(51, 51, 51, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #FFF;
     .wallet-icon {
-        width: 2rem;
-        height: 2rem;
-        margin-right: 4px;
+      width: 2rem;
+      height: 2rem;
+      margin-right: 4px;
     }
   }
 
@@ -114,10 +163,10 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #df2e2d;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: #FFF;
     box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
-    font-family: "Inter Bold";
+    font-family: 'Inter Bold';
     cursor: pointer;
   }
 }

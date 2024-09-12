@@ -156,6 +156,8 @@ import { ethers } from 'ethers'
 import orbiterCryptoTool from '../util/orbiterCryptoTool'
 import { PASSPHRASE } from '../const'
 import { balanceList, updateBalanceList } from "../composition/hooks"
+import tronHelper from '../util/tron/tron_helper.js';
+import orbiterHelper from '../util/orbiter_helper.js';
 
 const chainConfig = config.chainConfig
 
@@ -237,8 +239,13 @@ export default {
     },
     solanaAddress() {
       const solanaAddress =
-        web3State.solana.solanaAddress || solanaHelper.solanaAddress()
+        web3State.solana.solanaAddress
       return solanaAddress
+    },
+    tronAddress() {
+      const tronAddress =
+        web3State.tron.tronAddress
+      return tronAddress
     },
     tabsList() {
       return [
@@ -325,6 +332,9 @@ export default {
         CHAIN_ID.bsc_test,
         CHAIN_ID.solana,
         CHAIN_ID.solana_test,
+        CHAIN_ID.tron_nile_test,
+        CHAIN_ID.tron_shasta_test,
+        CHAIN_ID.tron,
         CHAIN_ID.ton,
         CHAIN_ID.ton_test,
       ]
@@ -428,6 +438,9 @@ export default {
         CHAIN_ID.bsc_test,
         CHAIN_ID.solana,
         CHAIN_ID.solana_test,
+        CHAIN_ID.tron_nile_test,
+        CHAIN_ID.tron_shasta_test,
+        CHAIN_ID.tron,
         CHAIN_ID.ton,
         CHAIN_ID.ton_test,
       ]
@@ -480,12 +493,16 @@ export default {
       // this.loading = true
       try {
         const tonAddress = tonHelper.account()
-        const solanaAddress = solanaHelper.solanaAddress()
+        const solanaAddress = web3State.solana.solanaAddress
         const symbol = this.symbol
         const address = [
           {
             address: tonAddress,
             type: 'Ton',
+          },
+          {
+            address: this.tronAddress,
+            type: 'Tron',
           },
           {
             address: solanaAddress,
@@ -500,7 +517,6 @@ export default {
             type: 'EVM',
           },
         ].filter((item) => !!item.address)
-        // console.log('address', symbol, address)
         const respone = await fetch(
           `${process.env.VUE_APP_OPEN_URL}/sdk/chains/balance`,
           {
@@ -635,7 +651,16 @@ export default {
             if (!isConnected) {
               setSelectWalletDialogVisible(true)
               setConnectWalletGroupKey('SOLANA')
-              return
+            }
+          }
+          if (
+           orbiterHelper.isTronChain({chainId:  e.localID})
+          ) {
+            const address = web3State.tron.tronAddress
+            const isConnected = web3State.tron.tronIsConnected
+            if (!address || !isConnected) {
+              setSelectWalletDialogVisible(true)
+              setConnectWalletGroupKey('TRON')
             }
           }
           // ton
@@ -644,7 +669,6 @@ export default {
             const isConnected = await tonHelper.isConnected()
             if (!account || !isConnected) {
               await tonHelper.connect()
-              return
             }
           }
           // immutableX
@@ -700,6 +724,9 @@ export default {
           CHAIN_ID.starknet_test,
           CHAIN_ID.solana,
           CHAIN_ID.solana_test,
+          CHAIN_ID.tron_nile_test,
+          CHAIN_ID.tron_shasta_test,
+          CHAIN_ID.tron,
           CHAIN_ID.dydx,
           CHAIN_ID.dydx_test,
           CHAIN_ID.imx,
