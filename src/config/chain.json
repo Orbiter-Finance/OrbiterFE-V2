@@ -3343,7 +3343,7 @@
             "name": "evm-rpc"
          }
       ],
-      "infoURL": "https://explorer.fuse.io",
+      "infoURL": "https://matchscan.io",
       "internalId": "84",
       "name": "Matchain",
       "nativeCurrency": {
