@@ -146,6 +146,7 @@ import {
   claimCardModalAmountInfo,
   claimCardModalDataInfo,
   transferDataState,
+  setActConnectWalletInfo,
 } from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
@@ -406,8 +407,20 @@ export default {
       }
       return addressGroup
     },
-    connectAWallet() {
-      this.fromGroup.open()
+    async connectAWallet() {
+      const firstGroup = this.fromGroup
+      if (!firstGroup) return
+      const isConnect =
+        firstGroup?.address &&
+        firstGroup?.address !== "0x" &&
+        firstGroup?.address !== 'Connect Wallet' &&
+        firstGroup?.address !== 'not connected'
+      if (!isConnect) {
+        await firstGroup.open()
+      } else {
+        setActConnectWalletInfo(firstGroup)
+        setActDialogVisible(true)
+      }
     },
   },
 }

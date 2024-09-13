@@ -18,6 +18,7 @@ import {
   setQuestsUserInfoList,
   setPrizesTotaltx,
   setPrizesUserRank,
+  updateCoinbase,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -209,6 +210,7 @@ export default {
     web3State.localLogin = localLogin
     updatelpAccountInfo(null)
     updatelpApiKey(null)
+    updateCoinbase('')
   },
   setInnerWH(state, { innerWidth, innerHeight }) {
     state.innerWH.innerWidth = innerWidth
