@@ -104,7 +104,7 @@
       <div class="inv"></div>
       <div class="task-title">
         <div>Quest</div>
-        <div class="update-time">Check-in update time：UTC xxxxxx</div>
+        <div class="update-time">Check-in update time: UTC 11:00 AM</div>
       </div>
 
       <div class="task-list-group">
@@ -492,8 +492,7 @@ export default {
       userList.forEach((item) => {
         count += !!Number(item?.finished)
       })
-      // return 
-      return 7
+      return count
     },
     tx() {
       let count = 0
