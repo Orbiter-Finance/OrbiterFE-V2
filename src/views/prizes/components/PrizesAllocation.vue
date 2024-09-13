@@ -113,7 +113,7 @@
               ? !item.isSuccess || !!item.isPromotion
                 ? ''
                 : 'task-card-options-group-success'
-              : 'task-quest'
+              : (item.isSuccess ? 'task-opoints-quest-success' : 'task-quest')
           "
           :style="`opacity:${
             !!item.isSuccess && !!item.isPromotion ? '0.4' : '1'
@@ -323,10 +323,20 @@
             <div v-else>
               <div
                 v-if="item.isSuccess"
-                @click.stop="toGalxeBtn(item)"
                 class="earn-nft"
               >
-                + 100 options
+              + {{ item.opoints }}
+              <svg-icon class="icon" iconName="O-Points"></svg-icon>
+              <div class="text">OPoints</div>
+              <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24.000000" height="24.000000" viewBox="0 0 24 24" fill="none">
+                <g opacity="0.400000">
+                  <rect rx="12.000000" width="24.000000" height="24.000000" fill="#DDF600" fill-opacity="0"/>
+                  <rect x="0.500000" y="0.500000" rx="11.500000" width="23.000000" height="23.000000" stroke="#979797" stroke-opacity="0" stroke-width="1.000000"/>
+                  <rect x="2.000000" y="2.000000" rx="10.000000" width="20.000000" height="20.000000" fill="#DDF600" fill-opacity="1.000000"/>
+                  <rect x="2.500000" y="2.500000" rx="9.500000" width="19.000000" height="19.000000" stroke="#979797" stroke-opacity="0" stroke-width="1.000000"/>
+                  <path d="M7.73 12.81L10.58 15.65L15.94 10.29" stroke="#000000" stroke-opacity="1.000000" stroke-width="1.500000" stroke-linejoin="round" stroke-linecap="round"/>
+                </g>
+              </svg>
               </div>
               <div v-else>
                 <div class="prizes-promotion">
@@ -426,10 +436,10 @@ export default {
       return list[99]?.txAmount || 20
     },
     userSignTotal() {
-      const userList = (this.userList || []).slice(1)
+      const userList = this.userList || []
       let count = 0
       userList.forEach((item) => {
-        count += !!Number(item?.task_result)
+        count += !!Number(item?.finished)
       })
       return count
     },
@@ -607,7 +617,7 @@ export default {
           icon: 'task',
           text: `Complete <span class='orbiter_global_prizes_tx-color'>7 Days</span> Bridging Check-in Task`,
           specificChain: false,
-          isPromotion: false,
+          isPromotion: Number(count) >= 7,
           isSuccess: Number(count) >= 7,
           lastText: '',
           opoints: 126,
@@ -618,7 +628,7 @@ export default {
           icon: 'task',
           text: `Complete <span class='orbiter_global_prizes_tx-color'>14 Days</span> Bridging Check-in Task`,
           specificChain: false,
-          isPromotion: false,
+          isPromotion: Number(count) >= 14,
           isSuccess: Number(count) >= 14,
           lastText: '',
           opoints: 420,
@@ -714,7 +724,7 @@ export default {
     },
     openTelegram(option) {
       const address = this.evmAddress
-      if (!address || address === '0x' || this.isEnd || option.icon === 'task')
+      if (!address || address === '0x' || this.isEnd)
         return
       const name = 'PRIZES_V6_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
@@ -1135,11 +1145,15 @@ export default {
       .task-card-pool-group.task-quest {
         background: rgba(255, 196, 125, 0.1);
       }
+      .task-card-pool-group.task-opoints-quest-success {
+        background: rgb(10, 22, 24);
+        backdrop-filter: blur(12px);
+      }
       .task-card-pool-group.task-card-options-group-success {
-        border: 1px solid rgb(59, 127, 255);
+        border: 1px solid rgb(255, 196, 125);
         border-radius: 12px;
         backdrop-filter: blur(12px);
-        background: rgba(59, 127, 255, 0.15);
+        background: rgb(255, 196, 125, 0.15);
       }
       .task-card-pool-group {
         width: 100%;
@@ -1204,15 +1218,21 @@ export default {
           }
 
           .earn-nft {
-            padding: 0 12px;
-            height: 32px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 12px;
+            font-size: 16px;
             font-family: GeneralSans-SemiBold;
             border-radius: 4px;
             backdrop-filter: blur(156px);
+            .icon {
+              width: 24px;
+              height: 24px;
+              margin-left: 4px;
+            }
+            .text {
+              margin: 0 4px;
+            }
           }
         }
       }

@@ -46,7 +46,7 @@
           </div>
           <div class="user-address">User</div>
           <div class="cumulative-tx">Total Transaction</div>
-          <div class="bridge-fee" v-if="current <= 2">Bridging fee rebate</div>
+          <div class="bridge-fee" v-if="current <= 1">Bridging fee rebate</div>
           <div class="emit-reward">Estimated Earnings</div>
         </div>
         <div
@@ -68,7 +68,7 @@
           <div class="cumulative-tx">
             {{ decimalNumC(item.txAmount, 0, ',') }} tx
           </div>
-          <div class="bridge-fee" v-if="current <= 2">
+          <div class="bridge-fee" v-if="current <= 1">
             {{ bridgingFee(item) }}
           </div>
           <div class="emit-reward">

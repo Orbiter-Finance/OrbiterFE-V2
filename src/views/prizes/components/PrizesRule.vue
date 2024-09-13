@@ -38,11 +38,11 @@ export default {
           text: [
             '- Complete <span class="orbiter_global_prizes_rule_tag">≥3 transactions </span> to qualify for a share of the prize pool.',
             '- <span class="orbiter_global_prizes_rule_tag">Prize Pool Breakdown:</span>',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥3 Transactions:</span> Share 5% of the prize pool',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥8 Transactions:</span> Share 10% of the prize pool',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥15 Transactions:</span> Share 18% of the prize pool',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 9-100 Traders (with ≥20 trades):</span> Share 32% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Alpha Badge</span> on scroll.',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 1-8 Traders (with ≥20 trades):</span> Share 35% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Alpha Badge</span> on scroll.',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥3 TX Traders:</span> Share 5% of the prize pool',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥8 TX Traders:</span> Share 10% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Gamma Badge</span> on scroll.',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥15 TX Traders:</span> Share 18% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Beta Badge</span> on scroll.',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 9-100 Traders (with ≥20 TX Traders):</span> Share 32% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Alpha Badge</span> on scroll.',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 1-8 Traders (with ≥20 TX Traders):</span> Share 35% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Alpha Badge</span> on scroll.',
           ],
         },
         {
@@ -51,7 +51,8 @@ export default {
           text: [
             '<span class="orbiter_global_prizes_rule_tag">Note:</span>',
             '- The prize pool will be unlocked when the amount of transactions (TX) ≥ 2,500;',
-            '- TOP 1 to 8 users, up to 96% bridging fees (except for gas fees) will be rebated.'
+            '- TOP 1 to 8 users, up to 96% bridging fees (except for gas fees) will be rebated.',
+            '- One address can only receive up to 420 opoints.'
           ],
         },
         {
