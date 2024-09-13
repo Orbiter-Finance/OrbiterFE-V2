@@ -44,7 +44,7 @@
       "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
     },
     "rpc": [
-      "https://starknet-testnet.public.blastapi.io"
+      "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/umEzC60w-FLJppJ--ZaNbYrvXNoKBlG8"
     ],
     "watch": [
       "rpc"
@@ -362,8 +362,8 @@
     ],
     "tokens": [
       {
-        "name": "ETH",
-        "symbol": "ETH",
+        "name": "USDC",
+        "symbol": "USDC",
         "decimals": 9,
         "address": "GSihgzyhuRxf4RveXxXTkaFJnkWiy7mrLdN9rAQ8TYEE"
       },
@@ -1092,8 +1092,8 @@
     ],
     "tokens": [
       {
-        "name": "JST",
-        "symbol": "JST",
+        "name": "USDC",
+        "symbol": "USDC",
         "decimals": 18,
         "address": "TF17BgPaZYbz8oxbjhriubPDsA7ArKoLX3"
       }

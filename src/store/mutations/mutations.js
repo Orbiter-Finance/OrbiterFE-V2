@@ -31,7 +31,7 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import util from '../../util/util'
 import { ethers } from 'ethers'
 
-const activityProjectId = '123104d2-4a00-4242-bce6-461faf1267ef'
+const activityProjectId = 'b591e7c8-63ee-4a87-9b00-9fb8c9b43ec1'
 
 let timer
 let timer1

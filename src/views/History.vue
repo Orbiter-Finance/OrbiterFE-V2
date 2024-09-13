@@ -259,8 +259,9 @@ import orbiterHelper from '../util/orbiter_helper';
         const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
         const starknetAddress = web3State.starkNet.starkNetAddress
         const solanaAddress = web3State.solana.solanaAddress
+        const tronAddress = web3State.tron.tronAddress
         const tonAddress = web3State?.ton?.tonAddress || tonHelper.account()
-        return [evmAddress, starknetAddress, solanaAddress, tonAddress].filter(item=>!!item).join(",")
+        return [evmAddress, starknetAddress, solanaAddress, tonAddress, tronAddress].filter(item=>!!item).join(",")
       },
     },
     watch: {

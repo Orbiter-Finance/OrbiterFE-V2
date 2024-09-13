@@ -246,7 +246,8 @@ export default {
       return fuelAddress
     },
     solanaAddress() {
-      const solanaAddress = web3State.solana.solanaAddress
+      const solanaAddress =
+        web3State.solana.solanaAddress
       return solanaAddress
     },
     tronAddress() {
@@ -529,7 +530,6 @@ export default {
             type: 'EVM',
           },
         ].filter((item) => !!item.address)
-        // console.log('address', symbol, address)
         const respone = await fetch(
           `${process.env.VUE_APP_OPEN_URL}/sdk/chains/balance`,
           {

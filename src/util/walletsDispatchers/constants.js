@@ -24,6 +24,7 @@ export const SAFEPAL = 'SafePal' // SafePal wallet constant
 export const BINANCEWALLET = 'Binance Wallet' // Binance wallet constant
 export const PHANTOMWALLET = 'Phantom' // Phantom wallet constant
 export const BACKPACKWALLET = 'BackPack' // BackPack wallet constant
+export const BYBITWALLET = 'Bybit Wallet' // Bitlayer wallet constant
 
 export const CURRENT_SUPPORT_WALLET = [
   METAMASK,
@@ -43,4 +44,5 @@ export const CURRENT_SUPPORT_WALLET = [
   BINANCEWALLET,
   PHANTOMWALLET,
   BACKPACKWALLET,
+  BYBITWALLET
 ].map((item) => item.toLocaleLowerCase())

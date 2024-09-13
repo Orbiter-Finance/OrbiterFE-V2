@@ -27,6 +27,10 @@ import {
   web3State,
 } from '../../composition/hooks'
 import { Buffer } from 'buffer'
+import {
+  updateSolanaAddress,
+  updateSolanaConnectStatus,
+} from '../../composition/useCoinbase'
 
 const SOLNA_WALLET_NAME = 'SOLNA_WALLET_NAME'
 
@@ -35,7 +39,7 @@ const readWalletName = () => {
 }
 
 const updateWalletName = (str) => {
-  sessionStorage.setItem(SOLNA_WALLET_NAME, str?.toLocaleLowerCase() || '')
+  sessionStorage.setItem(SOLNA_WALLET_NAME, str || '')
 }
 
 const getConnection = (chainId) => {
@@ -47,7 +51,7 @@ const getConnection = (chainId) => {
 
 const getWallet = () => {
   const walletName = readWalletName()
-  const wallet = window?.[walletName?.toLocaleLowerCase() || '']
+  const wallet = window?.[walletName || '']
   const provider = wallet?.solana || wallet
   // const provider = window.solflare
 

@@ -3240,5 +3240,63 @@
          }
       ],
       "vm": "EVM"
-   }
+   },
+    {
+        "api": {
+            "url": "https://api.trongrid.io",
+            "key": ""
+        },
+        "chainId": "728126428",
+        "networkId": "728126428",
+        "internalId": "79",
+        "name": "Tron",
+        "debug": true,
+        "service": {
+            "rpc": "TronRpcScanningService"
+        },
+        "features": [],
+        "contract": {
+            "TMw9SdMtvxg5vo63iPEKeQCnBg9QzDBYns": "OrbiterRouterV4"
+        },
+        "targetConfirmation": 5,
+        "nativeCurrency": {
+            "name": "TRX",
+            "symbol": "TRX",
+            "decimals": 6,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [],
+        "tokens": [
+            {
+                "name": "USDC",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8"
+            },
+            {
+               "name": "USDT",
+               "symbol": "USDT",
+               "decimals": 6,
+               "address": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+           }
+        ],
+        "infoURL": "https://tronscan.org",
+        "contracts": [
+            {
+                "name": "OrbiterRouterV4",
+                "address": "TMw9SdMtvxg5vo63iPEKeQCnBg9QzDBYns",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferToken(address,address,uint256,bytes)",
+                    "transfers(address[],uint256[])",
+                    "transfers(address[],uint256[],bytes[])",
+                    "transferTokens(address,address[],uint256[])",
+                    "transferTokens(address,address[],uint256[],bytes[])",
+                    "TransferTo(address,uint256)",
+                    "TransferTo(address,uint256,bytes)"
+                ]
+            }
+        ],
+        "vm": "TRONVM"
+    }
 ]

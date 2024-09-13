@@ -326,7 +326,11 @@ export default {
       )
 
       if (
-        (orbiterHelper.isSolanaChain({chainId: fromChainID})) && !bridgeType1
+        (
+          orbiterHelper.isSolanaChain({chainId: fromChainID}) ||
+          orbiterHelper.isTronChain({chainId: fromChainID}) ||
+          orbiterHelper.isTonChain({chainId: fromChainID})
+      ) && !bridgeType1
       ) {
         realTransferAmount = ethers.utils.formatEther(
           ethers.utils
@@ -1924,6 +1928,8 @@ export default {
         .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
       const rAmountValue = rAmount.toFixed()
 
+      console.log("rAmountValue", rAmountValue)
+
       const evmAddress =
         compatibleGlobalWalletConf.value.walletPayload.walletAddress
 
@@ -1950,7 +1956,7 @@ export default {
       }
 
       if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        const solanaAddress = solanaHelper.solanaAddress()
+        const solanaAddress = web3State.solana.solanaAddress
         const isConnect = solanaHelper.isConnect()
 
         targetAddress = solanaAddress

@@ -393,8 +393,8 @@ export default {
       const { toChainID } = transferDataState
       const hash = this.$store?.state?.proceeding?.userTransfer?.txid || ''
 
-      let userAddress = orbiterHelper.currentConnectChainInfo({chainId: toChainID})?.address || ""
-
+      let group = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+      let userAddress = group.address
       if (
         !MQTT_USER_NAME ||
         !MQTT_PASSWORD ||
@@ -471,7 +471,8 @@ export default {
       const { fromChainID, toChainID } = transferDataState
       const chainId = isFrom ? fromChainID : toChainID
       //   let userAddress = web3State.coinbase;
-      let userAddress = orbiterHelper.currentConnectChainInfo({chainId})?.address || ""
+      let group = orbiterHelper.currentConnectChainInfo({chainId: chainId})
+      let userAddress = group.address
       const accountUrl =
         explorerInfo.accountUrl || explorerInfo.url + '/address'
       const url = accountUrl + '/' + userAddress + params

@@ -13,6 +13,7 @@ import {
   SAFEPAL,
   BINANCEWALLET,
   PHANTOMWALLET,
+  BYBITWALLET,
 } from '../constants'
 import { isBraveWallet } from '../utils'
 
@@ -93,6 +94,11 @@ const standardMobileAppConf = [
     walletType: PHANTOMWALLET,
     walletIsInstalledInvestigator: (provider) =>
       window.phantom.ethereum?.isPhantomt,
+    chainIdTransfer: (chainId) => Number(chainId),
+  },
+  {
+    walletType: BYBITWALLET,
+    walletIsInstalledInvestigator: (provider) => provider.isBybit,
     chainIdTransfer: (chainId) => Number(chainId),
   },
 ]
