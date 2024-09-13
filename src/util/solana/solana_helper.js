@@ -27,10 +27,6 @@ import {
   web3State,
 } from '../../composition/hooks'
 import { Buffer } from 'buffer'
-import {
-  updateSolanaAddress,
-  updateSolanaConnectStatus,
-} from '../../composition/useCoinbase'
 
 const SOLNA_WALLET_NAME = 'SOLNA_WALLET_NAME'
 
