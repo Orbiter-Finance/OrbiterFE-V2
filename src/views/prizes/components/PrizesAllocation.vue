@@ -38,7 +38,12 @@
     <div class="prizes-allocation-card">
       <div class="title">
         <div>My progress</div>
-        <img @click="openScroll" :src="require(`../../../assets/prizes/marks.png`)" alt="" class="marks">
+        <img
+          @click="openScroll"
+          :src="require(`../../../assets/prizes/marks.png`)"
+          alt=""
+          class="marks"
+        />
       </div>
 
       <div class="user-info">
@@ -113,7 +118,9 @@
               ? !item.isSuccess || !!item.isPromotion
                 ? ''
                 : 'task-card-options-group-success'
-              : (item.isSuccess ? 'task-opoints-quest-success' : 'task-quest')
+              : item.isSuccess
+              ? 'task-opoints-quest-success'
+              : 'task-quest'
           "
           :style="`opacity:${
             !!item.isSuccess && !!item.isPromotion ? '0.4' : '1'
@@ -251,11 +258,11 @@
                         <br />
                         Ethereum, Arbitrum, zkSync Lite, Linea, Base, Polygon,
                         Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova,
-                        Polygon zkEVM, Mantle, opBNB, X Layer, Zora, Manta,
-                        Kroma, zkFair, Blast, ZetaChain, B² Network, Mode,
-                        zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB,
-                        Core, Bitlayer, BounceBit, Optopia, Cyber, Mint,
-                        AlienxChain, Fraxtal, Zircuit, Fuse
+                        Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair,
+                        Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof
+                        of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer,
+                        BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal,
+                        Zircuit, Fuse
                       </span>
                     </span>
                   </template>
@@ -321,22 +328,66 @@
               </div>
             </div>
             <div v-else>
-              <div
-                v-if="item.isSuccess"
-                class="earn-nft"
-              >
-              + {{ item.opoints }}
-              <svg-icon class="icon" iconName="O-Points"></svg-icon>
-              <div class="text">OPoints</div>
-              <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24.000000" height="24.000000" viewBox="0 0 24 24" fill="none">
-                <g opacity="0.400000">
-                  <rect rx="12.000000" width="24.000000" height="24.000000" fill="#DDF600" fill-opacity="0"/>
-                  <rect x="0.500000" y="0.500000" rx="11.500000" width="23.000000" height="23.000000" stroke="#979797" stroke-opacity="0" stroke-width="1.000000"/>
-                  <rect x="2.000000" y="2.000000" rx="10.000000" width="20.000000" height="20.000000" fill="#DDF600" fill-opacity="1.000000"/>
-                  <rect x="2.500000" y="2.500000" rx="9.500000" width="19.000000" height="19.000000" stroke="#979797" stroke-opacity="0" stroke-width="1.000000"/>
-                  <path d="M7.73 12.81L10.58 15.65L15.94 10.29" stroke="#000000" stroke-opacity="1.000000" stroke-width="1.500000" stroke-linejoin="round" stroke-linecap="round"/>
-                </g>
-              </svg>
+              <div v-if="item.isSuccess" class="earn-nft">
+                + {{ item.opoints }}
+                <svg-icon class="icon" iconName="O-Points"></svg-icon>
+                <div class="text">OPoints</div>
+                <svg
+                  class="icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  width="24.000000"
+                  height="24.000000"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <g opacity="0.400000">
+                    <rect
+                      rx="12.000000"
+                      width="24.000000"
+                      height="24.000000"
+                      fill="#DDF600"
+                      fill-opacity="0"
+                    />
+                    <rect
+                      x="0.500000"
+                      y="0.500000"
+                      rx="11.500000"
+                      width="23.000000"
+                      height="23.000000"
+                      stroke="#979797"
+                      stroke-opacity="0"
+                      stroke-width="1.000000"
+                    />
+                    <rect
+                      x="2.000000"
+                      y="2.000000"
+                      rx="10.000000"
+                      width="20.000000"
+                      height="20.000000"
+                      fill="#DDF600"
+                      fill-opacity="1.000000"
+                    />
+                    <rect
+                      x="2.500000"
+                      y="2.500000"
+                      rx="9.500000"
+                      width="19.000000"
+                      height="19.000000"
+                      stroke="#979797"
+                      stroke-opacity="0"
+                      stroke-width="1.000000"
+                    />
+                    <path
+                      d="M7.73 12.81L10.58 15.65L15.94 10.29"
+                      stroke="#000000"
+                      stroke-opacity="1.000000"
+                      stroke-width="1.500000"
+                      stroke-linejoin="round"
+                      stroke-linecap="round"
+                    />
+                  </g>
+                </svg>
               </div>
               <div v-else>
                 <div class="prizes-promotion">
@@ -441,7 +492,8 @@ export default {
       userList.forEach((item) => {
         count += !!Number(item?.finished)
       })
-      return count
+      // return 
+      return 7
     },
     tx() {
       let count = 0
@@ -615,7 +667,7 @@ export default {
       return [
         {
           icon: 'task',
-          text: `Complete <span class='orbiter_global_prizes_tx-color'>7 Days</span> Bridging Check-in Task`,
+          text: `Check-in: Bridge <span class='orbiter_global_prizes_tx-color'>1 TX</span> for <span class='orbiter_global_prizes_tx-color'>7 Days</span>`,
           specificChain: false,
           isPromotion: Number(count) >= 7,
           isSuccess: Number(count) >= 7,
@@ -626,7 +678,7 @@ export default {
         },
         {
           icon: 'task',
-          text: `Complete <span class='orbiter_global_prizes_tx-color'>14 Days</span> Bridging Check-in Task`,
+          text: `Check-in: Bridge <span class='orbiter_global_prizes_tx-color'>1 TX</span> for <span class='orbiter_global_prizes_tx-color'>14 Days</span>`,
           specificChain: false,
           isPromotion: Number(count) >= 14,
           isSuccess: Number(count) >= 14,
@@ -674,12 +726,12 @@ export default {
           isPromotion: tx >= 20 && rank <= 8,
           isSuccess: tx >= 20 && rank <= 100,
           lastText:
-            "to achieve <span class='orbiter_global_prizes_tx-color'>Top 100</span>",
+            "to achieve <span class='orbiter_global_prizes_tx-color'>Top 9~100</span>",
         },
         {
           icon: 'bridge',
           color: '#ECC031',
-          reward: '35% prize pool & up to 96% bridging fee rebate',
+          reward: '35% prize pool & Alpha Badge',
           text: `Bridge`,
           specificChain: true,
           isPromotion: false,
@@ -691,9 +743,9 @@ export default {
     },
   },
   methods: {
-    openScroll(){
-      const name = "SCROLL_BADGE"
-      const url = "https://scroll.io/sessions"
+    openScroll() {
+      const name = 'SCROLL_BADGE'
+      const url = 'https://scroll.io/sessions'
       try {
         this.$gtag.event('PRIZES_V6_TO_' + name, {
           event_category: name,
@@ -724,8 +776,7 @@ export default {
     },
     openTelegram(option) {
       const address = this.evmAddress
-      if (!address || address === '0x' || this.isEnd)
-        return
+      if (!address || address === '0x' || this.isEnd) return
       const name = 'PRIZES_V6_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
         event_category: name,
