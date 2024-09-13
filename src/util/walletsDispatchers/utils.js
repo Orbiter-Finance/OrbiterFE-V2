@@ -22,6 +22,7 @@ import {
   BINANCEWALLET,
   PHANTOMWALLET,
   BACKPACKWALLET,
+  BYBITWALLET,
 } from './constants'
 import {
   updateGlobalSelectWalletConf,
@@ -70,6 +71,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (walletType === COIN98_APP) return !!ethereum.isCoin98
   if (walletType === SAFEPAL) return ethereum.isSafePal
   if (walletType === BINANCEWALLET) return ethereum.isBinance
+  if (walletType === BYBITWALLET) return !!ethereum?.isBybit
   if (walletType === PHANTOMWALLET)
     return !!window?.phantom?.ethereum?.isPhantom
   if (walletType === BACKPACKWALLET)
@@ -174,6 +176,7 @@ export const getMobileAppTypeByProvider = () => {
   const provider = window?.ethereum || {}
   // if (window?.phantom?.ethereum?.isPhantom) return PHANTOMWALLET
   if (!provider) return undefined
+  if (provider.isBybit) return BYBITWALLET
   if (provider.isImToken) return IM_TOKEN_APP
   if (provider.isSafePal) return SAFEPAL
   if (provider.isBinance) return BINANCEWALLET
