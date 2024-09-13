@@ -11,14 +11,13 @@ import {
   setClaimCardModalOtherDataInfo,
   setPrizesRankList,
   setPrizesRankRefreshTime,
-  setPrizesProjectTaskDetailsList,
   setPrizesUserList,
   setPrizesProjectTime,
   setQuestsInfoList,
   setQuestsUserInfoList,
-  setPrizesTotaltx,
   setPrizesUserRank,
   updateCoinbase,
+  setPrizesTotaltx,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -359,22 +358,6 @@ export default {
     }, 500)
   },
 
-  async getPrizesProjectDetail(state) {
-    clearTimeout(timer2)
-    timer2 = setTimeout(async () => {
-      const response = await fetch(
-        `${process.env.VUE_APP_OPEN_URL}${
-          isDev() ? '/activity' : '/active-platform'
-        }/projectStatus/detail?projectId=${activityProjectId}`
-      )
-      const res = await response.json()
-      setPrizesTotaltx(res?.result?.projectDetail?.totalTxsCount)
-      setPrizesProjectTaskDetailsList(
-        res?.result?.projectDetail.taskDetails || []
-      )
-    }, 500)
-  },
-
   async getPrizesProjectInfo(state) {
     clearTimeout(timer3)
     timer3 = setTimeout(async () => {
@@ -396,6 +379,7 @@ export default {
         }/competition/rankReward?projectId=${activityProjectId}`
       )
       const res = await response.json()
+      setPrizesTotaltx(res?.result?.totalTransactions)
       setPrizesRankList(res?.result?.rankRewards || [])
       setPrizesRankRefreshTime(res?.result?.updateInfo?.lastRefreshTime || '')
     }, 500)

@@ -40,7 +40,6 @@ export default {
     },
   },
   created() {
-    this.$store.commit('getPrizesProjectDetail')
     this.$store.commit('getPrizesProjectInfo')
     this.$store.commit('getPrizesProjectRank')
     this.getUserReward()
