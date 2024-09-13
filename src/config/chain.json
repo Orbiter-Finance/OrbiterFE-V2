@@ -3363,14 +3363,14 @@
       "tokens": [
          {
             "coinKey": "ETH",
-            "address": "0x5622f6dc93e08a8b717b149677930c38d5d50682",
+            "address": "0xff13a7a12fd485bc9687ff88d8ae1a6b655ab469",
             "name": "Wrapped Ether",
             "symbol": "ETH",
             "decimals": 18
          },
          {
             "coinKey": "USDC",
-            "address": "0x28c3d1cd466ba22f6cae51b1a4692a831696391a",
+            "address": "0x97eec1c29f745dc7c267f90292aa663d997a601d",
             "name": "USD Coin",
             "symbol": "USDC",
             "decimals": 6
