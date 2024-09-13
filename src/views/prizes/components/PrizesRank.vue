@@ -1,6 +1,5 @@
 <template>
   <div id="prizes-rank" class="prizes-rank">
-    
     <div class="prizes-rank-title">Top 100 Leaderboard</div>
     <div class="rank-title">
       <!-- <div class="rank-tabs">
@@ -11,68 +10,86 @@
         update time: {{ calculateRelativeTime(refreshTime) }}
       </div>
     </div>
-   <div class="rank-list-group">
-    <div class="rank-list">
-      <div class="rank-list-header rank-list-card-item">
-        <div class="ranking">
-          Rank
-          <o-tooltip >
-            <template v-slot:titleDesc>
-              <span style="margin-left: -20px">
-                <span>
-                  The Top 100 leaderboard only displays users with ≥20 transactions.
+    <div class="rank-list-group">
+      <div class="rank-list">
+        <div class="rank-list-header rank-list-card-item">
+          <div class="ranking">
+            Rank
+            <o-tooltip>
+              <template v-slot:titleDesc>
+                <span style="margin-left: -20px">
+                  <span>
+                    The Top 100 leaderboard only displays users with ≥20
+                    transactions.
+                  </span>
                 </span>
+              </template>
+              <span class="tips">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-circle-help"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                  <path d="M12 17h.01" />
+                </svg>
               </span>
-            </template>
-            <span class="tips">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-help"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-            </span>
-          </o-tooltip>
-        </div>
-        <div class="user-address">User</div>
-        <div class="cumulative-tx">Total Transaction</div>
-        <div class="bridge-fee" v-if="current <= 2">Bridging fee rebate</div>
-        <div class="emit-reward">Estimated Earnings</div>
-      </div>
-      <div
-        class="rank-list-item rank-list-card-item"
-        v-for="(item, index) in rankData"
-        :key="index"
-        :style="`background-color:${
-          !!(index % 2)
-            ? 'rgba(255, 255, 255, 0.08)'
-            : 'rgba(255, 255, 255, 0.05)'
-        };`"
-      >
-        <div class="ranking">
-          <div :class="'ranking-' + item.rank">{{ item.rank }}</div>
-        </div>
-        <div class="user-address">
-          {{ shortAddress(item.address, isMobile ? 4 : 6) }}
-        </div>
-        <div class="cumulative-tx">
-          {{ decimalNumC(item.txAmount, 0, ',') }} tx
-        </div>
-        <div class="bridge-fee" v-if="current <= 2">{{ bridgingFee(item) }}</div>
-        <div class="emit-reward">
-          <div>
-            {{ emiteReward(item) }}
+            </o-tooltip>
           </div>
-          <span>{{ emiteRewardU(item) }}</span>
+          <div class="user-address">User</div>
+          <div class="cumulative-tx">Total Transaction</div>
+          <div class="bridge-fee" v-if="current <= 1">Bridging fee rebate</div>
+          <div class="emit-reward">Estimated Earnings</div>
         </div>
-      </div>
-      <div class="pagination-group">
-        <el-pagination
-          @current-change="curChange"
-          class="rank-pagination"
-          layout="prev, pager, next"
-          :current-page="1"
-          :total="len"
+        <div
+          class="rank-list-item rank-list-card-item"
+          v-for="(item, index) in rankData"
+          :key="index"
+          :style="`background-color:${
+            !!(index % 2)
+              ? 'rgba(255, 255, 255, 0.08)'
+              : 'rgba(255, 255, 255, 0.05)'
+          };`"
         >
-        </el-pagination>
+          <div class="ranking">
+            <div :class="'ranking-' + item.rank">{{ item.rank }}</div>
+          </div>
+          <div class="user-address">
+            {{ shortAddress(item.address, isMobile ? 4 : 6) }}
+          </div>
+          <div class="cumulative-tx">
+            {{ decimalNumC(item.txAmount, 0, ',') }} tx
+          </div>
+          <div class="bridge-fee" v-if="current <= 1">
+            {{ bridgingFee(item) }}
+          </div>
+          <div class="emit-reward">
+            <div>
+              {{ emiteReward(item) }}
+            </div>
+            <span>{{ emiteRewardU(item) }}</span>
+          </div>
+        </div>
+        <div class="pagination-group">
+          <el-pagination
+            @current-change="curChange"
+            class="rank-pagination"
+            layout="prev, pager, next"
+            :current-page="1"
+            :total="len"
+          >
+          </el-pagination>
+        </div>
       </div>
     </div>
-   </div>
   </div>
 </template>
 
@@ -101,8 +118,8 @@ export default {
   },
   computed: {
     poolList() {
-      const tx =this.totalTx
-     return [
+      const tx = this.totalTx
+      return [
         {
           tx: '0~2,499 Tx',
           reward: '',
@@ -110,66 +127,55 @@ export default {
           bridge50Fee: 0,
           bridge100Fee: 0,
           isLock: tx < 0,
-          isPromotion: tx>0,
+          isPromotion: tx > 0,
         },
         {
-          tx: '2,500~11,499 Tx',
-          reward: '$1,750',
-          range: [2500, 11499],
+          tx: '2,500~11,999 Tx',
+          reward: '$2,500',
+          range: [2500, 11999],
           bridge50Fee: 5,
           bridge100Fee: 15,
           isLock: tx < 2500,
-          isPromotion: tx>2500,
+          isPromotion: tx > 2500,
         },
         {
-          tx: '11,500~25,999 Tx',
-          reward: '$5,250',
-          range: [11500, 25999],
+          tx: '12,000~32,999 Tx',
+          reward: '$7,500',
+          range: [12000, 32999],
           bridge50Fee: 10,
           bridge100Fee: 30,
-          isLock: tx < 11500,
-          isPromotion: tx>11500,
+          isLock: tx < 12000,
+          isPromotion: tx > 12000,
         },
         {
-          tx: '26,000~45,999 Tx',
-          reward: '$15,750',
-          range: [26000, 45999],
+          tx: '33,000~59,999 Tx',
+          reward: '$22,500',
+          range: [33000, 59999],
           bridge50Fee: 20,
           bridge100Fee: 45,
-          isLock: tx < 26000,
-          isPromotion: tx>26000,
+          isLock: tx < 33000,
+          isPromotion: tx > 33000,
         },
         {
-          tx: '46,000~99,999 Tx',
-          reward: '$28,000',
-          range: [46000, 99999],
-          bridge50Fee: 30,
-          bridge100Fee: 60,
-          isLock: tx < 46000,
-          isPromotion: tx>46000,
-        },
-        {
-          tx: '100,000~319,999 Tx',
-          reward: '$35,000',
-          range: [100000, 319999],
-          bridge50Fee: 50,
-          bridge100Fee: 95,
-          bridgeTop3Fee: 95,
-          isLock: tx < 100000,
-          isPromotion: tx>100000,
-        },
-        {
-          tx: '≥320,000 Tx',
+          tx: '60,000~149,999 Tx',
           reward: '$40,000',
-          range: [320000, 999999],
+          range: [60000, 149999],
+          bridge50Fee: 20,
+          bridge100Fee: 60,
+          isLock: tx < 60000,
+          isPromotion: tx > 60000,
+        },
+        {
+          tx: '≥150,000 Tx',
+          reward: '$50,000',
+          range: [149999, 999999],
           bridge50Fee: 50,
-          bridge100Fee: 95,
-          bridgeTop3Fee: 98,
+          bridge100Fee: 96,
           isColor: true,
-          isLock: tx<320000,
+          isLock: tx < 149999,
           isPromotion: false,
         },
-      ]  
+      ]
     },
     currentPool() {
       const list = this.poolList
@@ -326,29 +332,25 @@ export default {
       const rank = Number(group?.rank) || 0
       const fee = this.currentPool
       let bridgeFee = 0
-      if (rank && rank <= 20) {
-        if (rank <= 3) {
-          bridgeFee = fee?.bridgeTop3Fee
-        } else  if (rank <= 8) {
-          bridgeFee = fee?.bridge100Fee
-        } else {
-          bridgeFee = fee?.bridge50Fee
-        }
+      if (rank <= 8) {
+        bridgeFee = fee?.bridge100Fee
       } else {
-        bridgeFee = ""
+        bridgeFee = ''
       }
 
-      return !!bridgeFee ? (bridgeFee + "%") : "--"
+      return !!bridgeFee ? bridgeFee + '%' : '--'
     },
     emiteReward(group) {
       const amount = group?.reward?.amount || 0
-      const symbol = group?.reward?.name || ""
-      return Number(amount) ? ("+" + this.decimalNumC(Number(amount) || 0, 4, ',') + ` ${symbol}`) : "--"
+      const symbol = group?.reward?.name || ''
+      return Number(amount)
+        ? '+' + this.decimalNumC(Number(amount) || 0, 4, ',') + ` ${symbol}`
+        : '--'
     },
     emiteRewardU(group) {
       const amount = group?.reward?.uAmount || 0
-      return Number(amount) ? ("≈ $" + this.decimalNumC(amount, 4, ',')) : "--"
-    }
+      return Number(amount) ? '≈ $' + this.decimalNumC(amount, 4, ',') : '--'
+    },
   },
 }
 </script>
@@ -695,8 +697,6 @@ export default {
         }
       }
     }
-
-    
   }
 }
 </style>
