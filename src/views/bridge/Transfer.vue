@@ -2108,6 +2108,7 @@ export default {
         }
 
         if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+        if (!!orbiterHelper.isNotEVMChain({chainId: fromChainID})) {
           let { starkChain } = web3State.starkNet;
           starkChain = +starkChain ? +starkChain : starkChain;
           // if (!starkChain || starkChain === 'unlogin') {

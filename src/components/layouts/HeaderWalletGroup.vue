@@ -128,6 +128,7 @@ import {
   setSelectWalletDialogVisible,
   connectWalletGroupKey,
   setConnectWalletGroupKey,
+  web3State,
 } from '../../composition/hooks'
 
 import walletDispatchers, {
@@ -142,6 +143,7 @@ import walletDispatchers, {
   BINANCEWALLET,
   PHANTOMWALLET,
   BACKPACKWALLET,
+  BYBITWALLET
 } from '../../util/walletsDispatchers'
 
 import util, { isMobileDevice, isBrowserApp } from '../../util'
@@ -210,6 +212,11 @@ export default {
           isConnect: false,
           icon: 'binance wallet',
           title: BINANCEWALLET,
+        },
+        {
+          isConnect: false,
+          icon: BYBITWALLET,
+          title: BYBITWALLET,
         },
         {
           isConnect: false,
@@ -321,15 +328,10 @@ export default {
           title: 'Nightly',
         },
         {
-          isConnect: false,
-          icon: 'salmon',
-          title: 'Salmon',
-        },
-        // {
-        //   isConnect: false,
-        //   icon: 'solflare',
-        //   title: 'Solflare',
-        // }
+            isConnect: false,
+            icon: 'bybitWallet',
+            title: "Bybit Wallet",
+        }
         // {
         //     isConnect: false,
         //     icon: 'trustwallet',
@@ -385,6 +387,11 @@ export default {
           icon: 'nightly',
           title: 'Nightly',
         },
+        {
+          isConnect: false,
+          icon: 'imtokenapp',
+          title: 'imTokenApp',
+        }
       ]
       return wallets
     },
@@ -415,7 +422,8 @@ export default {
     },
     async connectSolanaWallet(item) {
       const status = await solanaHelper.connect(item.icon)
-      const fromPublicKey = solanaHelper.solanaAddress()
+      const fromPublicKey = web3State.solana.solanaAddress
+
       store.commit('updateSolanaAddress', fromPublicKey)
       store.commit('updateSolanaWalletName', item.icon.toLocaleLowerCase())
       store.commit('updateSolanaWalletIcon', item.icon.toLocaleLowerCase())

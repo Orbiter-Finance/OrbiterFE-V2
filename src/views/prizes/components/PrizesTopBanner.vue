@@ -2,16 +2,16 @@
   <div id="prizes-top-banner" class="prizes-top-banner">
     <div class="prizes-content">
       <div class="group">
-
-      <div class="badge">
-        Get Base × Orbiter NFT
-      </div>
-    </div>
-      <div class="group">
-        <div class="title orbiter-linear-text">$35,000 Prize Pool</div>
+        <div class="badge">Mint Scroll Alpha Badge</div>
       </div>
       <div class="group">
-        <div class="amount orbiter-linear-text"><span class="chain orbiter-linear-text">Base</span> Trading Frenzy</div>
+        <div class="title orbiter-linear-text">$50,000 Prize Pool</div>
+      </div>
+      <div class="group">
+        <div class="amount orbiter-linear-text">
+          <span class="chain orbiter-linear-text">Scroll</span>
+          Trading Frenzy
+        </div>
       </div>
       <div class="group">
         <div class="time-card">
@@ -26,10 +26,12 @@
         </div>
       </div>
       <div class="group">
-        <div class="bridge" @click="toBridgeCall"
-        :style="`opacity:${isEnd ? '0.4' : '1'};`"
+        <div
+          class="bridge"
+          @click="toBridgeCall"
+          :style="`opacity:${isEnd ? '0.4' : '1'};`"
         >
-          {{isEnd ? "In the statistics..." : "Start Bridge" }}
+          {{ isEnd ? 'In the statistics...' : 'Start Bridge' }}
         </div>
       </div>
     </div>
@@ -105,7 +107,7 @@ export default {
     toBridgeCall() {
       const address = this.evmAddress
       if (!address || address === '0x' || this.isEnd) return
-      const name = 'PRIZES_V5_BANNER_TO_BRIDGE'
+      const name = 'PRIZES_V6_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
         event_category: name,
         event_label: 'to home',
@@ -180,7 +182,7 @@ export default {
 <style scoped lang="scss">
 .prizes-top-banner {
   width: 100%;
-  padding: 0 0 80px;
+  padding: 5% 0 15% 80px;
   background-image: url('../../../assets/prizes/bg.png');
   background-size: cover;
   background-position: 75% 0;
@@ -188,56 +190,51 @@ export default {
   justify-content: center;
   align-items: center;
   background-repeat: no-repeat;
-  height: 680px;
   .prizes-content {
     width: 100%;
-   
+
     .group {
       width: 100%;
       display: flex;
-      justify-content: center;
+      justify-content: start;
       align-items: center;
       .badge {
         border-radius: 999px;
-
-background: linear-gradient(206.24deg, rgba(255, 104, 104, 0.6) 9.711%,rgba(0, 88, 255, 0) 83.497%),linear-gradient(163.83deg, rgb(219, 231, 255) -5.987%,rgb(0, 88, 255) 31.747%);
+        background: linear-gradient(
+          176deg,
+          rgb(255, 232, 181) 31.351%,
+          rgb(255, 196, 125) 51.355%
+        );
         padding: 12px 40px;
-        color: #EAF2FF;
+        color: #0a1313;
         font-family: GeneralSans-SemiBold;
         font-size: 24px;
+        white-space: nowrap;
       }
       .title {
         margin-top: 16px;
-        
-        color: rgb(255, 242, 240);
-        background-image: linear-gradient(
-          to right,
-          rgb(234, 242, 255) 80%,
-          rgb(255, 138, 138) 100%
-        );
-        font-size: 88px;
+        white-space: nowrap;
+        color: #ffc47d;
+        background-image: linear-gradient(to right, #fff2f0 80%, #ffdeb5 100%);
+        font-size: 72px;
         line-height: 1;
         font-family: GeneralSans-SemiBold;
         letter-spacing: 0px;
+        .chain {
+          background-image: linear-gradient(to top, #ffc47d, #ffc47d);
+        }
       }
       .amount {
         margin-top: 16px;
-        background-image: linear-gradient(
-          to right,
-          rgb(234, 242, 255) 80%,
-          rgb(255, 138, 138) 100%
-        );
-        color: rgb(255, 242, 240);
-        font-size: 88px;
-        line-height: 1.5;
+        background-image: linear-gradient(to right, #fff2f0 80%, #ffdeb5 100%);
+        color: #ffc47d;
+        font-size: 72px;
+        line-height: 1.2;
         letter-spacing: 0px;
         font-family: GeneralSans-SemiBold;
+        white-space: nowrap;
         .chain {
-          background-image: linear-gradient(
-          to top,
-          rgb(0, 88, 255) 60%,
-          rgb(234, 242, 255)
-        );
+          background-image: linear-gradient(to top, #ffc47d, #ffc47d);
         }
       }
     }
@@ -252,7 +249,12 @@ background: linear-gradient(206.24deg, rgba(255, 104, 104, 0.6) 9.711%,rgba(0, 8
         height: 64px;
         border-radius: 8px;
         backdrop-filter: blur(156px);
-        background: linear-gradient(180.00deg, rgba(21, 63, 66, 0),rgba(255, 21, 0, 0.2) 100%),rgb(21, 37, 71);
+        background: linear-gradient(
+            180deg,
+            rgba(21, 63, 66, 0),
+            rgba(255, 21, 0, 0.2) 100%
+          ),
+          rgb(71, 55, 21);
         margin: 0 6px;
         .card-item-value {
           font-size: 28px;
@@ -268,14 +270,14 @@ background: linear-gradient(206.24deg, rgba(255, 104, 104, 0.6) 9.711%,rgba(0, 8
           letter-spacing: 0px;
           text-align: center;
           margin-top: 4px;
-          color: #EAF2FF;
+          color: #FFDEB5;
         }
       }
     }
     .bridge {
       width: 240px;
       height: 56px;
-      margin-top: 46px;
+      margin-top: 32px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -306,10 +308,14 @@ background: linear-gradient(206.24deg, rgba(255, 104, 104, 0.6) 9.711%,rgba(0, 8
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 960px) {
   #prizes-top-banner {
-    height: 420px;
+    padding: 5% 0 15%;
+
     .prizes-content {
+      .group {
+        justify-content: center;
+      }
       .badge {
         font-size: 16px;
         padding: 8px 16px;

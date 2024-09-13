@@ -147,10 +147,17 @@ export default {
         ethers.utils.parseUnits(gasCost, 'wei').mul('12').div('10'),
         decimals
       )
-    } else if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
+    }
+    if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
       return null
     }
     if (orbiterHelper.isFractalChain({ chainId: fromChainID })) {
+      return null
+    }
+    if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
+      return null
+    }
+    if (orbiterHelper.isTronChain({ chainId: fromChainID })) {
       return null
     }
     if (
@@ -1471,8 +1478,6 @@ export default {
   max() {
     const { selectMakerConfig, transferValue } = transferDataState
 
-    console.log('transferValue', transferValue)
-
     const { tieredFee } = selectMakerConfig
 
     const tieredFeeList = (tieredFee || [])?.filter((item) => {
@@ -1514,13 +1519,6 @@ export default {
       })
     }
 
-    console.log(
-      'tieredFeeWithholdingFeeMax',
-      withholdingFeeList,
-      tieredFeeWithholdingFeeMax,
-      discountList,
-      tieredFeeDiscountMax
-    )
     return Number(tieredFeeWithholdingFeeMax)
       ? {
           type: TieredFeeKey.withholdingFee,

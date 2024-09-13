@@ -22,54 +22,55 @@
 export default {
   name: 'PrizesRule',
   data() {
-    const link = process.env.VUE_APP_PRIZES_V5_GLAXE_LINK
     return {
       ruleList: [
         {
-          label: '1. Which networks are participating in this event?',
+          label: '1.Which networks are participating in this event?',
           text: [
-            '- <span class="orbiter_global_prizes_rule_tag">Bridge from specific networks to Base Chain or bridge from Base Chain to specific networks</span>',
-            '- Specific Chains include: Ethereum, Arbitrum, zkSync Lite, Linea, Scroll, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair, Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse',
+            '- <span class="orbiter_global_prizes_rule_tag">Bridge from specific networks to Scroll Chain or bridge from Scroll Chain to specific networks.</span>',
+            '- Specific Chains include: Ethereum, Arbitrum, zkSync Lite, Linea, Base, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair, Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse',
             '- The minimum amount required: 0.03 ETH',
             '- Bridge token: ETH',
           ],
         },
         {
-          label:'2. How to share the up to 35,000 USDC prize pool?',
+          label:'2.How to share the up to 50,000 USDC prize pool and mint Badge on scroll?',
           text: [
             '- Complete <span class="orbiter_global_prizes_rule_tag">≥3 transactions </span> to qualify for a share of the prize pool.',
             '- <span class="orbiter_global_prizes_rule_tag">Prize Pool Breakdown:</span>',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥3 Transactions:</span> Share 3% of the prize pool',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥8 Transactions:</span> Share 5% of the prize pool',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥15 Transactions:</span> Share 10% of the prize pool',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 21-100 (with ≥20 Transactions):</span> Share 22% of the prize pool',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 1-20 :</span> Share 60% of the prize pool'
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥3 TX Traders:</span> Share 5% of the prize pool',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥8 TX Traders:</span> Share 10% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Gamma Badge</span> on scroll.',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥15 TX Traders:</span> Share 18% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Beta Badge</span> on scroll.',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 9-100 Traders (with ≥20 TX Traders):</span> Share 32% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Alpha Badge</span> on scroll.',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 1-8 Traders (with ≥20 TX Traders):</span> Share 35% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Alpha Badge</span> on scroll.',
           ],
         },
         {
-          label: '3. What are the prize pool and bridging fee rebates rules?',
+          label: '3.What are the prize pool and bridging fee rebates rules?',
           image: "rule.png",
           text: [
             '<span class="orbiter_global_prizes_rule_tag">Note:</span>',
             '- The prize pool will be unlocked when the amount of transactions (TX) ≥ 2,500;',
-            '- TOP 1 to 8 users, up to 95% bridging fees (except for gas fees) will be rebated.',
-            '- TOP 9 to 20 users, up to 50% of bridging fees (except for gas fees) will be rebated.',
+            '- TOP 1 to 8 users, up to 96% bridging fees (except for gas fees) will be rebated.',
+            '- One address can only receive up to 420 opoints.'
           ],
         },
         {
-          label: '4. What is the rule of ranking?',
+          label: '4.How to Earn O-Points Rewards?',
           text: [
-            '- The ranking is determined based on transactions. If users have the same number of transactions, ranking will be based on the transaction value. More transactions, greater chance to win!',
+            'Participants can earn additional event points by completing the following tasks:',
+            "- Complete ≥1 transactions for 7 days to earn extra 126 Opoints.",
+            "- Complete ≥1 transactions for 14 days to earn extra 420 Opoints."
           ],
         },
         {
-          label: '5. How to get Base x Orbiter NFT?',
+          label: '5.What is the rule of ranking?',
           text: [
-            link ? `- Complete 1tx and other tasks on <a href="${link}" target="_blank" class="orbiter_global_prizes_rule_tag">Galxe</a>` : '- Complete 1tx and other tasks on <span class="orbiter_global_prizes_rule_tag">Galxe (coming soon)</span>',
+            '-The ranking is determined based on transactions. If users have the same number of transactions, ranking will be based on the transaction value. More transactions, greater chance to win!',
           ],
         },
         {
-          label: '6. When will the rewards be distributed?',
+          label: '6.When will the rewards be distributed?',
           text: [
             '- All rewards will be distributed after the event ends, including USDC and bridging fee rebates for the top 20 users.',
             '- Please stay informed and claim your rewards within 3 days of the reward claim portal opening!'
