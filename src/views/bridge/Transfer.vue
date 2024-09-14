@@ -542,7 +542,8 @@ export default {
       banList: [],
       remarkText: {
         "167000": "Every 6TXs can grab $PINK"
-      }
+      },
+      isCheckPending: false
     };
   },
   computed: {
@@ -858,7 +859,8 @@ export default {
     },
     crossAddressReceipt: function (newValue) {
       updateCrossAddressReceipt(newValue);
-      this.updateTransferInfo()
+      this.isCheckPending = true
+      this.checkAddressFunc()
     },
     selectFromTokenSymbol:function (newValue) {
       this.$refs.selectFromChainRef.selectSymbol(newValue)
@@ -886,7 +888,8 @@ export default {
       updateIsCrossAddress(newValue);
       // this.crossAddressReceipt = ""
       // updateCrossAddressReceipt("");
-      this.updateTransferInfo();
+      this.isCheckPending = true
+      this.checkAddressFunc();
     },
     // currentNetwork(newValue, oldValue) {
     //   if (oldValue !== newValue) this.clearTransferValue();
@@ -914,7 +917,8 @@ export default {
       }
     },
     currentConenctInfoList: function (newValue) {
-      this.updateTransferInfo();
+      this.isCheckPending = true
+      this.checkAddressFunc()
       this.updateCrossAddressReceiptCall()
     },
     transferValue: function (newValue) {
@@ -966,6 +970,13 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    async checkAddressFunc() {
+      try {
+        await this.updateTransferInfo();
+      } finally {
+        this.isCheckPending = false
+      }
+    },
     updateCrossAddressReceiptCall() {
       const { fromChainID, toChainID, isCrossAddress } = transferDataState
       const [fromGroup, toGroup] = [
@@ -989,7 +1000,7 @@ export default {
       const address = group?.address || ""
       if (this.isCrossAddress) {
         if (
-          !!this.crossAddressReceipt ||
+          !!this.crossAddressReceipt &&
           !!orbiterHelper.checkAddress({
             address: this.crossAddressReceipt,
             chainId: toChainID,
@@ -1588,7 +1599,7 @@ export default {
           util.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
         }
 
-        if (this.isCrossAddress && !this.checkAddressCall()) {
+        if ((this.isCrossAddress && !this.checkAddressCall()) || this.isCheckPending) {
           info.text = `Check ${this.chainName} Address`;
           info.disabled = 'disabled';
           util.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring && !util.isStarkNet',
@@ -1968,6 +1979,7 @@ export default {
       //   });
       //   return;
       // }
+      if(this.isCheckPending) return
       const { fromChainID, toChainID, fromCurrency, toCurrency, selectMakerConfig } = transferDataState;
 
       const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID));

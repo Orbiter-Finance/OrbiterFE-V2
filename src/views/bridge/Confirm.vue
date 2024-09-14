@@ -437,10 +437,9 @@ export default {
       const { toChainID, isCrossAddress, crossAddressReceipt } = transferDataState
       const group = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
       const address = group?.address || ""
-      console.log("addressaddressaddress", address, isCrossAddress, crossAddressReceipt)
       if (isCrossAddress) {
         if (
-          !!crossAddressReceipt ||
+          !!crossAddressReceipt &&
           !!orbiterHelper.checkAddress({
             address: crossAddressReceipt,
             chainId: toChainID,
