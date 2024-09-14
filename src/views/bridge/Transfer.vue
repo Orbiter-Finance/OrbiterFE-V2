@@ -1586,13 +1586,13 @@ export default {
           info.text = 'INSUFFICIENT FUNDS';
           info.disabled = 'disabled';
           util.log('transferValue > 0 && toValue <= 0', transferValue.toString(), this.toValue.toString());
-        } else if (this.toValue > 0 
-          // && this.toValue.comparedTo(new BigNumber(this.makerMaxBalance)) > 0
-        ) {
-          info.text = 'INSUFFICIENT LIQUIDITY';
-          info.disabled = 'disabled';
-          util.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
-        }
+        } 
+        // else if (this.toValue > 0 && this.toValue.comparedTo(new BigNumber(this.makerMaxBalance)) > 0
+        // ) {
+        //   info.text = 'INSUFFICIENT LIQUIDITY';
+        //   info.disabled = 'disabled';
+        //   util.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
+        // }
         
         if (this.isShowUnreachMinInfo || this.isShowMax) {
           info.text = 'SEND';
