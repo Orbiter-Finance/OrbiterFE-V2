@@ -979,7 +979,7 @@ export default {
       const targetAddress = toGroup?.address 
       if(fromGroup?.type !== toGroup?.type) {
         this.isCrossAddress = true
-        if((firstAddress !== targetAddress) && !this.crossAddressReceipt) {
+        if((firstAddress !== targetAddress)) {
           this.crossAddressReceipt = targetAddress
         }
       } else if(!this.crossAddressReceipt) {
@@ -2398,6 +2398,7 @@ export default {
       const { fromChain, toChain } = selectMakerConfig;
       const currentWalletInfo = orbiterHelper.currentConnectChainInfo({chainId: fromChainID})
       let address = currentWalletInfo?.address
+      this.sendBtnInfo.disabled = 'disabled'
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)
                   .then(async (response) => {
