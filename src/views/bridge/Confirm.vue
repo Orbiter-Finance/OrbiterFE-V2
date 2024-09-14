@@ -759,9 +759,6 @@ export default {
         fromCurrency,
       } = transferDataState
 
-      if (!walletIsLogin.value) {
-        return
-      }
       const from =
         compatibleGlobalWalletConf.value.walletPayload.walletAddress ||
         web3State.coinbase
@@ -1955,28 +1952,10 @@ export default {
         }
       }
 
-      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        const solanaAddress = web3State.solana.solanaAddress
-        const isConnect = solanaHelper.isConnect()
-
-        targetAddress = solanaAddress
-
-        if (!solanaAddress || !isConnect) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
-          this.transferLoading = false
-          return
-        }
-      }
-
-      if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-        targetAddress = tonHelper.account()
-        const isConnected = await tonHelper.isConnected()
-
-        if (!targetAddress || !isConnected) {
-          await tonHelper.connect()
-          return
-        }
+      targetAddress = this.toCrossAddressReceipt()
+      if(!targetAddress) {
+        this.transferLoading = false
+        return 
       }
       try {
         const tokenAddress = selectMakerConfig.fromChain.tokenAddress
@@ -2556,13 +2535,13 @@ export default {
           return
         }
 
-        // EVM contract
-        if (util.isExecuteXVMContract()) {
-          this.transferLoading = true
-          await this.handleXVMContract()
-          this.transferLoading = false
-          return
-        }
+        // // EVM contract
+        // if (util.isExecuteXVMContract()) {
+        //   this.transferLoading = true
+        //   await this.handleXVMContract()
+        //   this.transferLoading = false
+        //   return
+        // }
 
         // EVM V3 contract
         if (isCrossAddress) {

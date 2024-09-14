@@ -1338,8 +1338,6 @@ export default {
   safeCode() {
     const { selectMakerConfig, toChainID, fromCurrency } = transferDataState
 
-    console.log('toChainID', toChainID, selectMakerConfig)
-
     const f = selectMakerConfig?.fromChain?.decimals
     const t = selectMakerConfig?.toChain?.decimals
 
