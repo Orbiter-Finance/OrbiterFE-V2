@@ -542,7 +542,7 @@ export default {
     },
     checkScrollConfig(group){
       const id = group?.id 
-      return (Number(id) === 184 || Number(id) === 187)
+      return (Number(id) === 208 || Number(id) === 205)
     },
     mintScrollNFT(group){
       if(!this.showScrollNFT(group)) return

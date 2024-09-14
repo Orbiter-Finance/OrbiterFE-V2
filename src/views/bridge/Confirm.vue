@@ -2093,13 +2093,13 @@ export default {
       }
 
       try {
-        const hash = await sendTransfer(
-          from,
+        const hash = await sendTransferV3({
+          targetAddress: from,
           tokenAddress,
-          selectMakerConfig.recipient,
-          new BigNumber(value),
-          fromChainID
-        )
+          makerAddress: selectMakerConfig.recipient,
+          amount: new BigNumber(value),
+          chainID: fromChainID,
+        })
         try {
           this.$gtag.event('click', {
             event_category: 'Transfer',
