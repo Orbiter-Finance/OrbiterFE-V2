@@ -977,10 +977,15 @@ export default {
       ]
       const firstAddress = fromGroup?.address 
       const targetAddress = toGroup?.address 
-      if(firstAddress && targetAddress && (firstAddress !== targetAddress) && !this.crossAddressReceipt) {
+      if(fromGroup?.type !== toGroup?.type) {
         this.isCrossAddress = true
-        this.crossAddressReceipt = targetAddress
+        if((firstAddress !== targetAddress) && !this.crossAddressReceipt) {
+          this.crossAddressReceipt = targetAddress
+        }
+      } else if(!this.crossAddressReceipt) {
+        this.isCrossAddress = false
       }
+     
     },
     openConnectModal() {
       const { toChainID } = transferDataState
@@ -1567,11 +1572,13 @@ export default {
           info.text = 'INSUFFICIENT FUNDS';
           info.disabled = 'disabled';
           util.log('transferValue > userMax', transferValue.toString(), useBalance, userMax.toString());
-        } else if (transferValue.comparedTo(makerMax) > 0) {
-          info.text = 'INSUFFICIENT LIQUIDITY';
-          info.disabled = 'disabled';
-          util.log('transferValue > makerMax', transferValue.toString(), makerMax.toString());
-        } else if (transferValue.comparedTo(makerMin) < 0) {
+        } 
+        // else if (transferValue.comparedTo(makerMax) > 0) {
+        //   info.text = 'INSUFFICIENT LIQUIDITY';
+        //   info.disabled = 'disabled';
+        //   util.log('transferValue > makerMax', transferValue.toString(), makerMax.toString());
+        // } 
+        else if (transferValue.comparedTo(makerMin) < 0) {
           info.text = 'INSUFFICIENT FUNDS';
           info.disabled = 'disabled';
           util.log('transferValue < makerMin', transferValue.toString(), makerMin.toString());
@@ -1579,7 +1586,9 @@ export default {
           info.text = 'INSUFFICIENT FUNDS';
           info.disabled = 'disabled';
           util.log('transferValue > 0 && toValue <= 0', transferValue.toString(), this.toValue.toString());
-        } else if (this.toValue > 0 && this.toValue.comparedTo(new BigNumber(this.makerMaxBalance)) > 0) {
+        } else if (this.toValue > 0 
+          // && this.toValue.comparedTo(new BigNumber(this.makerMaxBalance)) > 0
+        ) {
           info.text = 'INSUFFICIENT LIQUIDITY';
           info.disabled = 'disabled';
           util.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
@@ -2348,16 +2357,16 @@ export default {
         return;
       }
 
-      const _balance = await this.getBalance(
-              toChain.chainId,
-              toChain.tokenAddress,
-              toChain.symbol,
-              toChain.decimals
-      );
-      if (_balance > 0) {
-        // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
-        this.makerMaxBalance = (new BigNumber(_balance).multipliedBy(0.95)).toString();
-      }
+      // const _balance = await this.getBalance(
+      //         toChain.chainId,
+      //         toChain.tokenAddress,
+      //         toChain.symbol,
+      //         toChain.decimals
+      // );
+      // if (_balance > 0) {
+      //   // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
+      //   this.makerMaxBalance = (new BigNumber(_balance).multipliedBy(0.95)).toString();
+      // }
     },
     gasCost() {
       const { fromChainID, selectMakerConfig } = transferDataState;
