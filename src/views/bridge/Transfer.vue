@@ -964,8 +964,36 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    openConnectModal() {
+      const { toChainID } = transferDataState
+      orbiterHelper.openConnectModal({ chainId: toChainID })
+    },
+    toCrossAddressReceipt() {
+      const { toChainID } = transferDataState
+      const group = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+      const address = group?.address || ""
+      if (this.isCrossAddress) {
+        if (
+          !!this.crossAddressReceipt ||
+          !!orbiterHelper.checkAddress({
+            address: this.crossAddressReceipt,
+            chainId: toChainID,
+          })
+        ) {
+          return this.crossAddressReceipt
+        }
+      }
+      if (
+        !orbiterHelper.checkAddress({ chainId: toChainID, address: address })
+      ) {
+        this.openConnectModal()
+        return ''
+      } else {
+        return address
+      }
+    },
     checkAddressCall() {
-      const {crossAddressReceipt, isCrossAddress, toChainID } = this.transferDataState
+      const {crossAddressReceipt, isCrossAddress, toChainID } = transferDataState
       if(!isCrossAddress || !crossAddressReceipt) return false
       const isCheck = orbiterHelper.checkAddress({address: crossAddressReceipt, chainId: toChainID})
       return isCheck
@@ -1950,12 +1978,9 @@ export default {
       //     return;
       //   }
       // }
-      const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
-      let toAddress = toInfo?.address || ""
-      let isConnect = toInfo?.isConnected
+      const toAddress = this.toCrossAddressReceipt()
       
-      if(!toAddress || toAddress === "0x" || !isConnect) {
-        await toInfo.open()
+      if(!toAddress || toAddress === "0x" ) {
         return
       }
       if (!await util.isLegalAddress()) {
@@ -2102,129 +2127,133 @@ export default {
         let fromAddress = fromInfo?.address || ""
         let fromIsConnect = fromInfo?.isConnected
 
+        console.log("fromInfo", fromInfo)
+
+
         if(!fromAddress || fromAddress === "0x" || !fromIsConnect) {
-          await toInfo.open()
+          await fromInfo.open()
           return
         }
 
-        if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
-        if (!!orbiterHelper.isNotEVMChain({chainId: fromChainID})) {
-          let { starkChain } = web3State.starkNet;
-          starkChain = +starkChain ? +starkChain : starkChain;
-          // if (!starkChain || starkChain === 'unlogin') {
-          //   util.showMessage('please connect Starknet Wallet', 'error');
-          //   return;
-          // }
-          // if (!getStarknet().selectedAddress) {
-          //   await connectStarkNetWallet();
-          //   util.log(`can't find starknet selectedAddress,reconnect starknet wallet ${ getStarknet().selectedAddress }`);
-          // }
-          if ((fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) && (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')) {
+          if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+            if (!!orbiterHelper.isNotEVMChain({chainId: fromChainID})) {
+            let { starkChain } = web3State.starkNet;
+            starkChain = +starkChain ? +starkChain : starkChain;
+            // if (!starkChain || starkChain === 'unlogin') {
+            //   util.showMessage('please connect Starknet Wallet', 'error');
+            //   return;
+            // }
+            // if (!getStarknet().selectedAddress) {
+            //   await connectStarkNetWallet();
+            //   util.log(`can't find starknet selectedAddress,reconnect starknet wallet ${ getStarknet().selectedAddress }`);
+            // }
+            if ((fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) && (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch Starknet Wallet to mainnet',
                     'error'
             );
             return;
-          }
-          if ((fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) && (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')) {
+            }
+            if ((fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) && (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch Starknet Wallet to testNet',
                     'error'
             );
             return;
-          }
-        } else {
-          if(orbiterHelper.isEVMChain({chainId: fromChainID}) && !orbiterHelper.isNotEVMChain({chainId: fromChainID})) {
-            if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== +util.getMetaMaskNetworkId(fromChainID)) {
-            if ([METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
-              try {
-                if (!await util.ensureWalletNetwork(fromChainID)) {
-                  return;
-                }
-              } catch (err) {
-                console.error(err);
-                util.showMessage(err.message, 'error');
-                return;
-              }
+            }
             } else {
-              const matchSwitchChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
-              if (matchSwitchChainDispatcher) {
-                const successCallback = () => this.$emit('stateChanged', '2');
-                matchSwitchChainDispatcher(
-                        compatibleGlobalWalletConf.value.walletPayload.provider,
-                        () => {
-                          this.$emit('stateChanged', '2')
-                        }
-                );
-                return;
+              if(orbiterHelper.isEVMChain({chainId: fromChainID}) && !orbiterHelper.isNotEVMChain({chainId: fromChainID})) {
+                if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== +util.getMetaMaskNetworkId(fromChainID)) {
+                  try {
+                    if (!(await util.ensureWalletNetwork(fromChainID))) {
+                      return
+                    }
+                  } catch (err) {
+                    try {
+                      const matchSwitchChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
+                      if (matchSwitchChainDispatcher) {
+                        const successCallback = () => this.$emit('stateChanged', '2');
+                        matchSwitchChainDispatcher(
+                                compatibleGlobalWalletConf.value.walletPayload.provider,
+                                () => {
+                                  this.$emit('stateChanged', '2')
+                                }
+                        );
+                        return;
+                      }
+                    } catch (error) {
+                      util.showMessage(err.message, 'error')
+                      return
+                    }
+                  }
+                }
               }
             }
           }
-          }
+          console.log("323323131")
+          const chainInfo = util.getV3ChainInfoByChainId(fromChainID);
+          const toChainInfo = util.getV3ChainInfoByChainId(toChainID);
+          const toAddressAll = (util.isExecuteXVMContract() ?
+                  chainInfo.xvmList[0] :
+                  selectMakerConfig.recipient).toLowerCase();
+          const senderAddress = (util.isExecuteXVMContract() ?
+                  chainInfo.xvmList[0] :
+                  selectMakerConfig.sender).toLowerCase();
+          const toAddress = util.shortAddress(toAddressAll);
+          const senderShortAddress = util.shortAddress(senderAddress);
+          const { isCrossAddress, crossAddressReceipt } = transferDataState;
+          console.log("crossAddressReceipt", crossAddressReceipt, transferDataState)
+          const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+          let walletAddress = isCrossAddress ?  crossAddressReceipt?.toLowerCase() : toInfo?.address;
+          walletAddress = walletAddress || toInfo?.address
+          // sendTransfer
+          const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
+          const contractList = chainInfo?.contracts || []
+          const contractFromAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
+
+          const toContractList = chainInfo?.contracts || []
+
+          const ContractToAddress = toContractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
+
+          this.$store.commit('updateConfirmRouteDescInfo',  bridgeType1?  [
+            {
+              no: 1,
+              from: util.shortAddress(new BigNumber(this.transferValue).toString(), 2) + " " + fromCurrency,
+              to: util.shortAddress(contractFromAddress),
+              fromTip: '',
+              toTip: contractFromAddress,
+              icon: 'wallet'
+            },
+            {
+              no: 2,
+              from: util.shortAddress(ContractToAddress) || senderShortAddress,
+              to: util.shortAddress(walletAddress),
+              fromTip: ContractToAddress || senderAddress,
+              toTip: walletAddress,
+              icon: 'wallet'
+            }
+          ]: [
+            {
+              no: 1,
+              from: new BigNumber(this.transferValue).plus(
+                      new BigNumber(selectMakerConfig.tradingFee)
+              ).toFixed(4) + fromCurrency,
+              to: toAddress,
+              fromTip: '',
+              toTip: toAddressAll,
+              icon: util.isExecuteXVMContract() ? 'wallet' : 'wallet'
+            },
+            {
+              no: 2,
+              from: senderShortAddress,
+              to: util.shortAddress(walletAddress),
+              fromTip: senderAddress,
+              toTip: walletAddress,
+              icon: 'wallet'
+            }
+          ]);
+          this.$emit('stateChanged', '2');
         }
-        const chainInfo = util.getV3ChainInfoByChainId(fromChainID);
-        const toChainInfo = util.getV3ChainInfoByChainId(toChainID);
-        const toAddressAll = (util.isExecuteXVMContract() ?
-                chainInfo.xvmList[0] :
-                selectMakerConfig.recipient).toLowerCase();
-        const senderAddress = (util.isExecuteXVMContract() ?
-                chainInfo.xvmList[0] :
-                selectMakerConfig.sender).toLowerCase();
-        const toAddress = util.shortAddress(toAddressAll);
-        const senderShortAddress = util.shortAddress(senderAddress);
-        const { isCrossAddress, crossAddressReceipt } = transferDataState;
-        console.log("crossAddressReceipt", crossAddressReceipt, transferDataState)
-        const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
-        let walletAddress = isCrossAddress ?  crossAddressReceipt?.toLowerCase() : toInfo?.address;
-        walletAddress = walletAddress || toInfo?.address
-        // sendTransfer
-        const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
-        const contractList = chainInfo?.contracts || []
-        const contractFromAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
-
-        const toContractList = chainInfo?.contracts || []
-
-        const ContractToAddress = toContractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
-
-        this.$store.commit('updateConfirmRouteDescInfo',  bridgeType1?  [
-          {
-            no: 1,
-            from: util.shortAddress(new BigNumber(this.transferValue).toString(), 2) + " " + fromCurrency,
-            to: util.shortAddress(contractFromAddress),
-            fromTip: '',
-            toTip: contractFromAddress,
-            icon: 'wallet'
-          },
-          {
-            no: 2,
-            from: util.shortAddress(ContractToAddress) || senderShortAddress,
-            to: util.shortAddress(walletAddress),
-            fromTip: ContractToAddress || senderAddress,
-            toTip: walletAddress,
-            icon: 'wallet'
-          }
-        ]: [
-          {
-            no: 1,
-            from: new BigNumber(this.transferValue).plus(
-                    new BigNumber(selectMakerConfig.tradingFee)
-            ).toFixed(4) + fromCurrency,
-            to: toAddress,
-            fromTip: '',
-            toTip: toAddressAll,
-            icon: util.isExecuteXVMContract() ? 'wallet' : 'wallet'
-          },
-          {
-            no: 2,
-            from: senderShortAddress,
-            to: util.shortAddress(walletAddress),
-            fromTip: senderAddress,
-            toTip: walletAddress,
-            icon: 'wallet'
-          }
-        ]);
-        this.$emit('stateChanged', '2');
-      }
     },
     async updateOriginGasCost() {
       this.originGasLoading = true;

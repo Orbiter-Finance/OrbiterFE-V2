@@ -434,19 +434,19 @@ export default {
       orbiterHelper.openConnectModal({ chainId: toChainID })
     },
     toCrossAddressReceipt() {
-      const { toChainID } = transferDataState
+      const { toChainID, isCrossAddress, crossAddressReceipt } = transferDataState
       const group = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
       const address = group?.address || ""
-      console.log("addressaddressaddress", address, this.isCrossAddress)
-      if (this.isCrossAddress) {
+      console.log("addressaddressaddress", address, isCrossAddress, crossAddressReceipt)
+      if (isCrossAddress) {
         if (
-          !!this.crossAddressReceipt ||
+          !!crossAddressReceipt ||
           !!orbiterHelper.checkAddress({
-            address: this.crossAddressReceipt,
+            address: crossAddressReceipt,
             chainId: toChainID,
           })
         ) {
-          return this.crossAddressReceipt
+          return crossAddressReceipt
         }
       }
       if (
