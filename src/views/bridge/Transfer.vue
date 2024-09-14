@@ -177,7 +177,7 @@
           <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
           <label v-else for="checkbox"> Recipient's Address </label>
         </div>
-        <div class="cross-addr-box to-area" style="margin-top: 10px" v-if="isCrossAddress">
+        <div class="cross-addr-box to-area" style="margin-top: 10px;height: 48px; display:flex; justify-content: flex-start; padding: 4px 20px;" v-if="isCrossAddress">
           <div data-v-59545920="" class="topItem">
             <div class="left"></div>
             <div v-if="isBrowserApp" @click="fillAddress">Autofill from wallet</div>
