@@ -2162,6 +2162,7 @@ export default {
           }
           }
         }
+        }
         const chainInfo = util.getV3ChainInfoByChainId(fromChainID);
         const toChainInfo = util.getV3ChainInfoByChainId(toChainID);
         const toAddressAll = (util.isExecuteXVMContract() ?
