@@ -17,22 +17,7 @@ function getTransferContract(localChainID, contractAddress) {
   ) {
     return
   }
-  if (
-    localChainID === CHAIN_ID.starknet ||
-    localChainID === CHAIN_ID.starknet_test
-  ) {
-    return
-  }
-  if (
-    localChainID === CHAIN_ID.solana ||
-    localChainID === CHAIN_ID.solana_test
-  ) {
-    return
-  }
-  if (orbiterHelper.isTronChain({ chainId: localChainID })) {
-    return
-  }
-  if (localChainID === CHAIN_ID.ton || localChainID === CHAIN_ID.ton_test) {
+  if (orbiterHelper.isNotEVMChain({ chainId: localChainID })) {
     return
   }
   if (walletIsLogin.value) {

@@ -11,8 +11,9 @@ import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
 import { shuffle, uniq } from 'lodash'
 import { RequestMethod, requestOpenApi } from '../common/openApiAx'
-import solanaHelper from './solana/solana_helper.js'
 import orbiterHelper from './orbiter_helper.js'
+import solanaHelper from './solana/solana_helper.js'
+import tonHelper from './ton/ton_helper.js'
 let chainsList = []
 
 export default {
@@ -50,6 +51,8 @@ export default {
   },
 
   async getTonBalance(chainId, address, tokenAddress) {
+    const provider = tonHelper.tonwebProvider()
+    console.log('provider', provider)
     const res = await requestOpenApi(RequestMethod.getBalance, [
       chainId,
       address,
@@ -414,9 +417,11 @@ export default {
     const gasFee = value
       .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
       .dividedBy(new BigNumber(1000))
+    const f = selectMakerConfig.fromChain.decimals
+    const t = selectMakerConfig.toChain.decimals
     const gasFee_fix = gasFee.decimalPlaces(
-      selectMakerConfig.fromChain.decimals === 8 ||
-        selectMakerConfig.toChain.decimals === 8
+      orbiterHelper.isMiddleDecimals({ decimals: f }) ||
+        orbiterHelper.isMiddleDecimals({ decimals: t })
         ? 6
         : selectMakerConfig.fromChain.decimals === 18
         ? 5
@@ -470,6 +475,8 @@ export default {
       CHAIN_ID.tron,
       CHAIN_ID.ton,
       CHAIN_ID.ton_test,
+      CHAIN_ID.fuel,
+      CHAIN_ID.fuel_test,
       CHAIN_ID.imx,
       CHAIN_ID.imx_test,
       CHAIN_ID.loopring,
@@ -523,20 +530,24 @@ export default {
   isStarkNet() {
     const { fromChainID, toChainID } = transferDataState
     return (
-      fromChainID === CHAIN_ID.starknet ||
-      fromChainID === CHAIN_ID.starknet_test ||
-      toChainID === CHAIN_ID.starknet ||
-      toChainID === CHAIN_ID.starknet_test
+      orbiterHelper.isStarknetChain({ chainId: fromChainID }) ||
+      orbiterHelper.isStarknetChain({ chainId: toChainID })
     )
   },
 
   isSolana() {
     const { fromChainID, toChainID } = transferDataState
     return (
-      fromChainID === CHAIN_ID.solana ||
-      fromChainID === CHAIN_ID.solana_test ||
-      toChainID === CHAIN_ID.solana ||
-      toChainID === CHAIN_ID.solana_test
+      orbiterHelper.isSolanaChain({ chainId: fromChainID }) ||
+      orbiterHelper.isSolanaChain({ chainId: toChainID })
+    )
+  },
+
+  isFuel() {
+    const { fromChainID, toChainID } = transferDataState
+    return (
+      orbiterHelper.isFuelChain({ chainId: fromChainID }) ||
+      orbiterHelper.isFuelChain({ chainId: toChainID })
     )
   },
 
@@ -551,10 +562,8 @@ export default {
   isTon() {
     const { fromChainID, toChainID } = transferDataState
     return (
-      fromChainID === CHAIN_ID.ton ||
-      fromChainID === CHAIN_ID.ton_test ||
-      toChainID === CHAIN_ID.ton ||
-      toChainID === CHAIN_ID.ton_test
+      orbiterHelper.isTonChain({ chainId: fromChainID }) ||
+      orbiterHelper.isTonChain({ chainId: toChainID })
     )
   },
   isSupportXVMContract() {

@@ -5,6 +5,7 @@ import { isProd } from '../env'
 import { CHAIN_ID } from '../../config'
 import util from '../util'
 import { web3State } from '../../composition/useCoinbase'
+import { formatEther } from 'viem'
 
 let tonConnect
 
@@ -157,11 +158,47 @@ const transfer = async ({
   targetAddress,
   amount,
   safeCode,
+  chainId,
 }) => {
   const tonweb = tonwebProvider()
 
   const fromAddress = new TonWeb.Address(tonConnect?.account?.address)
   const toAddress = new TonWeb.Address(to)
+
+  console.log('tokenAddress', from, tokenAddress)
+
+  const forwardPayload = new TonWeb.boc.Cell()
+  forwardPayload.bits.writeUint(0, 128)
+
+  forwardPayload.bits.writeString(`c=${safeCode}&t=${targetAddress}`)
+
+  const chainInfo = util.getV3ChainInfoByChainId(chainId)
+  console.log('chainInfo', chainInfo, tonweb, tonConnect)
+  const nativeCurrency = chainInfo?.nativeCurrency?.address
+  const decimals = chainInfo?.nativeCurrency?.decimals
+
+  if (nativeCurrency === tokenAddress) {
+    const value = formatEther(amount, decimals)
+    console.log('value', value, toAddress)
+    const { boc } = await tonConnect.sendTransaction({
+      validUntil: Math.floor(Date.now() / 1000) + 60, // 1 minute
+      messages: [
+        {
+          address: to,
+          amount: TonWeb.utils.toNano(value).toString(),
+          payload: TonWeb.utils.bytesToBase64(
+            await forwardPayload.toBoc(false)
+          ),
+        },
+      ],
+    })
+    const hash = await TonWeb.boc.Cell.oneFromBoc(
+      TonWeb.utils.base64ToBytes(boc)
+    ).hash()
+    const hexHash = TonWeb.utils.bytesToHex(hash)
+    console.log('hash', hash, 'hexHash', hexHash)
+    return hexHash
+  }
 
   const fromJettonWalletAddress = await getJettonWalletAddress({
     tonweb,
@@ -169,10 +206,6 @@ const transfer = async ({
     tokenAddress,
   })
 
-  const forwardPayload = new TonWeb.boc.Cell()
-  forwardPayload.bits.writeUint(0, 128)
-
-  forwardPayload.bits.writeString(`c=${safeCode}&t=${targetAddress}`)
   const queryId =
     new Date().getHours() * 3600 +
     new Date().getMinutes() * 60 +
@@ -211,6 +244,27 @@ const transfer = async ({
   return hexHash
 }
 
+const checkAddress = (address) => {
+  const validNetworks = ['0:', '1:']
+  const validAddressLength = 66
+  const addressLen = 48
+  const OX_ADDRESS = new RegExp('^0x[0-9A-Fa-f]+$')
+  if (address.length === addressLen && !OX_ADDRESS.test(address)) {
+    return true
+  }
+
+  if (address.length !== validAddressLength) {
+    return false
+  }
+
+  const networkIdentifier = address.substring(0, 2)
+  if (!validNetworks.includes(networkIdentifier)) {
+    return false
+  }
+
+  return true
+}
+
 const tonHelper = {
   tonConnectCall,
   connect,
@@ -224,6 +278,7 @@ const tonHelper = {
   bytesToBase64,
   parseAddress,
   addressToTonwebAddress,
+  checkAddress,
 }
 
 export default tonHelper

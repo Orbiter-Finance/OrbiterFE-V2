@@ -42,7 +42,7 @@
               <div class="text_97">{{ networkName }}</div>
             </div>
             <div
-              v-clipboard:copy="currentWalletAddress"
+              v-clipboard:copy="currentAddress"
               v-clipboard:success="onCopySuccess"
               class="label_17"
             >
@@ -314,8 +314,6 @@ import HeaderQuestsTaskList  from "./HeaderQuestsTaskList"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
-import ScrollNftConfig from "../../const/scroll-NFT.json"
-import tronHelper from '../../util/tron/tron_helper';
 import { shortenAddress } from '../../util/shortenAddress'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
@@ -484,7 +482,6 @@ export default {
   },
   watch: {
     selectWalletDialogVisible(item1, item2) {
-
       if (item1) {
         this.getUserTask()
         this.showPointsCall()
@@ -574,7 +571,7 @@ export default {
       clearTimeout(time2)
       time2 = setTimeout(async () => {
 
-        const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        const address = this.currentWalletAddress
         if(address) {
           const response = await fetch(
             `${process.env.VUE_APP_OPEN_URL}/points_platform/rank/address/${address}`
@@ -618,18 +615,19 @@ export default {
         this.getTaskHeight()
         }, 200)
     },
-    showPointsCall() {
+    async showPointsCall() {
       const group = JSON.parse(
         localStorage.getItem(PONITS_EXPAND_COUNT) || JSON.stringify({})
       )
-      if (this.currentWalletAddress) {
-        let count = group[this.currentWalletAddress.toLocaleLowerCase()]
+      const address = await this.currentWalletAddress
+      if (address) {
+        let count = group[address.toLocaleLowerCase()]
         count = count ?? 2
         if (count !== undefined && count > 0) {
           this.showDetail = true
           const newGroup = {
             ...group,
-            [this.currentWalletAddress.toLocaleLowerCase()]: --count,
+            [address.toLocaleLowerCase()]: --count,
           }
           localStorage.setItem(PONITS_EXPAND_COUNT, JSON.stringify(newGroup))
         } else {
@@ -733,8 +731,9 @@ export default {
       }
     },
     async getActDataList(pageSize, page) {
+      const address = await this.currentWalletAddress
       const res = await requestPointSystem('v2/activity/list', {
-        address: this.currentWalletAddress,
+        address: address,
         pageSize,
         page,
       })

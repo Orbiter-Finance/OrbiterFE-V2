@@ -29,15 +29,7 @@
       <div class="from-area">
         <div class="topItem">
           <o-tooltip
-                  v-if="
-            transferDataState.fromChainID === CHAIN_ID.starknet ||
-            transferDataState.fromChainID === CHAIN_ID.starknet_test ||
-            transferDataState.fromChainID === CHAIN_ID.solana ||
-            transferDataState.fromChainID === CHAIN_ID.solana_test ||
-            transferDataState.fromChainID === CHAIN_ID.tron_nile_test ||
-            transferDataState.fromChainID === CHAIN_ID.ton ||
-            transferDataState.fromChainID === CHAIN_ID.ton_test  
-          "
+                  v-if="notEvmChain(transferDataState.fromChainID)"
           >
             <template v-slot:titleDesc>
               <span v-html="starkAddress"></span>
@@ -45,7 +37,7 @@
             <div class="left">From</div>
           </o-tooltip>
           <div v-else class="left">From</div>
-          <div v-if="isLogin && fromBalance !== '-1'" class="right">
+          <div v-if="fromBalance !== '-1'" class="right">
             Balance:
             <CommLoading
                     :hidden="!fromBalanceLoading"
@@ -106,15 +98,7 @@
       >
         <div class="topItem">
           <o-tooltip
-                  v-if="
-            transferDataState.toChainID == CHAIN_ID.starknet ||
-            transferDataState.toChainID == CHAIN_ID.starknet_test ||
-            transferDataState.fromChainID === CHAIN_ID.solana ||
-            transferDataState.fromChainID === CHAIN_ID.solana_test ||
-            transferDataState.fromChainID === CHAIN_ID.tron_nile_test ||
-            transferDataState.fromChainID === CHAIN_ID.ton ||
-            transferDataState.fromChainID === CHAIN_ID.ton_test  
-          "
+                  v-if="notEvmChain(transferDataState.toChainID)"
           >
             <template v-slot:titleDesc>
               <span v-html="starkAddress"></span>
@@ -184,9 +168,12 @@
         >More</a
         >
       </div>
-      <div :hidden="isHidden">
+      <div 
+      :hidden="isHiddenCrossAddress"
+      >
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
-          <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
+          <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" 
+           v-model="isCrossAddress" />
           <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
           <label v-else for="checkbox"> Recipient's Address </label>
         </div>
@@ -466,6 +453,7 @@ let chain = config.chain;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
 
+let timer1
 let timer
 
 export default {
@@ -558,6 +546,18 @@ export default {
     };
   },
   computed: {
+    isFromNotEVM(){
+      return orbiterHelper.isNotEVMChain({chainId: transferDataState.fromChainID})
+    },
+    isToNotEVM(){
+      return orbiterHelper.isNotEVMChain({chainId: transferDataState.toChainID})
+    },
+    isHiddenCrossAddress() {
+      return this.fromChainId === CHAIN_ID.zksync || 
+      this.fromChainId === CHAIN_ID.zksync_test  || 
+      this.fromChainId === CHAIN_ID.imx_test || 
+      this.fromChainId === CHAIN_ID.imx
+    },
     isPrizesEnd(){
       return prizesTimeEnd.value
     },
@@ -585,16 +585,6 @@ export default {
     chainName() {
       return util.chainName(transferDataState.toChainID);
     },
-    isHidden(){
-      return (
-        !this.isNewVersion || 
-      this.selectFromToken === this.selectToToken || !isSupportXVM) && 
-      !this.isLoopring && 
-      !(this.isBrowserApp && this.selectStarknet) || 
-      orbiterHelper.isSolanaChain({chainId: this.targetChainId})  || 
-      orbiterHelper.isTonChain({chainId: this.targetChainId}) || 
-      orbiterHelper.isTronChain({chainId: this.targetChainId})
-    },
     isCurrentAddress() {
       if (!this.isNewVersion || this.selectFromToken === this.selectToToken) {
         return false;
@@ -602,16 +592,7 @@ export default {
       if (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract()) {
         return false;
       }
-      if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
-        return false;
-      }
-      if (transferDataState.toChainID === CHAIN_ID.solana || transferDataState.toChainID === CHAIN_ID.solana_test) {
-        return false;
-      }
-      if (orbiterHelper.isTronChain({chainId: transferDataState.toChainID})) {
-        return false;
-      }
-      if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
+      if (orbiterHelper.isNotEVMChain({chainId: transferDataState.toChainID})) {
         return false;
       }
       return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
@@ -623,16 +604,7 @@ export default {
       if (!(isArgentApp() && util.isStarkNet()) && (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract())) {
         return false;
       }
-      if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
-        return false;
-      }
-      if (transferDataState.toChainID === CHAIN_ID.solana || transferDataState.toChainID === CHAIN_ID.solana_test) {
-        return false;
-      }
-      if (orbiterHelper.isTronChain({chainId: transferDataState.toChainID})) {
-        return false;
-      }
-      if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
+      if (orbiterHelper.isNotEVMChain({chainId: transferDataState.toChainID})) {
         return false;
       }
       const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
@@ -654,7 +626,6 @@ export default {
       return web3State;
     },
     isLogin() {
-        util.log('walletIsLogin.value',walletIsLogin.value);
         if (!walletIsLogin.value) {
             this.isNewVersion = false;
             this.isWhiteWallet = false;
@@ -677,7 +648,7 @@ export default {
     },
     crossAddressInputDisable() {
       const toChainID = transferDataState.toChainID;
-      return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test ||  orbiterHelper.isTronChain({chainId: toChainID})
+      return orbiterHelper.isNotEVMChain({chainId: toChainID}) || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test;
     },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
@@ -863,10 +834,12 @@ export default {
       this.loopringFromFillAddress(value)
       this.handleTipsCall()
       this.tipsGasFee()
+      this.updateCrossAddressReceiptCall()
     },
     'transferDataState.toChainID': function () {
       this.handleTipsCall()
       this.tipsGasFee()
+      this.updateCrossAddressReceiptCall()
     },
     curPageStatus(value) {
       if (Number(value) === 1) this.updateTransferInfo();
@@ -885,6 +858,7 @@ export default {
     },
     crossAddressReceipt: function (newValue) {
       updateCrossAddressReceipt(newValue);
+      this.updateTransferInfo()
     },
     selectFromTokenSymbol:function (newValue) {
       this.$refs.selectFromChainRef.selectSymbol(newValue)
@@ -910,6 +884,8 @@ export default {
     },
     isCrossAddress: function (newValue) {
       updateIsCrossAddress(newValue);
+      // this.crossAddressReceipt = ""
+      // updateCrossAddressReceipt("");
       this.updateTransferInfo();
     },
     // currentNetwork(newValue, oldValue) {
@@ -937,35 +913,14 @@ export default {
         setActDialogVisible(false);
       }
     },
-    'web3State.starkNet.starkNetAddress': function (newValue) {
-      if (newValue) {
-        if (isArgentApp()) {
-          if ([CHAIN_ID.starknet, CHAIN_ID.starknet].includes(transferDataState.toChainID)) {
-            this.crossAddressReceipt = newValue;
-          }
-        } else {
-          this.crossAddressReceipt = newValue;
-        }
-        this.updateTransferInfo();
-      }
-    },
-    'web3State.solana.solanaAddress': function (newValue) {
-      if (newValue) {
-        this.updateTransferInfo();
-      }
-    },
-    'web3State.tron.tronAddress': function (newValue) {
-      if (newValue) {
-        this.updateTransferInfo();
-      }
+    currentConenctInfoList: function (newValue) {
+      this.updateTransferInfo();
+      this.updateCrossAddressReceiptCall()
     },
     transferValue: function (newValue) {
       transferDataState.transferValue !== newValue &&
       updateTransferValue(newValue);
       this.tipsGasFee()
-    },
-    currentConenctInfoList: function (newValue) {
-      this.updateTransferInfo();
     },
 
   },
@@ -1011,6 +966,56 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    updateCrossAddressReceiptCall() {
+      const { fromChainID, toChainID, isCrossAddress } = transferDataState
+      const [fromGroup, toGroup] = [
+        orbiterHelper.currentConnectChainInfo({ chainId: fromChainID }),
+        orbiterHelper.currentConnectChainInfo({ chainId: toChainID }),
+      ]
+      const firstAddress = fromGroup?.address 
+      const targetAddress = toGroup?.address 
+      if(firstAddress && targetAddress && (firstAddress !== targetAddress) && !this.crossAddressReceipt) {
+        this.isCrossAddress = true
+        this.crossAddressReceipt = targetAddress
+      }
+    },
+    openConnectModal() {
+      const { toChainID } = transferDataState
+      orbiterHelper.openConnectModal({ chainId: toChainID })
+    },
+    toCrossAddressReceipt() {
+      const { toChainID } = transferDataState
+      const group = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+      const address = group?.address || ""
+      if (this.isCrossAddress) {
+        if (
+          !!this.crossAddressReceipt ||
+          !!orbiterHelper.checkAddress({
+            address: this.crossAddressReceipt,
+            chainId: toChainID,
+          })
+        ) {
+          return this.crossAddressReceipt
+        }
+      }
+      if (
+        !orbiterHelper.checkAddress({ chainId: toChainID, address: address })
+      ) {
+        this.openConnectModal()
+        return ''
+      } else {
+        return address
+      }
+    },
+    checkAddressCall() {
+      const {crossAddressReceipt, isCrossAddress, toChainID } = transferDataState
+      if(!isCrossAddress || !crossAddressReceipt) return false
+      const isCheck = orbiterHelper.checkAddress({address: crossAddressReceipt, chainId: toChainID})
+      return isCheck
+    },
+    notEvmChain(chainId) {
+      return orbiterHelper.isNotEVMChain({chainId})
+    },
     tipsGasFee() {
       const { selectMakerConfig } = transferDataState
       this.toValueToolTip = `Sender pays a ${ parseFloat(((orbiterCore.getGasFee(this.transferValue, selectMakerConfig) || 0) / 10).toFixed(3))}% trading fee for each transfer.`;
@@ -1293,7 +1298,7 @@ export default {
       if (!this.isNewVersion) {
         toCurrency = fromCurrency;
       }
-      this.sendBtnInfo.disabled = 'disabled';
+      // this.sendBtnInfo.disabled = 'disabled';
 
       const isCrossAddress = transferDataState.isCrossAddress;
       const oldFromChainID = transferDataState.fromChainID;
@@ -1312,15 +1317,15 @@ export default {
       this.isLoopring = fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test;
       this.isBrowserApp = isBrowserApp();
 
-      if (fromCurrency === toCurrency && !this.isLoopring && !this.isBrowserApp) {
-        if (isCrossAddress && util.isExecuteXVMContract()) {
-          this.$notify.warning({
-            title: `Not supported yet Change Account.`,
-            duration: 3000,
-          });
-        }
-        this.isCrossAddress = false;
-      }
+      // if (fromCurrency === toCurrency && !this.isLoopring && !this.isBrowserApp) {
+      //   if (isCrossAddress && util.isExecuteXVMContract()) {
+      //     this.$notify.warning({
+      //       title: `Not supported yet Change Account.`,
+      //       duration: 3000,
+      //     });
+      //   }
+      //   // this.isCrossAddress = false;
+      // }
 
       const { query } = this.$route;
       const source = makerConfigs.find(item => item?.fromChain?.name.toLowerCase() === query?.source?.toLowerCase())?.fromChain?.chainId || 0;
@@ -1525,7 +1530,9 @@ export default {
       // if (util.isStarkNet()) {
       //     this.isCrossAddress = true;
       // }
-      const availableDigit = toChain.decimals === 8 || fromChain.decimals === 8 ? 6 : fromChain.decimals === 18 ? 6 : 2;
+      const availableDigit = orbiterHelper.isMiddleDecimals({ decimals: toChain.decimals }) || 
+      orbiterHelper.isMiddleDecimals({ decimals: fromChain.decimals }) ? 
+      6 : fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
       let useBalance = this.fromBalance === "-1" ? new BigNumber(100) : new BigNumber(this.fromBalance)
               .minus(new BigNumber(selectMakerConfig.tradingFee))
@@ -1544,7 +1551,7 @@ export default {
         text: 'SEND',
         disabled: null,
       };
-      if (walletIsLogin.value) {
+      // if (walletIsLogin.value) {
         info.text = 'SEND';
         if (transferValue.comparedTo(0) < 0) {
           info.disabled = 'disabled';
@@ -1581,29 +1588,37 @@ export default {
           util.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
         }
 
-        if ((fromCurrency !== toCurrency || this.isCrossAddress) &&
-                !util.isSupportXVMContract() && !this.isLoopring && !util.isStarkNet()) {
-          info.text = 'SEND';
+        if (this.isCrossAddress && !this.checkAddressCall()) {
+          info.text = `Check ${this.chainName} Address`;
           info.disabled = 'disabled';
           util.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring && !util.isStarkNet',
                   fromCurrency !== toCurrency, this.isCrossAddress, !util.isSupportXVMContract(), !this.isLoopring, !util.isStarkNet());
         }
 
-        if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
-          info.text = 'SEND';
-          info.disabled = 'disabled';
-          util.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
-                  this.crossAddressReceipt, this.isErrorAddress);
-        }
-        const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
-        const isCheck = !reg.test(this.crossAddressReceipt);
-        if (this.isLoopring  && this.isCrossAddress && (!this.crossAddressReceipt || isCheck)) {
-          info.text = 'SEND';
-          info.disabled = 'disabled';
-          util.log('this.isLoopring && !this.crossAddressReceipt',
-                  this.isLoopring, !this.crossAddressReceipt);
-        }
-      }
+        // if ((fromCurrency !== toCurrency || this.isCrossAddress) &&
+        //         !util.isSupportXVMContract() && !this.isLoopring && !util.isStarkNet()) {
+        //   info.text = 'SEND';
+        //   info.disabled = 'disabled';
+        //   util.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring && !util.isStarkNet',
+        //           fromCurrency !== toCurrency, this.isCrossAddress, !util.isSupportXVMContract(), !this.isLoopring, !util.isStarkNet());
+        // }
+
+        // if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
+        //   info.text = 'SEND';
+        //   info.disabled = 'disabled';
+        //   util.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
+        //           this.crossAddressReceipt, this.isErrorAddress);
+        // }
+
+        // const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
+        // const isCheck = !reg.test(this.crossAddressReceipt);
+        // if (this.isLoopring  && this.isCrossAddress && (!this.crossAddressReceipt || isCheck)) {
+        //   info.text = 'SEND';
+        //   info.disabled = 'disabled';
+        //   util.log('this.isLoopring && !this.crossAddressReceipt',
+        //           this.isLoopring, !this.crossAddressReceipt);
+        // }
+      // }
       this.sendBtnInfo = info;
     },
     updateRoutes(oldFromChainID, oldToChainID, oldFromCurrency) {
@@ -1657,37 +1672,38 @@ export default {
       } else if(Number(bridgeType) === 1) {
         this.toValue = amount.multipliedBy(1 - slippage / 10000);
       } else {
+        console.log("value", amount.toString())
         this.toValue = amount;
       }
     },
     async specialProcessing(oldFromChainID, oldToChainID) {
       const { fromChainID, toChainID } = transferDataState;
-      if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test || oldToChainID === CHAIN_ID.solana || oldToChainID === CHAIN_ID.solana_test || oldToChainID === CHAIN_ID.ton || oldToChainID === CHAIN_ID.ton_test || orbiterHelper.isTronChain({chainId: oldToChainID})) {
-        if (this.isCrossAddress) this.isCrossAddress = false;
-        if (this.crossAddressReceipt) this.crossAddressReceipt = '';
-      }
-      if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
-        const { starkNetIsConnect, starkNetAddress } = web3State.starkNet;
-        if (!starkNetIsConnect || !starkNetAddress) {
-          await connectStarkNetWallet();
-          if (!web3State.starkNet.starkIsConnected && !web3State.starkNet.starkNetAddress) {
-            const makerConfig = makerConfigs[0];
-            this.updateTransferInfo({ fromChainID: makerConfig.fromChain.chainId });
-            return;
-          }
-        }
-        if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
-          this.isCrossAddress = true;
-          this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
-          updateTransferExt({
-            fromAddress: this.currentWalletAddress,
-            ext: {
-              type: '0x03',
-              value: web3State.starkNet.starkNetAddress,
-            }
-          });
-        }
-      }
+      // if (toChainID !== oldToChainID && (oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test || orbiterHelper.isNotEVMChain({chainId: oldToChainID}))) {
+      //   if (this.isCrossAddress) this.isCrossAddress = false;
+      //   if (this.crossAddressReceipt) this.crossAddressReceipt = '';
+      // }
+      // if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+      //   const { starkNetIsConnect, starkNetAddress } = web3State.starkNet;
+      //   if (!starkNetIsConnect || !starkNetAddress) {
+      //     await connectStarkNetWallet();
+      //     if (!web3State.starkNet.starkIsConnected && !web3State.starkNet.starkNetAddress) {
+      //       const makerConfig = makerConfigs[0];
+      //       this.updateTransferInfo({ fromChainID: makerConfig.fromChain.chainId });
+      //       return;
+      //     }
+      //   }
+      //   if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+      //     this.isCrossAddress = true;
+      //     this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
+      //     updateTransferExt({
+      //       fromAddress: this.currentWalletAddress,
+      //       ext: {
+      //         type: '0x03',
+      //         value: web3State.starkNet.starkNetAddress,
+      //       }
+      //     });
+      //   }
+      // }
       if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test || toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test) {
         if (walletIsLogin.value) {
           this.inputTransferValue();
@@ -1832,10 +1848,10 @@ export default {
     },
     fromMax() {
       this.isClickMax = true
-      if (!walletIsLogin.value) {
-        this.transferValue = '0';
-        return;
-      }
+      // if (!walletIsLogin.value) {
+      //   this.transferValue = '0';
+      //   return;
+      // }
       const { selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
       util.log('userMaxPrice',this.userMaxPrice)
@@ -1843,13 +1859,17 @@ export default {
       this.updateTransferInfo()
     },
     transfer_mid() {
-      const { fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState;
-      this.updateTransferInfo({
-        toChainID: fromChainID,
-        fromChainID: toChainID,
-      });
-      this.selectFromToken = toCurrency;
-      this.selectToToken = fromCurrency;
+      clearTimeout(timer1)
+      let self = this
+      timer1 = setTimeout(() => {
+        const { fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState;
+        self.updateTransferInfo({
+          toChainID: fromChainID,
+          fromChainID: toChainID,
+        });
+        self.selectFromToken = toCurrency;
+        self.selectToToken = fromCurrency;
+      }, 200);
     },
     changeFromChain() {
       if (!this.fromChainIdList.length) {
@@ -1923,11 +1943,15 @@ export default {
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
       if (fromChain.chainId === CHAIN_ID.loopring || fromChain.chainId === CHAIN_ID.loopring_test || toChain.chainId === CHAIN_ID.loopring || toChain.chainId === CHAIN_ID.loopring_test) {
-        this.transferValue = toChain.decimals === 8 || fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1') : fromChain.decimals === 18
+        this.transferValue = orbiterHelper.isMiddleDecimals({decimals: toChain.decimals}) ||
+        orbiterHelper.isMiddleDecimals({decimals: fromChain.decimals}) ?
+          this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1') : fromChain.decimals === 18
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,5})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       } else {
-        this.transferValue = toChain.decimals === 8 || fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1') : fromChain.decimals === 18
+        this.transferValue = orbiterHelper.isMiddleDecimals({decimals: toChain.decimals}) ||
+        orbiterHelper.isMiddleDecimals({decimals: fromChain.decimals})
+         ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1') : fromChain.decimals === 18
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       }
@@ -1969,40 +1993,9 @@ export default {
       //     return;
       //   }
       // }
-      let toAddress = ""
-      let open = () => {}
-      if(CHAIN_ID.ton === toChainID || CHAIN_ID.ton_test === toChainID ) {
-        toAddress = tonHelper.account()
-        open = async () => {
-          await tonHelper.connect()
-        }
-      } else  if(CHAIN_ID.solana === toChainID || CHAIN_ID.solana_test === toChainID ) {
-        toAddress = web3State.solana.solanaAddress
-        open = () => {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
-        }
-      } else if(orbiterHelper.isTronChain({chainId: toChainID}) ) {
-        toAddress = web3State.tron.tronAddress
-        open = () => {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('TRON')
-        }
-      } else if(CHAIN_ID.starknet === toChainID || CHAIN_ID.starknet_test === toChainID) {
-        toAddress = this.starkAddress
-        open = () => {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('STARKNET')
-        }
-      } else {
-        toAddress = this.currentWalletAddress
-        open = () => {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('EVM')
-        }
-      }
-      if(!toAddress || toAddress === "0x") {
-        await open()
+      const toChainAddress = this.toCrossAddressReceipt()
+      
+      if(!toChainAddress || toChainAddress === "0x" ) {
         return
       }
       if (!await util.isLegalAddress()) {
@@ -2092,10 +2085,7 @@ export default {
       }
     
       // if unlogin  login first
-      if (!walletIsLogin.value) {
-        Middle.$emit('connectWallet', true);
-        return;
-      } else {
+
         if (!check.checkPrice(this.transferValue)) {
           this.$notify.error({
             title: `The format of input amount is incorrect`,
@@ -2145,149 +2135,137 @@ export default {
           walletAddress && (await imxHelper.ensureUser(walletAddress));
         }
 
-        if (!!orbiterHelper.isNotEVMChain({chainId: fromChainID})) {
-          let { starkChain } = web3State.starkNet;
-          starkChain = +starkChain ? +starkChain : starkChain;
-          // if (!starkChain || starkChain === 'unlogin') {
-          //   util.showMessage('please connect Starknet Wallet', 'error');
-          //   return;
-          // }
-          // if (!getStarknet().selectedAddress) {
-          //   await connectStarkNetWallet();
-          //   util.log(`can't find starknet selectedAddress,reconnect starknet wallet ${ getStarknet().selectedAddress }`);
-          // }
-          if ((fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) && (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')) {
+        const fromInfo = orbiterHelper.currentConnectChainInfo({chainId: fromChainID})
+        let fromAddress = fromInfo?.address || ""
+        let fromIsConnect = fromInfo?.isConnected
+
+        console.log("fromInfo", fromInfo)
+
+
+        if(!fromAddress || fromAddress === "0x" || !fromIsConnect) {
+          await fromInfo.open()
+          return
+        }
+
+          if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+            if (!!orbiterHelper.isNotEVMChain({chainId: fromChainID})) {
+            let { starkChain } = web3State.starkNet;
+            starkChain = +starkChain ? +starkChain : starkChain;
+            // if (!starkChain || starkChain === 'unlogin') {
+            //   util.showMessage('please connect Starknet Wallet', 'error');
+            //   return;
+            // }
+            // if (!getStarknet().selectedAddress) {
+            //   await connectStarkNetWallet();
+            //   util.log(`can't find starknet selectedAddress,reconnect starknet wallet ${ getStarknet().selectedAddress }`);
+            // }
+            if ((fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) && (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch Starknet Wallet to mainnet',
                     'error'
             );
             return;
-          }
-          if ((fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) && (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')) {
+            }
+            if ((fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) && (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch Starknet Wallet to testNet',
                     'error'
             );
             return;
-          }
-        } else if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
-          const isConnect = await solanaHelper.isConnect()
-          if(!isConnect) {
-            setSelectWalletDialogVisible(true)
-            setConnectWalletGroupKey("SOLANA")
-            return
-          }
-          
-        } else if (orbiterHelper.isTronChain({chainId: fromChainID})) {
-          const isConnect = web3State.tron.tronIsConnected
-          const address = web3State.tron.tronAddress
-          if(!isConnect || !address) {
-            setSelectWalletDialogVisible(true)
-            setConnectWalletGroupKey("TRON")
-            return
-          }
-          
-        } else if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
-          const isConnected = await tonHelper.isConnected()
-          const account = await tonHelper.account()
-          if(!isConnected || !account) {
-            await tonHelper.connect()
-            return
-          }
-          
-        } else {
-          if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== +util.getMetaMaskNetworkId(fromChainID)) {
-            if ([METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
-              try {
-                if (!await util.ensureWalletNetwork(fromChainID)) {
-                  return;
-                }
-              } catch (err) {
-                console.error(err);
-                util.showMessage(err.message, 'error');
-                return;
-              }
+            }
             } else {
-              const matchSwitchChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
-              if (matchSwitchChainDispatcher) {
-                const successCallback = () => this.$emit('stateChanged', '2');
-                matchSwitchChainDispatcher(
-                        compatibleGlobalWalletConf.value.walletPayload.provider,
-                        () => {
-                          this.$emit('stateChanged', '2')
-                        }
-                );
-                return;
+              if(orbiterHelper.isEVMChain({chainId: fromChainID}) && !orbiterHelper.isNotEVMChain({chainId: fromChainID})) {
+                if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== +util.getMetaMaskNetworkId(fromChainID)) {
+                  try {
+                    if (!(await util.ensureWalletNetwork(fromChainID))) {
+                      return
+                    }
+                  } catch (err) {
+                    try {
+                      const matchSwitchChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
+                      if (matchSwitchChainDispatcher) {
+                        const successCallback = () => this.$emit('stateChanged', '2');
+                        matchSwitchChainDispatcher(
+                                compatibleGlobalWalletConf.value.walletPayload.provider,
+                                () => {
+                                  this.$emit('stateChanged', '2')
+                                }
+                        );
+                        return;
+                      }
+                    } catch (error) {
+                      util.showMessage(err.message, 'error')
+                      return
+                    }
+                  }
+                }
               }
             }
           }
-        }
-        const chainInfo = util.getV3ChainInfoByChainId(fromChainID);
-        const toChainInfo = util.getV3ChainInfoByChainId(toChainID);
-        const toAddressAll = (util.isExecuteXVMContract() ?
-                chainInfo.xvmList[0] :
-                selectMakerConfig.recipient).toLowerCase();
-        const senderAddress = (util.isExecuteXVMContract() ?
-                chainInfo.xvmList[0] :
-                selectMakerConfig.sender).toLowerCase();
-        const toAddress = util.shortAddress(toAddressAll);
-        const senderShortAddress = util.shortAddress(senderAddress);
-        const { isCrossAddress, crossAddressReceipt } = transferDataState;
-        const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (
-          toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? tonHelper.account()  : (
-            toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? web3State.solana.solanaAddress
-            : (
-              orbiterHelper.isTronChain({chainId: toChainID}) ? web3State.tron.tronAddress : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase()
-            ))
-        );
-        // sendTransfer
-        const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
-        const contractList = chainInfo?.contracts || []
-        const contractFromAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
+          console.log("323323131")
+          const chainInfo = util.getV3ChainInfoByChainId(fromChainID);
+          const toChainInfo = util.getV3ChainInfoByChainId(toChainID);
+          const toAddressAll = (util.isExecuteXVMContract() ?
+                  chainInfo.xvmList[0] :
+                  selectMakerConfig.recipient).toLowerCase();
+          const senderAddress = (util.isExecuteXVMContract() ?
+                  chainInfo.xvmList[0] :
+                  selectMakerConfig.sender).toLowerCase();
+          const toAddress = util.shortAddress(toAddressAll);
+          const senderShortAddress = util.shortAddress(senderAddress);
+          const { isCrossAddress, crossAddressReceipt } = transferDataState;
+          console.log("crossAddressReceipt", crossAddressReceipt, transferDataState)
+          const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+          let walletAddress = isCrossAddress ?  crossAddressReceipt?.toLowerCase() : toInfo?.address;
+          walletAddress = walletAddress || toInfo?.address
+          // sendTransfer
+          const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
+          const contractList = chainInfo?.contracts || []
+          const contractFromAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
 
-        const toContractList = chainInfo?.contracts || []
+          const toContractList = chainInfo?.contracts || []
 
-        const ContractToAddress = toContractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
+          const ContractToAddress = toContractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
 
-        this.$store.commit('updateConfirmRouteDescInfo',  bridgeType1?  [
-          {
-            no: 1,
-            from: util.shortAddress(new BigNumber(this.transferValue).toString(), 2) + " " + fromCurrency,
-            to: util.shortAddress(contractFromAddress),
-            fromTip: '',
-            toTip: contractFromAddress,
-            icon: 'wallet'
-          },
-          {
-            no: 2,
-            from: util.shortAddress(ContractToAddress) || senderShortAddress,
-            to: util.shortAddress(walletAddress),
-            fromTip: ContractToAddress || senderAddress,
-            toTip: walletAddress,
-            icon: 'wallet'
-          }
-        ]: [
-          {
-            no: 1,
-            from: new BigNumber(this.transferValue).plus(
-                    new BigNumber(selectMakerConfig.tradingFee)
-            ).toFixed(4) + fromCurrency,
-            to: toAddress,
-            fromTip: '',
-            toTip: toAddressAll,
-            icon: util.isExecuteXVMContract() ? 'wallet' : 'wallet'
-          },
-          {
-            no: 2,
-            from: senderShortAddress,
-            to: util.shortAddress(walletAddress),
-            fromTip: senderAddress,
-            toTip: walletAddress,
-            icon: 'wallet'
-          }
-        ]);
-        this.$emit('stateChanged', '2');
-      }
+          this.$store.commit('updateConfirmRouteDescInfo',  bridgeType1?  [
+            {
+              no: 1,
+              from: util.shortAddress(new BigNumber(this.transferValue).toString(), 2) + " " + fromCurrency,
+              to: util.shortAddress(contractFromAddress),
+              fromTip: '',
+              toTip: contractFromAddress,
+              icon: 'wallet'
+            },
+            {
+              no: 2,
+              from: util.shortAddress(ContractToAddress) || senderShortAddress,
+              to: util.shortAddress(walletAddress),
+              fromTip: ContractToAddress || senderAddress,
+              toTip: walletAddress,
+              icon: 'wallet'
+            }
+          ]: [
+            {
+              no: 1,
+              from: new BigNumber(this.transferValue).plus(
+                      new BigNumber(selectMakerConfig.tradingFee)
+              ).toFixed(4) + fromCurrency,
+              to: toAddress,
+              fromTip: '',
+              toTip: toAddressAll,
+              icon: util.isExecuteXVMContract() ? 'wallet' : 'wallet'
+            },
+            {
+              no: 2,
+              from: senderShortAddress,
+              to: util.shortAddress(walletAddress),
+              fromTip: senderAddress,
+              toTip: walletAddress,
+              icon: 'wallet'
+            }
+          ]);
+          this.$emit('stateChanged', '2');
+      
     },
     async updateOriginGasCost() {
       this.originGasLoading = true;
@@ -2413,6 +2391,7 @@ export default {
                   .then(async (response) => {
                     const balance = (response / 10 ** fromChain.decimals).toFixed(6);
                     self.fromBalance = balance;
+
                     await self.updateUserMaxPrice();
                   })
                   .catch((error) => {
@@ -2429,6 +2408,7 @@ export default {
           self.fromBalanceLoading = false;
       } else {
         self.fromBalanceLoading = false;
+        self.fromBalance = "-1"
       }
 
       const toCurrentWalletInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})

@@ -241,10 +241,12 @@ import {
 } from '../../util/zksyncEraGasToken'
 import tronHelper from '../../util/tron/tron_helper.js';
 import orbiterHelper from '../../util/orbiter_helper.js';
+import solanaHelper from '../../util/solana/solana_helper'
+import tonHelper from '../../util/ton/ton_helper'
+import fractalHelper from '../../util/fractal/fractal_helper.js';
+import aptosHelper from '../../util/aptos/aptos_helper.js';
 import { CHAIN_ID } from "../../config";
 import { isBrowserApp, isProd } from "../../util";
-import solanaHelper from '../../util/solana/solana_helper';
-import tonHelper from '../../util/ton/ton_helper';
 
 const {
   walletDispatchersOnSignature,
@@ -262,35 +264,20 @@ export default {
     }
   },
   computed: {
+    currentWalletAddress() {
+      return (
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress ||
+        web3State.coinbase
+      )
+    },
     isMobile() {
       return isMobile.value
     },
     isStarkNetChain() {
       const { fromChainID, toChainID } = transferDataState
       return (
-        orbiterHelper.isStarknetChain({ chainId: fromChainID }) || 
-        orbiterHelper.isStarknetChain({ chainId: toChainID })
-      )
-    },
-    isSolanaChain() {
-      const { fromChainID, toChainID } = transferDataState
-      return (
-        orbiterHelper.isSolanaChain({ chainId: fromChainID }) || 
-        orbiterHelper.isSolanaChain({ chainId: toChainID })
-      )
-    },
-    isTronChain() {
-      const { fromChainID, toChainID } = transferDataState
-      return (
-        orbiterHelper.isTronChain({ chainId: fromChainID }) || 
-        orbiterHelper.isTronChain({ chainId: toChainID })
-      )
-    },
-    isTonChain() {
-      const { fromChainID, toChainID } = transferDataState
-      return (
-        orbiterHelper.isTonChain({ chainId: fromChainID }) || 
-        orbiterHelper.isTonChain({ chainId: toChainID })
+        orbiterHelper.isStarknetChain({chainId: fromChainID}) ||
+        orbiterHelper.isStarknetChain({chainId: toChainID})
       )
     },
     currentFromChainID() {
@@ -322,18 +309,20 @@ export default {
 
       realTransferAmount = bridgeType1 ? transferValue : realTransferAmount
 
-      const originWithholdingFee = (
-        selectMakerConfig.originWithholdingFee || 0
-      )
+      const originWithholdingFee = selectMakerConfig.originWithholdingFee || 0
 
-      const withholdingFee = (selectMakerConfig.tradingFee || 0)
+      const withholdingFee = selectMakerConfig.tradingFee || 0
+
+      const {type, value: tieredFeeMax} = transferCalculate.max()
 
       let discount = transferCalculate.discount().toString()
+
+      const [revicedAmount, revicedSymbol] = this.expectValue.split(" ")
 
       let nWithholdingFee = ethers.utils.formatEther(
         ethers.utils
           .parseEther(withholdingFee + '')
-        //   .sub(ethers.utils.parseEther(discount))
+          .sub(ethers.utils.parseEther(discount))
       )
 
       if (
@@ -354,7 +343,7 @@ export default {
         )
       }
 
-      const [revicedAmount, revicedSymbol] = this.expectValue.split(" ")
+      const isGasTokenChain = this.currentFromChainID === CHAIN_ID.zksync2
 
       const nRevicedAmount = ethers.utils.formatEther(
         ethers.utils.parseEther(revicedAmount.trim() || "0").add(
@@ -362,7 +351,7 @@ export default {
         )
       )
 
-      const isGasTokenChain = this.currentFromChainID === CHAIN_ID.zksync2
+      console.log("nRevicedAmount", discount, nRevicedAmount)
       const comm = [
         {
           icon: 'withholding',
@@ -440,6 +429,35 @@ export default {
     },
   },
   methods: {
+    openConnectModal() {
+      const { toChainID } = transferDataState
+      orbiterHelper.openConnectModal({ chainId: toChainID })
+    },
+    toCrossAddressReceipt() {
+      const { toChainID, isCrossAddress, crossAddressReceipt } = transferDataState
+      const group = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+      const address = group?.address || ""
+      console.log("addressaddressaddress", address, isCrossAddress, crossAddressReceipt)
+      if (isCrossAddress) {
+        if (
+          !!crossAddressReceipt ||
+          !!orbiterHelper.checkAddress({
+            address: crossAddressReceipt,
+            chainId: toChainID,
+          })
+        ) {
+          return crossAddressReceipt
+        }
+      }
+      if (
+        !orbiterHelper.checkAddress({ chainId: toChainID, address: address })
+      ) {
+        this.openConnectModal()
+        return ''
+      } else {
+        return address
+      }
+    },
     async loopringWalletTransfer(rAmountValue) {
       const { selectMakerConfig, fromChainID } = transferDataState
 
@@ -448,9 +466,15 @@ export default {
         web3State.coinbase
       const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
 
-      const contractList = chainInfo?.contracts || []
+      const contractGroup = chainInfo?.contract || {}
 
       try {
+        const contractList = Object.keys(contractGroup).map((key) => {
+          return {
+            name: contractGroup[key],
+            address: key,
+          }
+        })
 
         const contractAddress = contractList?.filter(
           (item) =>
@@ -475,6 +499,12 @@ export default {
             window?.ethereum
         )
         const signer = provider.getSigner()
+        const toAddress = this.toCrossAddressReceipt()
+        if (!toAddress) {
+          this.openConnectModal()
+          return
+        }
+        const str = `t=${toAddress}`
         const transferContract = new ethers.Contract(
           contractAddress,
           Orbiter_V3_ABI_EVM,
@@ -482,9 +512,13 @@ export default {
         )
         if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
           // When tokenAddress is eth
-          const res = await transferContract.transfer(recipient, '0x', {
-            value: rAmountValue,
-          })
+          const res = await transferContract.transfer(
+            recipient,
+            ethers.utils.hexlify(ethers.utils.toUtf8Bytes(str)),
+            {
+              value: rAmountValue,
+            }
+          )
           transferHash = res?.hash
         } else {
           const tokenContact = new ethers.Contract(
@@ -517,7 +551,7 @@ export default {
         }
         this.transferLoading = false
       } catch (err) {
-        console.error('transferToSolanaOrTon error', err)
+        console.error('loopringWalletTransfer error', err)
         this.transferLoading = false
         this.$notify.error({
           title: err?.data?.message || err.message,
@@ -529,94 +563,96 @@ export default {
       const { selectMakerConfig, fromChainID, transferValue, toChainID } =
         transferDataState
 
-        const from =
+      const from =
         compatibleGlobalWalletConf.value.walletPayload.walletAddress ||
         web3State.coinbase
 
-        const amount = new BigNumber(transferValue).multipliedBy(
-          new BigNumber(10 ** selectMakerConfig.fromChain.decimals)
-        )
-        const amountValue = amount.toFixed()
+      let toAddress = this.toCrossAddressReceipt()
 
-        const safeCode = transferCalculate.safeCode()
+      const amount = new BigNumber(transferValue).multipliedBy(
+        new BigNumber(10 ** selectMakerConfig.fromChain.decimals)
+      )
+      const amountValue = amount.toFixed()
 
-        const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
-        const withholdingFee = selectMakerConfig.tradingFee
+      const safeCode = transferCalculate.safeCode()
 
-        const tokenAddress = selectMakerConfig.fromChain.tokenAddress
-        const recipient = selectMakerConfig.recipient
-        
-        const contractList = chainInfo?.contracts || []
+      const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
+      const withholdingFee = selectMakerConfig.tradingFee
 
-        const contractInfo = contractList?.filter(
-          (item) =>
-            item?.name?.toLocaleLowerCase() === 'OPool'?.toLocaleLowerCase()
-        )[0]
+      const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+      const recipient = selectMakerConfig.recipient
 
-        const contractAddress = contractInfo?.address
+      const contractList = chainInfo?.contracts || []
 
-        let hash = ""
+      const contractInfo = contractList?.filter(
+        (item) =>
+          item?.name?.toLocaleLowerCase() === 'OPool'?.toLocaleLowerCase()
+      )[0]
+
+      const contractAddress = contractInfo?.address
+
+      let hash = ''
 
       try {
-          if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test){
-            const solanaAddress = web3State.solana.solanaAddress
-              const isConnected = await solanaHelper.isConnect()
-              if (!isConnected || !solanaAddress) {
-                setSelectWalletDialogVisible(true)
-                setConnectWalletGroupKey('SOLANA')
-                this.transferLoading = false
-                return
-              }
-            hash = await solanaHelper.bridgeType1transfer({
-              from: solanaAddress,
-              targetAddress: from,
-              tokenAddress,
-              toAddress: recipient,
-              safeCode,
-              withholdingFee,
-              contractAddress,
-              amount: amount.toString(),
-              chainId: fromChainID
-            })
-          } else {
+        if (orbiterHelper.isSolanaChain({ chainId: fromChainID })) {
+          const solanaAddress = solanaHelper.solanaAddress()
+          const isConnected = await solanaHelper.isConnect()
+          if (!isConnected || !solanaAddress) {
+            setSelectWalletDialogVisible(true)
+            setConnectWalletGroupKey('SOLANA')
+            this.transferLoading = false
+            return
+          }
+          hash = await solanaHelper.bridgeType1transfer({
+            from: solanaAddress,
+            targetAddress: toAddress,
+            tokenAddress,
+            toAddress: recipient,
+            safeCode,
+            withholdingFee,
+            contractAddress,
+            amount: amount.toString(),
+            chainId: fromChainID,
+          })
+        } else {
+          let memo = `c=${safeCode}`
 
-            let memo = `c=${safeCode}`
-
-            if (
-              toChainID === CHAIN_ID.solana ||
-              toChainID === CHAIN_ID.solana_test
-            ) {
-              const solanaAddress = web3State.solana.solanaAddress
-              const isConnected = await solanaHelper.isConnect()
-              if (!isConnected || !solanaAddress) {
-                setSelectWalletDialogVisible(true)
-                setConnectWalletGroupKey('SOLANA')
-                this.transferLoading = false
-                return
-              }
-              memo = `c=${safeCode}&t=${solanaAddress}`
-            }
-            const provider = new ethers.providers.Web3Provider(
+          const provider = new ethers.providers.Web3Provider(
               compatibleGlobalWalletConf.value.walletPayload.provider
             )
 
-            const signer = provider.getSigner()
+          const signer = provider.getSigner()
+            if (
+              orbiterHelper.isNotEVMChain({chainId: toChainID})
+            ) {
+              if (!toAddress) {
+                this.openConnectModal()
+                this.transferLoading = false
+                return
+              }
+              if (from !== toAddress) {
+                memo = `c=${safeCode}&t=${toAddress}`
+              }
+            }
 
-            const feeToken = contractInfo?.feeToken
+          const feeToken = contractInfo?.feeToken
 
-            const tokens = chainInfo?.tokens
+          const tokens = chainInfo?.tokens
 
-            let transferAmount = ethers.utils.parseUnits(
-                    String("0"),
-                    chainInfo.nativeCurrency.decimals
-                  )
-            if (!util.isEthTokenAddress(fromChainID, tokenAddress)) {
-              const tokenContract = new ethers.Contract(
+          let transferAmount = ethers.utils.parseUnits(
+            String('0'),
+            chainInfo.nativeCurrency.decimals
+          )
+          if (!util.isEthTokenAddress(fromChainID, tokenAddress)) {
+            const tokenContract = new ethers.Contract(
               tokenAddress,
               Coin_ABI,
               signer
             )
-            const allowance = await tokenContract.allowance(from, contractAddress)
+            const allowance = await tokenContract.allowance(
+              from,
+              contractAddress
+            )
             if (allowance.lt(amountValue)) {
               const approveRes = await tokenContract.approve(
                 contractAddress,
@@ -624,85 +660,88 @@ export default {
               )
               await approveRes.wait()
             }
-            } else {
-              transferAmount = amountValue
-            }
+          } else {
+            transferAmount = amountValue
+          }
 
-            let feeAmount = "0"
+          let feeAmount = '0'
 
-            const decimals = (tokens.concat([chainInfo?.nativeCurrency || {}]))?.filter((item)=> item.address === feeToken)?.[0]?.decimals
+          const decimals = tokens
+            .concat([chainInfo?.nativeCurrency || {}])
+            ?.filter((item) => item.address === feeToken)?.[0]?.decimals
 
-              if(!decimals){
-                this.$notify.error({
-                  title: "Coin decimals Error: " + decimals,
-                  duration: 3000,
-                })
-                this.transferLoading = false
-                return 
-              }
+          if (!decimals) {
+            this.$notify.error({
+              title: 'Coin decimals Error: ' + decimals,
+              duration: 3000,
+            })
+            this.transferLoading = false
+            return
+          }
 
-            feeAmount = ethers.utils.parseUnits(String(withholdingFee), decimals)
+          feeAmount = ethers.utils.parseUnits(String(withholdingFee), decimals)
 
-            if (!util.isEthTokenAddress(fromChainID, feeToken)) {
-              const tokenContract = new ethers.Contract(
-                feeToken,
-                Coin_ABI,
-                signer
-              )
-              const allowance = await tokenContract.allowance(from, contractAddress)
+          if (!util.isEthTokenAddress(fromChainID, feeToken)) {
+            const tokenContract = new ethers.Contract(
+              feeToken,
+              Coin_ABI,
+              signer
+            )
+            const allowance = await tokenContract.allowance(
+              from,
+              contractAddress
+            )
 
-              if (allowance.lt(amount)) {
-                const approveRes = await tokenContract.approve(
-                  contractAddress,
-                  amount
-                )
-                await approveRes.wait()
-                }
-            } else {
-              transferAmount = feeAmount.add(transferAmount)
-            }
-
-              const transferContract = new ethers.Contract(
+            if (allowance.lt(amount)) {
+              const approveRes = await tokenContract.approve(
                 contractAddress,
-                Orbiter_OPOOL_ABI,
-                signer
+                amount
               )
-
-            if(!util.isEthTokenAddress(fromChainID, tokenAddress)) {
-
-              const res = await transferContract.inbox(
-                recipient,
-                tokenAddress,
-                amountValue,
-                ethers.utils.hexlify(ethers.utils.toUtf8Bytes(memo)),
-                {
-                  value: transferAmount,
-                }
-              )
-
-              hash = res?.hash
-            } else {
-              const res = await transferContract.inboxNative(
-                recipient,
-                tokenAddress,
-                feeAmount,
-                amountValue,
-                ethers.utils.hexlify(ethers.utils.toUtf8Bytes(memo)),
-                {
-                  value: transferAmount,
-                }
-              )
-
-              hash = res?.hash
+              await approveRes.wait()
             }
+          } else {
+            transferAmount = feeAmount.add(transferAmount)
+          }
 
-            
+          const transferContract = new ethers.Contract(
+            contractAddress,
+            Orbiter_OPOOL_ABI,
+            signer
+          )
+
+          if (!util.isEthTokenAddress(fromChainID, tokenAddress)) {
+            const res = await transferContract.inbox(
+              recipient,
+              tokenAddress,
+              amountValue,
+              ethers.utils.hexlify(ethers.utils.toUtf8Bytes(memo)),
+              {
+                value: transferAmount,
+              }
+            )
+
+            hash = res?.hash
+          } else {
+            const res = await transferContract.inboxNative(
+              recipient,
+              tokenAddress,
+              feeAmount,
+              amountValue,
+              ethers.utils.hexlify(ethers.utils.toUtf8Bytes(memo)),
+              {
+                value: transferAmount,
+              }
+            )
+
+            hash = res?.hash
+          }
         }
 
         if (hash) {
           this.onTransferSucceed(from, amountValue, fromChainID, hash)
         }
       } catch (err) {
+        console.error('eeeee====',new Error(err))
         console.error('BridgeType1Transfer error', err)
         this.$notify.error({
           title: err?.data?.message || err.message,
@@ -711,7 +750,7 @@ export default {
         this.transferLoading = false
       }
     },
-    async transferToSolanaOrTon() {
+    async transferToNotEvm() {
       const {
         selectMakerConfig,
         fromChainID,
@@ -720,84 +759,26 @@ export default {
         fromCurrency,
       } = transferDataState
 
-      if (!walletIsLogin.value) {
-        return
-      }
       const from =
         compatibleGlobalWalletConf.value.walletPayload.walletAddress ||
         web3State.coinbase
 
-      let toAddress = ''
-      let isConnected = false
-
-      if (
-        toChainID === CHAIN_ID.starknet ||
-        toChainID === CHAIN_ID.starknet_test
-      ) {
-        toAddress = web3State.starkNet.starkNetAddress
-        const starkChain = web3State.starkNet.starkChain
-
-        if (!starkChain || (isProd() && starkChain === 'unlogin')) {
-          util.showMessage('please connect Starknet Wallet', 'error')
-          this.transferLoading = false
-          return
-        }
-
-        if (!toAddress) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('STARKNET')
-          this.transferLoading = false
-          return
-        }
+      let toAddress = this.toCrossAddressReceipt()
+      if (!toAddress) {
+        this.openConnectModal()
+        return
       }
-
-      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        toAddress = web3State.solana.solanaAddress
-        isConnected = await solanaHelper.isConnect()
-
-        if (!toAddress || !isConnected) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
-          return
-        }
-      }
-
-      if (orbiterHelper.isTronChain({chainId: toChainID})) {
-        toAddress = web3State.tron.tronAddress
-        isConnected = web3State.tron.tronIsConnected
-
-        if (!toAddress || !isConnected) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('TRON')
-          return
-        }
-      }
-
-      if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-        toAddress = tonHelper.account()
-        isConnected = await tonHelper.isConnected()
-
-        if (!toAddress || !isConnected) {
-          await tonHelper.connect()
-          return
-        }
-      }
-
-      console.log('toAddress', toAddress)
-
-      // try {
-      //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-      //     if(res !== "created") {
-      //         return
-      //     }
-      // } catch (error) {
-      //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-      //     return
-      // }
 
       const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
 
-      const contractList = chainInfo?.contracts || []
+      const contractGroup = chainInfo?.contract || {}
+
+      const contractList = Object.keys(contractGroup).map((key) => {
+        return {
+          name: contractGroup[key],
+          address: key,
+        }
+      })
 
       const contractAddress = contractList?.filter(
         (item) =>
@@ -890,7 +871,7 @@ export default {
           )
         }
       } catch (err) {
-        console.error('transferToSolanaOrTon error', err)
+        console.error('transferToNotEvm error', err)
         this.$notify.error({
           title: err?.data?.message || err.message,
           duration: 3000,
@@ -900,13 +881,21 @@ export default {
     async transferToStarkNet(value) {
       const { selectMakerConfig, fromChainID, transferExt } = transferDataState
 
-      if (!walletIsLogin.value) {
-        return
-      }
-      const { fromAddress, ext } = transferExt
+      const { fromAddress } = transferExt
       const contractAddress = selectMakerConfig.fromChain.tokenAddress
       const recipient = selectMakerConfig.recipient
       const amount = ethers.BigNumber.from(value)
+
+      const toAddress = this.toCrossAddressReceipt()
+      if (!toAddress) {
+        this.openConnectModal()
+        return
+      }
+
+      const ext = {
+        type: '0x03',
+        value: toAddress,
+      }
 
       if (
         !ext?.value ||
@@ -920,7 +909,7 @@ export default {
         })
         return
       }
-      const error = util.getAccountAddressError(ext.value, true)
+      const error = util.getAccountAddressError(toAddress, true)
       if (error) {
         this.$notify.error({
           title: error,
@@ -1383,14 +1372,8 @@ export default {
       }
     },
     async loopringTransfer() {
-      const {
-        selectMakerConfig,
-        isCrossAddress,
-        crossAddressReceipt,
-        fromChainID,
-        toChainID,
-        fromCurrency,
-      } = transferDataState
+      const { selectMakerConfig, fromChainID, toChainID, fromCurrency } =
+        transferDataState
       const tokenAddress = selectMakerConfig.fromChain.tokenAddress
       try {
         const tValue = transferCalculate.getTransferTValue()
@@ -1408,52 +1391,12 @@ export default {
         }
         const p_text = 9000 + Number(chainInfo.internalId) + ''
         const amount = tValue.tAmount
-        let memo = isCrossAddress ? `${p_text}_${crossAddressReceipt}` : p_text
-        if (
-          toChainID === CHAIN_ID.solana ||
-          toChainID === CHAIN_ID.solana_test
-        ) {
-          const solanaAddress = web3State.solana.solanaAddress
-          const isConnected = await solanaHelper.isConnect()
-          if (!isConnected || !solanaAddress) {
-            setSelectWalletDialogVisible(true)
-            setConnectWalletGroupKey('SOLANA')
-            return
-          }
-          memo = `${p_text}_${solanaAddress}`
+        const toAddress = this.toCrossAddressReceipt()
+        if (!toAddress) {
+          this.openConnectModal()
+          return
         }
-
-        if (
-          orbiterHelper.isTronChain({chainId: toChainID})
-        ) {
-          const tronAddress = web3State.tron.tronAddress
-          const isConnected = web3State.tron.tronIsConnected
-          if (!isConnected || !tronAddress) {
-            setSelectWalletDialogVisible(true)
-            setConnectWalletGroupKey('TRON')
-            return
-          }
-          memo = `${p_text}_${tronAddress}`
-        }
-
-        if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-          const tonAddress = tonHelper.account()
-          const tonIsConnected = tonHelper.isConnected()
-          if (!tonIsConnected || !tonAddress) {
-            await tonHelper.connect()
-            return
-          }
-          // try {
-          //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-          //     if(res !== "created") {
-          //         return
-          //     }
-          // } catch (error) {
-          //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-          //     return
-          // }
-          memo = `${p_text}_${tonAddress}`
-        }
+        let memo = `${p_text}_${toAddress}`
 
         if (memo.length > 128) {
           this.$notify.error({
@@ -1625,7 +1568,7 @@ export default {
       const { selectMakerConfig, fromChainID, toChainID, transferValue } =
         transferDataState
 
-      const isConnected = await solanaHelper.isConnect()
+      const isConnected = web3State.solana.solanaIsConnected
       let from = web3State.solana.solanaAddress
 
       if (!isConnected || !from) {
@@ -1635,10 +1578,9 @@ export default {
         return
       }
 
-      const evmAddress =
-        compatibleGlobalWalletConf.value.walletPayload.walletAddress
+      // const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
 
-      let targetAddress = evmAddress
+      // let targetAddress = evmAddress
 
       const safeCode = transferCalculate.safeCode()
 
@@ -1649,49 +1591,12 @@ export default {
         .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
       const rAmountValue = rAmount.toFixed()
 
-      if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-        targetAddress = tonHelper.account()
-        const isConnected = await tonHelper.isConnected()
-
-        if (!targetAddress || !isConnected) {
-          await tonHelper.connect()
-          return
-        }
+      const toAddress = this.toCrossAddressReceipt()
+      if (!toAddress) {
+        this.openConnectModal()
+        return
       }
 
-      if (orbiterHelper.isTronChain({chainId: toChainID})) {
-        const tronAddress = web3State.tron.tronAddress
-        const isConnect = web3State.tron.tronIsConnected
-
-        targetAddress = tronAddress
-
-        if (!tronAddress || !isConnect) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('TRON')
-          this.transferLoading = false
-          return
-        }
-      }
-
-      if (
-        toChainID === CHAIN_ID.starknet ||
-        toChainID === CHAIN_ID.starknet_test
-      ) {
-        if (!starkChain || (isProd() && starkChain === 'unlogin')) {
-          util.showMessage('please connect Starknet Wallet', 'error')
-          this.transferLoading = false
-          return
-        }
-
-        targetAddress = starkNetAddress
-
-        if (!starkNetAddress) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('STARKNET')
-          this.transferLoading = false
-          return
-        }
-      }
       try {
         const tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
@@ -1699,7 +1604,76 @@ export default {
           from: from,
           to: selectMakerConfig.recipient,
           tokenAddress,
-          targetAddress,
+          targetAddress: toAddress,
+          amount: rAmountValue,
+          safeCode,
+          chainId: fromChainID,
+        })
+        try {
+          this.$gtag.event('click', {
+            event_category: 'Transfer',
+            event_label: selectMakerConfig.recipient,
+            userAddress: from,
+            hash: hash,
+          })
+        } catch (error) {
+          console.error('click error', error)
+        }
+
+        if (hash) {
+          this.onTransferSucceed(from, value, fromChainID, hash)
+        }
+      } catch (error) {
+        console.error('transfer error', error)
+        this.$notify.error({
+          title: error.message || String(error),
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+    },
+    async tonTransfer(value) {
+      const { selectMakerConfig, fromChainID, toChainID, transferValue } =
+        transferDataState
+
+      const isConnected = await tonHelper.isConnected()
+      let from = await tonHelper.account()
+
+      if (!isConnected || !from) {
+        await tonHelper.connect()
+        this.transferLoading = false
+        return
+      }
+
+      const safeCode = transferCalculate.safeCode()
+
+      const { starkNetAddress, starkChain } = web3State.starkNet
+
+      const rAmount = new BigNumber(transferValue)
+        .plus(new BigNumber(selectMakerConfig.tradingFee))
+        .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+      const rAmountValue = rAmount.toFixed()
+
+      // const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+
+      // let targetAddress = evmAddress
+
+      const toAddress = this.toCrossAddressReceipt()
+      console.log("toAddress", toAddress)
+      if (!toAddress) {
+        this.openConnectModal()
+        return
+      }
+
+      try {
+        const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+
+        const hash = await tonHelper.transfer({
+          from,
+          to: selectMakerConfig.recipient,
+          tokenAddress,
+          targetAddress: toAddress,
           amount: rAmountValue,
           safeCode,
           chainId: fromChainID
@@ -1728,16 +1702,17 @@ export default {
         this.transferLoading = false
       }
     },
-    async tonTransfer(value) {
-      console.log('value', value)
+    async fuelTransfer(value) {
       const { selectMakerConfig, fromChainID, toChainID, transferValue } =
         transferDataState
 
-      const isConnected = await tonHelper.isConnected()
-      let from = await tonHelper.account()
+      const isConnected = web3State.fuel.fuelIsConnected
+      let from = web3State.fuel.fuelAddress
 
       if (!isConnected || !from) {
-        await tonHelper.connect()
+        
+        setSelectWalletDialogVisible(true)
+        setConnectWalletGroupKey('FUEL')
         this.transferLoading = false
         return
       }
@@ -1756,10 +1731,7 @@ export default {
 
       let targetAddress = evmAddress
 
-      if (
-        toChainID === CHAIN_ID.starknet ||
-        toChainID === CHAIN_ID.starknet_test
-      ) {
+      if (orbiterHelper.isStarknetChain({ chainId: toChainID })) {
         targetAddress = starkNetAddress
 
         if (!starkChain || (isProd() && starkChain === 'unlogin')) {
@@ -1774,59 +1746,91 @@ export default {
           this.transferLoading = false
           return
         }
-      }
-
-      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        const solanaAddress = web3State.solana.solanaAddress
-        const isConnect = solanaHelper.isConnect()
-
-        targetAddress = solanaAddress
-
-        if (!solanaAddress || !isConnect) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
+        const address = this.toCrossAddressReceipt()
+        if (!address) {
+          this.openConnectModal()
           this.transferLoading = false
-          return
+          return 
         }
-      }
-      if (orbiterHelper.isTronChain({chainId: toChainID})) {
-        const tronAddress = web3State.tron.tronAddress
-        const isConnect = web3State.tron.tronIsConnected
+        targetAddress = address
 
-        targetAddress = tronAddress
-
-        if (!tronAddress || !isConnect) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('TRON')
-          this.transferLoading = false
-          return
-        }
-      }
-      try {
-        const tokenAddress = selectMakerConfig.fromChain.tokenAddress
-
-        const hash = await tonHelper.transfer({
-          from,
-          to: selectMakerConfig.recipient,
-          tokenAddress,
-          targetAddress,
-          amount: rAmountValue,
-          safeCode,
-        })
         try {
-          this.$gtag.event('click', {
-            event_category: 'Transfer',
-            event_label: selectMakerConfig.recipient,
-            userAddress: from,
-            hash: hash,
+          const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+
+          const hash = await fuelsHelper.transfer({
+            from,
+            to: selectMakerConfig.recipient,
+            tokenAddress,
+            targetAddress,
+            amount: rAmountValue,
+            safeCode,
+            chainId: fromChainID
           })
+          try {
+            this.$gtag.event('click', {
+              event_category: 'Transfer',
+              event_label: selectMakerConfig.recipient,
+              userAddress: from,
+              hash: hash,
+            })
+          } catch (error) {
+            console.error('click error', error)
+          }
+
+          if (hash) {
+            this.onTransferSucceed(from, value, fromChainID, hash)
+          }
         } catch (error) {
-          console.error('click error', error)
+          console.error('transfer error', error)
+          this.$notify.error({
+            title: error.message || String(error),
+            duration: 3000,
+          })
+        } finally {
+          this.transferLoading = false
         }
+      }
+    },
+    async fractalTransfer(value) {
+      const {
+        selectMakerConfig,
+        fromChainID,
+        toChainID
+      } = transferDataState
+
+      let from = web3State.fractal.fractalAddress
+      const isConnected = web3State.fractal.fractalIsConnect
+
+      if (!isConnected || !from) {
+        setSelectWalletDialogVisible(true)
+        setConnectWalletGroupKey('FRACTAL')
+        this.transferLoading = false
+        return
+      }
+      const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+      const safeCode = transferCalculate.safeCode()
+      const targetAddress = this.toCrossAddressReceipt()
+      console.log("targetAddress", targetAddress)
+      if (!targetAddress) {
+        this.openConnectModal()
+        this.transferLoading = false
+        return
+      }
+      
+      try{
+        const hash = await fractalHelper.transfer(
+          selectMakerConfig.recipient,
+          value,
+          tokenAddress,
+          safeCode,
+          targetAddress,
+          fromChainID
+        )
 
         if (hash) {
           this.onTransferSucceed(from, value, fromChainID, hash)
         }
+
       } catch (error) {
         console.error('transfer error', error)
         this.$notify.error({
@@ -1836,10 +1840,64 @@ export default {
       } finally {
         this.transferLoading = false
       }
+
+    },
+
+    async aptosTransfer(value) {
+      const {
+        selectMakerConfig,
+        fromChainID,
+        toChainID
+      } = transferDataState
+
+      let from = web3State.aptos.aptosAddress
+      const isConnected = web3State.aptos.aptosIsConnect
+
+      if (!isConnected || !from) {
+        setSelectWalletDialogVisible(true)
+        setConnectWalletGroupKey('APTOS')
+        this.transferLoading = false
+        return
+      }
+
+      console.log("selectMakerConfig.recipient", selectMakerConfig)
+      const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+      const safeCode = transferCalculate.safeCode()
+      const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+      const targetAddress = this.toCrossAddressReceipt()
+      if (!targetAddress) {
+        this.openConnectModal()
+        this.transferLoading = false
+        return
+      }
+      
+
+      try{
+        const hash = await aptosHelper.transfer(
+          selectMakerConfig.recipient,
+          value,
+          tokenAddress,
+          safeCode,
+          targetAddress,
+          fromChainID
+        )
+
+        if (hash) {
+            this.onTransferSucceed(from, value, fromChainID, hash)
+        }
+
+      } catch (error) {
+        console.error('transfer error', error)
+        this.$notify.error({
+          title: error.message || String(error),
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+
     },
     async tronTransfer(value) {
-
-      console.log('value', value)
       const { selectMakerConfig, fromChainID, toChainID, transferValue } =
         transferDataState
 
@@ -1889,28 +1947,10 @@ export default {
         }
       }
 
-      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        const solanaAddress = web3State.solana.solanaAddress
-        const isConnect = solanaHelper.isConnect()
-
-        targetAddress = solanaAddress
-
-        if (!solanaAddress || !isConnect) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
-          this.transferLoading = false
-          return
-        }
-      }
-
-      if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-        targetAddress = tonHelper.account()
-        const isConnected = await tonHelper.isConnected()
-
-        if (!targetAddress || !isConnected) {
-          await tonHelper.connect()
-          return
-        }
+      targetAddress = this.toCrossAddressReceipt()
+      if(!targetAddress) {
+        this.transferLoading = false
+        return 
       }
       try {
         const tokenAddress = selectMakerConfig.fromChain.tokenAddress
@@ -1957,15 +1997,12 @@ export default {
         fromCurrency,
         transferValue,
       } = transferDataState
-      let to = ''
-      let from = ''
+      // let from = '';
       let tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
       if (
-        fromChainID === CHAIN_ID.starknet ||
-        fromChainID === CHAIN_ID.starknet_test ||
-        toChainID === CHAIN_ID.starknet ||
-        toChainID === CHAIN_ID.starknet_test
+        orbiterHelper.isStarknetChain({ chainId: fromChainID }) ||
+        orbiterHelper.isStarknetChain({ chainId: toChainID })
       ) {
         let { starkChain } = web3State.starkNet
         starkChain = +starkChain ? +starkChain : starkChain
@@ -1993,78 +2030,18 @@ export default {
           return
         }
       }
+
+      const toAddress = this.toCrossAddressReceipt()
+      if (!toAddress) {
+        this.openConnectModal()
+        return
+      }
+
       if (
-        orbiterHelper.isSolanaChain({chainId: toChainID}) || 
-        orbiterHelper.isTonChain({chainId: toChainID}) || 
-        orbiterHelper.isTronChain({chainId: toChainID})
+        orbiterHelper.isNotEVMChain({chainId: toChainID})
       ) {
-        if (
-          toChainID === CHAIN_ID.solana ||
-          toChainID === CHAIN_ID.solana_test
-        ) {
-          const isConnectSolana = await solanaHelper.isConnect()
-          if (isConnectSolana) {
-            to = web3State.solana.solanaAddress
-            if (!to) {
-              util.showMessage('Solana Address Error: ' + to, 'error')
-              this.transferLoading = false
-              return
-            }
-          } else {
-            setSelectWalletDialogVisible(true)
-            setConnectWalletGroupKey('SOLANA')
-            this.transferLoading = false
-            return
-          }
-        }
-
-        if (
-          orbiterHelper.isTronChain({chainId: toChainID})
-        ) {
-          const isConnect = web3State.tron.tronIsConnected
-          if (isConnect) {
-            to = web3State.tron.tronAddress
-            if (!to) {
-              util.showMessage('Tron Address Error: ' + to, 'error')
-              this.transferLoading = false
-              return
-            }
-          } else {
-            setSelectWalletDialogVisible(true)
-            setConnectWalletGroupKey('TRON')
-            this.transferLoading = false
-            return
-          }
-        }
-
-        if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-          const tonIsConnected = tonHelper.isConnected()
-          const account = tonHelper.account()
-          if (!!account && tonIsConnected) {
-            to = account
-            if (!to) {
-              util.showMessage('Solana Address Error: ' + to, 'error')
-              this.transferLoading = false
-              return
-            }
-          } else {
-            await tonHelper.connect()
-            this.transferLoading = false
-            return
-          }
-        }
-        // try {
-        //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-        //     if(res !== "created") {
-        //         return
-        //     }
-        // } catch (error) {
-        //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-        //     return
-        // }
-
         const hash = await sendTransferV3({
-          targetAddress: to,
+          targetAddress: toAddress,
           tokenAddress,
           makerAddress: selectMakerConfig.recipient,
           amount: new BigNumber(value),
@@ -2074,7 +2051,7 @@ export default {
           this.$gtag.event('click', {
             event_category: 'Transfer',
             event_label: selectMakerConfig.recipient.toLocaleLowerCase(),
-            userAddress: from,
+            userAddress: toAddress,
             hash: hash,
           })
         } catch (error) {
@@ -2082,28 +2059,19 @@ export default {
         }
 
         if (hash) {
-          this.onTransferSucceed(from, value, fromChainID, hash)
+          this.onTransferSucceed(toAddress, value, fromChainID, hash)
         }
-        this.transferLoading = false
-        return
       }
-      if (!walletIsLogin.value) {
-        this.transferLoading = false
-        return
-      }
-      from = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      if (isBrowserApp()) {
-        from = transferDataState.crossAddressReceipt
-      }
-      if (
-        !from ||
-        !new RegExp(/^0x[a-fA-F0-9]{40}$/).test(from) ||
-        from === '0x0000000000000000000000000000000000000000'
-      ) {
-        util.showMessage('please connect correct evm wallet address', 'error')
-        this.transferLoading = false
-        return
-      }
+      // from =
+      //     compatibleGlobalWalletConf.value.walletPayload.walletAddress
+      // if (isBrowserApp()) {
+      //     from = transferDataState.crossAddressReceipt;
+      // }
+      // if (!from || !(new RegExp(/^0x[a-fA-F0-9]{40}$/)).test(from) || from === "0x0000000000000000000000000000000000000000") {
+      //     util.showMessage('please connect correct evm wallet address', 'error');
+      //     this.transferLoading = false
+      //     return;
+      // }
       if (selectMakerConfig.recipient.length < 60) {
         util.showMessage(
           'The StarkNet network transaction maintenance, please try again later',
@@ -2125,7 +2093,7 @@ export default {
           this.$gtag.event('click', {
             event_category: 'Transfer',
             event_label: selectMakerConfig.recipient.toLocaleLowerCase(),
-            userAddress: from.toLocaleLowerCase(),
+            userAddress: toAddress.toLocaleLowerCase(),
             hash: hash,
           })
         } catch (error) {
@@ -2133,7 +2101,7 @@ export default {
         }
 
         if (hash) {
-          this.onTransferSucceed(from, value, fromChainID, hash)
+          this.onTransferSucceed(toAddress, value, fromChainID, hash)
         }
       } catch (error) {
         console.error('transfer error', error)
@@ -2239,16 +2207,17 @@ export default {
       }
     },
     async handleXVMContract() {
-      const {
-        fromChainID,
-        crossAddressReceipt,
-        isCrossAddress,
-        selectMakerConfig,
-      } = transferDataState
+      const { fromChainID, selectMakerConfig } = transferDataState
       const account =
         compatibleGlobalWalletConf.value.walletPayload.walletAddress
 
       if (!walletIsLogin.value) {
+        return
+      }
+
+      const toAddress = this.toCrossAddressReceipt()
+      if (!toAddress) {
+        this.openConnectModal()
         return
       }
 
@@ -2309,7 +2278,7 @@ export default {
           account,
           selectMakerConfig.recipient,
           amount,
-          isCrossAddress ? crossAddressReceipt : account
+          toAddress
         )
         try {
           this.$gtag.event('click', {
@@ -2339,66 +2308,10 @@ export default {
       const to = selectMakerConfig.recipient
       const tValue = transferCalculate.getTransferTValue()
 
-      let toAddress = ''
-
-      if (toChainID === CHAIN_ID.solana) {
-        toAddress = web3State.solana.solanaAddress
-        const isConnected = await solanaHelper.isConnect()
-
-        if (!toAddress || !isConnected) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
-          return
-        }
-      }
-
-      if (orbiterHelper.isTronChain({chainId: toChainID})) {
-        toAddress = web3State.tron.tronAddress
-        const isConnected = web3State.tron.tronIsConnected
-
-        if (!toAddress || !isConnected) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('TRON')
-          return
-        }
-      }
-
-      if (toChainID === CHAIN_ID.ton) {
-        toAddress = tonHelper.account()
-        const isConnected = tonHelper.isConnected()
-
-        if (!toAddress || !isConnected) {
-          await tonHelper.connect()
-          return
-        }
-      }
-
-      if (toChainID === CHAIN_ID.starknet) {
-        toAddress = web3State.starkNet.starkNetAddress
-        let { starkChain } = web3State.starkNet
-
-        if (!toAddress) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('STARKNET')
-          this.transferLoading = false
-          return
-        }
-
-        starkChain = +starkChain ? +starkChain : starkChain
-        if (!starkChain || (isProd() && starkChain === 'unlogin')) {
-          util.showMessage('please connect Starknet Wallet', 'error')
-          this.transferLoading = false
-          return
-        }
-        if (
-          (fromChainID === CHAIN_ID.starknet ||
-            toChainID === CHAIN_ID.starknet) &&
-          (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')
-        ) {
-          util.showMessage('please switch Starknet Wallet to mainnet', 'error')
-          this.transferLoading = false
-          return
-        }
+      const toAddress = this.toCrossAddressReceipt()
+      if (!toAddress) {
+        this.openConnectModal()
+        return
       }
 
       try {
@@ -2441,10 +2354,10 @@ export default {
       this.transferLoading = false
     },
     async RealTransfer() {
-      if (!walletIsLogin.value) {
-        Middle.$emit('connectWallet', true)
-        return
-      }
+      // if (!walletIsLogin.value) {
+      //   Middle.$emit('connectWallet', true)
+      //   return
+      // }
       if (!(await util.isLegalAddress())) {
         this.$notify.error({
           title: `Contract address is not supported, please use EVM address.`,
@@ -2452,13 +2365,12 @@ export default {
         })
         return
       }
-      const { fromChainID, toChainID, selectMakerConfig } = transferDataState
+      const { fromChainID, toChainID, selectMakerConfig, isCrossAddress } =
+        transferDataState
 
       const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
 
-      if (
-        !orbiterHelper.isNotEVMChain({chainId: fromChainID})
-      ) {
+      if (!orbiterHelper.isNotEVMChain({ chainId: fromChainID })) {
         if (
           compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
           util.getMetaMaskNetworkId(fromChainID).toString()
@@ -2493,39 +2405,8 @@ export default {
         }
       }
 
-      if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
-        try {
-          const senderWalletAddress =
-            compatibleGlobalWalletConf.value.walletPayload.walletAddress
-          const isRegisterIMX = sessionStorage.getItem(
-            `${fromChainID}--${senderWalletAddress}`
-          )
-          if (!isRegisterIMX) {
-            const imxHelper = new IMXHelper(fromChainID)
-            await imxHelper.ensureUser(senderWalletAddress)
-            sessionStorage.setItem(
-              `${fromChainID}--${senderWalletAddress}`,
-              true
-            )
-          }
-        } catch (error) {
-          this.$notify.error({
-            title: `imx address activation failed ${error.message}`,
-            duration: 3000,
-          })
-        }
-      }
-
       // Only one
       if (this.transferLoading) {
-        return
-      }
-
-      // EVM contract
-      if (util.isExecuteXVMContract()) {
-        this.transferLoading = true
-        await this.handleXVMContract()
-        this.transferLoading = false
         return
       }
 
@@ -2564,10 +2445,13 @@ export default {
           return
         }
 
-        if (
-          orbiterHelper.isSolanaChain({chainId: fromChainID})
-        ) {
+        if (orbiterHelper.isSolanaChain({ chainId: fromChainID })) {
           this.solanaTransfer(tValue.tAmount)
+          return
+        }
+
+        if (orbiterHelper.isFuelChain({ chainId: fromChainID })) {
+          this.fuelTransfer(tValue.tAmount)
           return
         }
 
@@ -2578,18 +2462,25 @@ export default {
           return
         }
 
-        if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+        if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
           this.tonTransfer(tValue.tAmount)
+          return
+        }
+
+        if (orbiterHelper.isFractalChain({chainId: fromChainID})) {
+          this.fractalTransfer(tValue.tAmount)
+          return
+        }
+
+        if (orbiterHelper.isAptosChain({chainId: fromChainID})) {
+          this.aptosTransfer(tValue.tAmount)
           return
         }
 
         const account =
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
 
-        if (
-          fromChainID === CHAIN_ID.starknet ||
-          fromChainID === CHAIN_ID.starknet_test
-        ) {
+        if (orbiterHelper.isStarknetChain({ chainId: fromChainID })) {
           this.starknetTransfer(tValue.tAmount)
           return
         }
@@ -2603,18 +2494,13 @@ export default {
           return
         }
 
-        if (
-          orbiterHelper.isNotEVMChain({chainId: toChainID}) 
-        ) {
-          await this.transferToSolanaOrTon()
+        if (orbiterHelper.isNotEVMChain({ chainId: toChainID })) {
+          await this.transferToNotEvm()
           this.transferLoading = false
           return
         }
 
-        // if (
-        //   toChainID === CHAIN_ID.starknet ||
-        //   toChainID === CHAIN_ID.starknet_test
-        // ) {
+        // if (orbiterHelper.isStarknetChain({ chainId: toChainID })) {
         //   this.transferToStarkNet(tValue.tAmount)
         //   return
         // }
@@ -2635,6 +2521,22 @@ export default {
         //EVM AA address
         if (window.ethereum?.isLoopring) {
           this.loopringWalletTransfer(tValue.tAmount)
+          return
+        }
+
+        // // EVM contract
+        // if (util.isExecuteXVMContract()) {
+        //   this.transferLoading = true
+        //   await this.handleXVMContract()
+        //   this.transferLoading = false
+        //   return
+        // }
+
+        // EVM V3 contract
+        if (isCrossAddress) {
+          this.transferLoading = true
+          await this.transferToNotEvm()
+          this.transferLoading = false
           return
         }
 
@@ -2798,8 +2700,13 @@ export default {
       const fromCurrency = fromChain.symbol
       const toCurrency = toChain.symbol
       if (fromCurrency !== toCurrency) {
-        const decimal =
-          toChain.decimals === 8 ? 6 : toChain.decimals === 18 ? 5 : 3
+        const decimal = orbiterHelper.isMiddleDecimals({
+          decimals: toChain.decimals,
+        })
+          ? 6
+          : toChain.decimals === 18
+          ? 5
+          : 3
         const highValue = (
           await exchangeToCoin(amount, fromCurrency, toCurrency)
         ).toFixed(decimal)
@@ -2892,10 +2799,6 @@ export default {
       .textBold {
         font-weight: 600;
       }
-
-      .n-withholding-fee {
-        margin-top: -8px;
-      }
       .tiered-fee-max {
         margin-top: -8px;
         font-size: 12px;
@@ -2907,6 +2810,10 @@ export default {
         font-size: 12px;
         color: #3183ff;
         font-weight: 700;
+      }
+
+      .n-withholding-fee {
+        margin-top: -8px;
       }
     }
 

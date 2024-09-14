@@ -38,7 +38,6 @@ export const setSelectWalletDialogVisible = (flag) =>
 export const setConnectWalletGroupKey = (value) =>
   (connectWalletGroupKey.value = value)
 export const setActDialogVisible = (flag) => (actDialogVisible.value = flag)
-
 export const setActConnectWalletInfo = (flag) =>
   (actConnectWalletInfo.value = flag)
 

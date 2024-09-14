@@ -21,6 +21,7 @@
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive" class="router" />
       </div>
+
       <keep-alive>
         <BottomNav
           v-if="isBottomNav"
@@ -230,7 +231,7 @@ export default {
     GlobalTgCard,
     UserInfoDetailsCardModal,
     ClaimRewardModal,
-    OPointsRankingCard
+    OPointsRankingCard,
   },
   updated() {
     if(!this.isInit) {
@@ -272,6 +273,9 @@ export default {
               orbiterHelper.currentConnectChainInfo({chainId: "1"})
             )
             setActDialogVisible(true)
+            setActConnectWalletInfo(
+              orbiterHelper.currentConnectChainInfo({chainId: "1"})
+            )
           }
         } else {
           setActDialogVisible(false)

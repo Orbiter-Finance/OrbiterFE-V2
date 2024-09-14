@@ -30,10 +30,12 @@ import { EBC_ABI } from '../constants/contract/contract'
 import { isArgentApp, isBrowserApp, isDev } from '../env'
 
 import tonHelper from '../ton/ton_helper'
-import { zeroAddress } from 'viem'
+import fuelsHelper from '../fuels/fuels_helper'
 import tronHelper from '../tron/tron_helper'
 import orbiterHelper from '../orbiter_helper'
 import { TieredFeeKey } from '../../const'
+import fractalHelper from '../fractal/fractal_helper'
+import aptosHelper from '../aptos/aptos_helper'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -133,6 +135,25 @@ export default {
   // min ~ max
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
     const { selectMakerConfig } = transferDataState
+    if (orbiterHelper.isFuelChain({ chainId: fromChainID })) {
+      const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
+      const decimals = chainInfo?.nativeCurrency?.decimals
+      if (!decimals) return '0'
+      const gasCost = await fuelsHelper.estimateGas({
+        makerAddress,
+        token: fromTokenAddress,
+      })
+      return ethers.utils.formatUnits(
+        ethers.utils.parseUnits(gasCost, 'wei').mul('12').div('10'),
+        decimals
+      )
+    }
+    if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
+      return null
+    }
+    if (orbiterHelper.isFractalChain({ chainId: fromChainID })) {
+      return null
+    }
     if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
       return null
     }
@@ -198,10 +219,7 @@ export default {
         console.warn('getZKSpaceTransferGasFeeError =', error)
       }
       return transferFee
-    } else if (
-      fromChainID === CHAIN_ID.starknet ||
-      fromChainID === CHAIN_ID.starknet_test
-    ) {
+    } else if (orbiterHelper.isStarknetChain({ chainId: fromChainID })) {
       const realTransferAmount = this.realTransferAmount().toString()
       const starkFee = await getStarkTransferFee(
         web3State.coinbase,
@@ -608,10 +626,7 @@ export default {
         throw new Error('zksync withdraw error')
       }
     }
-    if (
-      fromChainID === CHAIN_ID.starknet ||
-      fromChainID === CHAIN_ID.starknet_test
-    ) {
+    if (orbiterHelper.isStarknetChain({ chainId: fromChainID })) {
       // stark cost
       ethGas = 200000000000000
       // mainnet cost
@@ -620,26 +635,26 @@ export default {
       const SNWithDrawL1Gas = L1GasPrice * STARKNET_ETH_WITHDRAW_ONL1
       ethGas += SNWithDrawL1Gas
     }
-    if (
-      fromChainID === CHAIN_ID.solana ||
-      fromChainID === CHAIN_ID.solana_test
-    ) {
+    if (orbiterHelper.isFuelChain({ chainId: fromChainID })) {
+      // solana cost
+      ethGas = 1 * 10 ** 6
+    }
+    if (orbiterHelper.isSolanaChain({ chainId: fromChainID })) {
       // solana cost
       ethGas = 15 * 10 ** 3
+    }
+    if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
+      ethGas = 1 * 10 ** 8
     }
     if (orbiterHelper.isTronChain({ chainId: fromChainID })) {
       // trx cost
       console.log('selectMakerConfig', selectMakerConfig)
-      await tronHelper.metisGas({
-        chainId: fromChainID,
-        tokenAddress: selectMakerConfig?.fromChain?.tokenAddress,
-        makerAddress: selectMakerConfig?.recipient,
-      })
+      // await tronHelper.metisGas({
+      //   chainId: fromChainID,
+      //   tokenAddress: selectMakerConfig?.fromChain?.tokenAddress,
+      //   makerAddress: selectMakerConfig?.recipient,
+      // })
       ethGas = 0
-    }
-    if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
-      // solana cost
-      ethGas = 1 * 10 ** 8
     }
     if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
       try {
@@ -1056,10 +1071,7 @@ export default {
         console.warn('error =', error)
         throw 'getZKBalanceError'
       }
-    } else if (
-      localChainID === CHAIN_ID.starknet ||
-      localChainID === CHAIN_ID.starknet_test
-    ) {
+    } else if (orbiterHelper.isStarknetChain({ chainId: localChainID })) {
       const networkId = localChainID === CHAIN_ID.starknet ? 1 : 5
       let starknetAddress = web3State.starkNet.starkNetAddress
       if (!isMaker) {
@@ -1070,10 +1082,30 @@ export default {
         starknetAddress = userAddress
       }
       return await getErc20Balance(starknetAddress, tokenAddress, networkId)
-    } else if (
-      localChainID === CHAIN_ID.solana ||
-      localChainID === CHAIN_ID.solana_test
-    ) {
+    } else if (orbiterHelper.isAptosChain({ chainId: localChainID })) {
+      console.log(
+        'NAME',
+        localChainID,
+        tokenAddress,
+        tokenName,
+        userAddress,
+        isMaker
+      )
+      const res = await aptosHelper.getBalance(
+        userAddress,
+        tokenAddress,
+        localChainID
+      )
+      return res || '0'
+    } else if (orbiterHelper.isFractalChain({ chainId: localChainID })) {
+      const res = await fractalHelper.getBalance(
+        userAddress,
+        tokenAddress,
+        localChainID
+      )
+      console.log('res', res)
+      return res || '0'
+    } else if (orbiterHelper.isSolanaChain({ chainId: localChainID })) {
       try {
         const tokenAccountBalance = await util.getSolanaBalance(
           localChainID,
@@ -1085,12 +1117,24 @@ export default {
       } catch (error) {
         return '0'
       }
+    } else if (orbiterHelper.isFuelChain({ chainId: localChainID })) {
+      try {
+        const amount = await fuelsHelper.getBalance({
+          chainId: localChainID,
+          tokenAddress,
+          userAddress,
+        })
+        return amount.toString()
+      } catch (error) {
+        return '0'
+      }
     } else if (orbiterHelper.isTronChain({ chainId: localChainID })) {
       try {
         const tokenAccountBalance = await tronHelper.getBalance({
           chainId: localChainID,
           userAddress,
           tokenAddress,
+          isMaker,
         })
 
         return String(tokenAccountBalance || '0')
@@ -1098,10 +1142,7 @@ export default {
         console.log('error', error)
         return '0'
       }
-    } else if (
-      localChainID === CHAIN_ID.ton ||
-      localChainID === CHAIN_ID.ton_test
-    ) {
+    } else if (orbiterHelper.isTonChain({ chainId: localChainID })) {
       try {
         if (isMaker) {
           const tokenAccountBalance = await util.getTonBalance(
@@ -1114,9 +1155,12 @@ export default {
 
         const tonweb = tonHelper.tonwebProvider()
 
+        const chainInfo = util.getV3ChainInfoByChainId(localChainID)
+        const nativeCurrency = chainInfo?.nativeCurrency?.address
+
         const userTonAddress = new TonWeb.Address(userAddress)
         try {
-          if (tokenAddress === zeroAddress) {
+          if (tokenAddress === nativeCurrency) {
             const res = await tonweb.getBalance(userTonAddress)
             return res.toString()
           }
@@ -1295,9 +1339,13 @@ export default {
   safeCode() {
     const { selectMakerConfig, toChainID, fromCurrency } = transferDataState
 
-    const currency = fromCurrency || selectMakerConfig?.fromChain?.symbol
+    const f = selectMakerConfig?.fromChain?.decimals
+    const t = selectMakerConfig?.toChain?.decimals
 
-    if (currency?.toLocaleLowerCase() === 'btc') {
+    if (
+      orbiterHelper.isMiddleDecimals({ decimals: f }) ||
+      orbiterHelper.isMiddleDecimals({ decimals: t })
+    ) {
       const chainInfo = util.getV3ChainInfoByChainId(toChainID)
       return String(chainInfo.internalId)
     }
@@ -1431,7 +1479,7 @@ export default {
 
     const { tieredFee } = selectMakerConfig
 
-    const tieredFeeList = tieredFee?.filter((item) => {
+    const tieredFeeList = (tieredFee || [])?.filter((item) => {
       const [min, max] = item?.range
       return (
         Number(min) < Number(transferValue) &&

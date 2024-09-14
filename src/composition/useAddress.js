@@ -1,6 +1,8 @@
 import { web3State } from '../composition/hooks'
 import { compatibleGlobalWalletConf } from './walletsResponsiveData'
 import tonHelper from '../util/ton/ton_helper'
+import fractalHelper from '../util/fractal/fractal_helper'
+import aptosHelper from '../util/aptos/aptos_helper'
 
 export function showAddress() {
   const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
@@ -35,6 +37,37 @@ export function tonAddress() {
   if (tAddress && tAddress.length > 5) {
     const subStr1 = tAddress.slice(0, 4)
     const subStr2 = tAddress.slice(tAddress.length - 4)
+    return subStr1 + '...' + subStr2
+  }
+  return 'not connected'
+}
+
+export async function fuelAddress() {
+  const fAddress = web3State.fuel.fuelAddress || ''
+  if (fAddress && fAddress.length > 5) {
+    const subStr1 = fAddress.slice(0, 4)
+    const subStr2 = fAddress.slice(fAddress.length - 4)
+    return subStr1 + '...' + subStr2
+  }
+  return 'not connected'
+}
+export function fractalAddress() {
+  const address =
+    web3State.fractal.fractalAddress || fractalHelper.fractalAddress() || ''
+  if (address && address.length > 5) {
+    const subStr1 = address.slice(0, 4)
+    const subStr2 = address.slice(address.length - 4)
+    return subStr1 + '...' + subStr2
+  }
+  return 'not connected'
+}
+
+export function aptosAddress() {
+  const address = web3State.aptos.aptos || aptosHelper.aptosAddress() || ''
+  if (address && address.length > 5) {
+    const subStr1 = address.slice(0, 4)
+    const subStr2 = address.slice(address.length - 4)
+
     return subStr1 + '...' + subStr2
   }
   return 'not connected'

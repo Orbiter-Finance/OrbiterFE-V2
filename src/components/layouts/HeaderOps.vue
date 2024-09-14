@@ -114,7 +114,6 @@ import {
   compatibleGlobalWalletConf,
   walletIsLogin,
 } from '../../composition/walletsResponsiveData'
-import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
 import { CHAIN_ID } from '../../config'
 import { requestPointSystem, requestLotteryCard } from '../../common/openApiAx'
 import util from '../../util/util'
@@ -122,8 +121,7 @@ import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { decimalNum } from '../../util/decimalNum'
 import { ethers } from 'ethers'
-import { ChainId } from '@loopring-web/loopring-sdk';
-import orbiterHelper from '../../util/orbiter_helper.js';
+import orbiterHelper from '../../util/orbiter_helper.js'
 import { shortenAddress } from '../../util/shortenAddress'
 
 let timer1
@@ -138,6 +136,11 @@ export default {
       required: false,
       default: false,
     },
+    drawerVisible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    }
   },
   computed: {
     claimCardModalAmountInfoData() {
@@ -210,6 +213,18 @@ export default {
       const address = this.toGroup?.address || ''
       return !!address ? shortenAddress(address) : 'Connect wallet'
     },
+    currentWalletAddress() {
+      return [
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase(),
+        web3State.starkNet.starkNetAddress?.toLocaleLowerCase(),
+        web3State.tron.tronAddress,
+        solanaHelper.solanaAddress(),
+        tonHelper.account(),
+        web3State.fractal.fractalAddress,
+        web3State.aptos.aptosAddress,
+        ...[],
+      ]
+    },
     fromChainId() {
       const { fromChainID } = transferDataState
       return fromChainID
@@ -218,20 +233,9 @@ export default {
       const { toChainID } = transferDataState
       return toChainID
     },
-    currentWalletAddress() {
-      return [
-        compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase(),
-        web3State.starkNet.starkNetAddress?.toLocaleLowerCase(),
-        web3State.tron.tronAddress,
-        web3State.solana.solanaAddress,
-        tonHelper.account(),
-        ...[],
-      ]
-    },
     currentConenctInfoList() {
       return orbiterHelper.currentConnectChainInfo({ isList: true })
     },
-    
   },
   data() {
     const selectedWallet = JSON.parse(
@@ -262,6 +266,12 @@ export default {
       }
     },
     currentConenctInfoList: function () {
+      this.initGetAddressBatch()
+    },
+    isMobile: function () {
+      this.initGetAddressBatch()
+    },
+    drawerVisible: function () {
       this.initGetAddressBatch()
     },
   },
@@ -337,17 +347,17 @@ export default {
       }
     },
     async connectAWallet() {
-      const firstGroup = this.fromGroup
-      if (!firstGroup) return
+      const fromGroup = this.fromGroup
+      if (!fromGroup) return
       const isConnect =
-        firstGroup?.address &&
-        firstGroup?.address !== "0x" &&
-        firstGroup?.address !== 'Connect Wallet' &&
-        firstGroup?.address !== 'not connected'
+        fromGroup?.address &&
+        fromGroup?.address !== "0x" &&
+        fromGroup?.address !== 'Connect Wallet' &&
+        fromGroup?.address !== 'not connected'
       if (!isConnect) {
-        await firstGroup.open()
+        await fromGroup.open()
       } else {
-        setActConnectWalletInfo(firstGroup)
+        setActConnectWalletInfo(fromGroup)
         setActDialogVisible(true)
       }
     },
@@ -373,8 +383,9 @@ export default {
         })
     },
     getAddress() {
-      const isAddress = !!this.fromGroup?.isConnect
-      const address = this.fromGroup?.address
+
+      const isAddress = this.fromGroup.isConnected
+      const address = this.fromGroup.address
       let addressGroup = {
         isAddress,
         address,
@@ -385,7 +396,7 @@ export default {
     async getWalletAddressPoint() {
       const { isAddress, address, group } = this.getAddress()
 
-      if (isAddress) {
+      if (isAddress && address) {
         setActPointFetchStatus()
         const pointRes = await requestPointSystem('v2/user/points', {
           address,

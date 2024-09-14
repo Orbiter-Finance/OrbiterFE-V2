@@ -270,11 +270,16 @@ import orbiterHelper from '../util/orbiter_helper';
       },
     },
     created() {
-      this.options = [];
+      let list = []
       const chainConfig = config.chainConfig;
       for (const data of chainConfig) {
-        this.options.push({ label: data.name, value: data.chainId });
+        const flag = list.some((item)=> item.value === data.chainId) 
+        if(!flag) {
+          list = list.concat([{ label: data.name, value: data.chainId }])
+        }
       }
+      this.options = list
+     
     },
     mounted() {
       const { query } = this.$route;
@@ -311,16 +316,18 @@ import orbiterHelper from '../util/orbiter_helper';
           util.showMessage("Hash error", "error");
           return;
         }
-        if (orbiterHelper.isStarknetChain({ chainId: selectChainId })) {
+        if (orbiterHelper.isStarknetChain({chainId: selectChainId})) {
           // starknet
           txHash = util.starknetHashFormat(txHash);
-        } else if (orbiterHelper.isSolanaChain({ chainId: selectChainId })) {
+        } else if (orbiterHelper.isSolanaChain({chainId: selectChainId})) {
           // solana
-        } else if (orbiterHelper.isTronChain({ chainId: selectChainId })) {
-          // tron
-        } else if (orbiterHelper.isTonChain({ chainId: selectChainId })) {
+        } else if (orbiterHelper.isFuelChain({chainId: selectChainId})) {
+          // fuel
+        } else if (orbiterHelper.isTonChain({chainId: selectChainId})) {
           // ton
-        } else if (selectChainId === CHAIN_ID.imx || selectChainId === CHAIN_ID.imx_test) {
+        } else if (orbiterHelper.isTonChain({ chainId: selectChainId })) {
+          // tron
+        }  else if (selectChainId === CHAIN_ID.imx || selectChainId === CHAIN_ID.imx_test) {
           if (!Number(txHash)) {
             util.showMessage("Hash error", "error");
             return;

@@ -2,6 +2,7 @@ const isProduction = process.env.NODE_ENV !== 'development'
 const path = require('path')
 const NullishCoalescingOperatorPlugin = require('@babel/plugin-proposal-nullish-coalescing-operator')
 const LogicalAssignmentOperators = require('@babel/plugin-proposal-logical-assignment-operators')
+const OptionalChaining = require('@babel/plugin-proposal-optional-chaining')
 const NumericSeparator = require('@babel/plugin-proposal-numeric-separator')
 const ExportNamespaceFrom = require('@babel/plugin-proposal-export-namespace-from')
 
@@ -33,6 +34,7 @@ module.exports = {
         plugins: [LogicalAssignmentOperators],
       })
       .end()
+
     config.module
       .rule('solana')
       .test(/(\.mjs$)|(\.js$)/)
@@ -47,6 +49,35 @@ module.exports = {
           NumericSeparator,
           ExportNamespaceFrom,
         ],
+      })
+      .end()
+
+    config.module
+      .rule('fuels')
+      .test(/(\.mjs$)|(\.js$)/)
+      .include.add(path.resolve(__dirname, 'node_modules/fuels'))
+      .add(path.resolve(__dirname, 'node_modules/@fuel-ts'))
+      .add(path.resolve(__dirname, 'node_modules/mipd'))
+      .add(path.resolve(__dirname, 'node_modules/lit'))
+      .add(path.resolve(__dirname, 'node_modules/unstorage'))
+      .add(path.resolve(__dirname, 'node_modules/@fuels/connectors'))
+      .end()
+      .use('babel-loader')
+      .loader('babel-loader')
+      .options({
+        plugins: [LogicalAssignmentOperators, NumericSeparator],
+      })
+      .end()
+
+    config.module
+      .rule('aptos')
+      .test(/(\.mjs$)|(\.js$)/)
+      .include.add(path.resolve(__dirname, 'node_modules/@aptos-labs/ts-sdk'))
+      .end()
+      .use('babel-loader')
+      .loader('babel-loader')
+      .options({
+        plugins: [LogicalAssignmentOperators],
       })
       .end()
     config.module
@@ -165,6 +196,18 @@ module.exports = {
         components: resolve(__dirname, './src/components'),
         config: resolve(__dirname, './src/config'),
         views: resolve(__dirname, './src/views'),
+        '@fuel-ts/transactions/configs': resolve(
+          'node_modules/@fuel-ts/transactions/dist/configs.js'
+        ),
+        '@fuel-ts/account/configs': resolve(
+          'node_modules/@fuel-ts/account/dist/configs.js'
+        ),
+        '@fuel-ts/address/configs': resolve(
+          'node_modules/@fuel-ts/address/dist/configs.js'
+        ),
+        '@fuel-ts/math/configs': resolve(
+          'node_modules/@fuel-ts/math/dist/configs.js'
+        ),
       },
       extensions: ['.js', '.vue', '.json'],
     })
