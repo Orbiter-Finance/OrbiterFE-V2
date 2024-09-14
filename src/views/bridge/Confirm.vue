@@ -881,9 +881,6 @@ export default {
     async transferToStarkNet(value) {
       const { selectMakerConfig, fromChainID, transferExt } = transferDataState
 
-      if (!walletIsLogin.value) {
-        return
-      }
       const { fromAddress } = transferExt
       const contractAddress = selectMakerConfig.fromChain.tokenAddress
       const recipient = selectMakerConfig.recipient
@@ -1901,8 +1898,6 @@ export default {
 
     },
     async tronTransfer(value) {
-
-      console.log('value', value)
       const { selectMakerConfig, fromChainID, toChainID, transferValue } =
         transferDataState
 
@@ -2066,12 +2061,6 @@ export default {
         if (hash) {
           this.onTransferSucceed(toAddress, value, fromChainID, hash)
         }
-      }
-
-
-      if (!walletIsLogin.value) {
-        this.transferLoading = false
-        return
       }
       // from =
       //     compatibleGlobalWalletConf.value.walletPayload.walletAddress
@@ -2365,10 +2354,10 @@ export default {
       this.transferLoading = false
     },
     async RealTransfer() {
-      if (!walletIsLogin.value) {
-        Middle.$emit('connectWallet', true)
-        return
-      }
+      // if (!walletIsLogin.value) {
+      //   Middle.$emit('connectWallet', true)
+      //   return
+      // }
       if (!(await util.isLegalAddress())) {
         this.$notify.error({
           title: `Contract address is not supported, please use EVM address.`,
@@ -2511,10 +2500,10 @@ export default {
           return
         }
 
-        if (orbiterHelper.isStarknetChain({ chainId: toChainID })) {
-          this.transferToStarkNet(tValue.tAmount)
-          return
-        }
+        // if (orbiterHelper.isStarknetChain({ chainId: toChainID })) {
+        //   this.transferToStarkNet(tValue.tAmount)
+        //   return
+        // }
 
         if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
           this.imxTransfer(tValue.tAmount)

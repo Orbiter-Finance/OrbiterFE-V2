@@ -25,7 +25,7 @@
           style="margin-top: 24px; margin-left: 66px; min-width: 280px"
         />
       </div>
-      <HeaderOps v-if="$route.path !== '/statistics'" />
+      <HeaderOps :drawerVisible="drawerVisible" v-if="$route.path !== '/statistics'" />
     </template>
     <template v-else>
       <SvgIconThemed
@@ -121,7 +121,7 @@
           <HeaderLinks @closeDrawer="() => (drawerVisible = false)" verical />
           <div class="drawer-bottom">
             <div class="drawer-bottom-wrapper">
-              <HeaderOps verical @closeDrawer="() => (drawerVisible = false)" />
+              <HeaderOps :drawerVisible="drawerVisible" verical @closeDrawer="() => (drawerVisible = false)" />
             </div>
           </div>
         </div>
@@ -348,6 +348,9 @@ export default {
       }
     },
     walletList: function () {
+      this.initGetAddressBatch()
+    },
+    isMobile: function () {
       this.initGetAddressBatch()
     },
   },

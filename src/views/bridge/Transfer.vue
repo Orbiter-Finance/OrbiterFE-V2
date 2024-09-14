@@ -37,7 +37,7 @@
             <div class="left">From</div>
           </o-tooltip>
           <div v-else class="left">From</div>
-          <div v-if="isLogin && fromBalance !== '-1'" class="right">
+          <div v-if="fromBalance !== '-1'" class="right">
             Balance:
             <CommLoading
                     :hidden="!fromBalanceLoading"
@@ -626,7 +626,6 @@ export default {
       return web3State;
     },
     isLogin() {
-        util.log('walletIsLogin.value',walletIsLogin.value);
         if (!walletIsLogin.value) {
             this.isNewVersion = false;
             this.isWhiteWallet = false;
@@ -1536,7 +1535,7 @@ export default {
         text: 'SEND',
         disabled: null,
       };
-      if (walletIsLogin.value) {
+      // if (walletIsLogin.value) {
         info.text = 'SEND';
         if (transferValue.comparedTo(0) < 0) {
           info.disabled = 'disabled';
@@ -1603,7 +1602,7 @@ export default {
         //   util.log('this.isLoopring && !this.crossAddressReceipt',
         //           this.isLoopring, !this.crossAddressReceipt);
         // }
-      }
+      // }
       this.sendBtnInfo = info;
     },
     updateRoutes(oldFromChainID, oldToChainID, oldFromCurrency) {
@@ -1833,10 +1832,10 @@ export default {
     },
     fromMax() {
       this.isClickMax = true
-      if (!walletIsLogin.value) {
-        this.transferValue = '0';
-        return;
-      }
+      // if (!walletIsLogin.value) {
+      //   this.transferValue = '0';
+      //   return;
+      // }
       const { selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
       util.log('userMaxPrice',this.userMaxPrice)
@@ -1978,9 +1977,9 @@ export default {
       //     return;
       //   }
       // }
-      const toAddress = this.toCrossAddressReceipt()
+      const toChainAddress = this.toCrossAddressReceipt()
       
-      if(!toAddress || toAddress === "0x" ) {
+      if(!toChainAddress || toChainAddress === "0x" ) {
         return
       }
       if (!await util.isLegalAddress()) {
@@ -2070,10 +2069,7 @@ export default {
       }
     
       // if unlogin  login first
-      if (!walletIsLogin.value) {
-        Middle.$emit('connectWallet', true);
-        return;
-      } else {
+
         if (!check.checkPrice(this.transferValue)) {
           this.$notify.error({
             title: `The format of input amount is incorrect`,
@@ -2253,7 +2249,7 @@ export default {
             }
           ]);
           this.$emit('stateChanged', '2');
-        }
+      
     },
     async updateOriginGasCost() {
       this.originGasLoading = true;

@@ -1134,6 +1134,7 @@ export default {
           chainId: localChainID,
           userAddress,
           tokenAddress,
+          isMaker,
         })
 
         return String(tokenAccountBalance || '0')
