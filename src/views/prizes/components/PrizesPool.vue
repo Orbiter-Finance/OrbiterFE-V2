@@ -434,7 +434,7 @@ export default {
     .pool-total {
       font-size: 14px;
       .pool-total-amount {
-        font-size: 24px;
+        font-size: 20px;
         height: 36px;
       }
       .participants-total-amount {
