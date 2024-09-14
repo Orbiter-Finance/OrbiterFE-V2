@@ -184,7 +184,7 @@
         >More</a
         >
       </div>
-      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet) || (targetChainId === CHAIN_ID.solana || targetChainId === CHAIN_ID.solana_test)  || (targetChainId === CHAIN_ID.ton || targetChainId === CHAIN_ID.ton_test) || ( orbiterHelper.isTronChain({chainId: targetChainId}) )">
+      <div :hidden="isHidden">
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
           <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
           <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
@@ -585,6 +585,16 @@ export default {
     chainName() {
       return util.chainName(transferDataState.toChainID);
     },
+    isHidden(){
+      return (
+        !this.isNewVersion || 
+      this.selectFromToken === this.selectToToken || !isSupportXVM) && 
+      !this.isLoopring && 
+      !(this.isBrowserApp && this.selectStarknet) || 
+      orbiterHelper.isSolanaChain({chainId: this.targetChainId})  || 
+      orbiterHelper.isTonChain({chainId: this.targetChainId}) || 
+      orbiterHelper.isTronChain({chainId: this.targetChainId})
+    },
     isCurrentAddress() {
       if (!this.isNewVersion || this.selectFromToken === this.selectToToken) {
         return false;
@@ -619,7 +629,7 @@ export default {
       if (transferDataState.toChainID === CHAIN_ID.solana || transferDataState.toChainID === CHAIN_ID.solana_test) {
         return false;
       }
-      if (orbiterHelper.isTronChain({chainId: ransferDataState.toChainID})) {
+      if (orbiterHelper.isTronChain({chainId: transferDataState.toChainID})) {
         return false;
       }
       if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
