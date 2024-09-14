@@ -730,6 +730,27 @@ export default {
       let toAddress = ''
       let isConnected = false
 
+      if (
+        toChainID === CHAIN_ID.starknet ||
+        toChainID === CHAIN_ID.starknet_test
+      ) {
+        toAddress = web3State.starkNet.starkNetAddress
+        const starkChain = web3State.starkNet.starkChain
+
+        if (!starkChain || (isProd() && starkChain === 'unlogin')) {
+          util.showMessage('please connect Starknet Wallet', 'error')
+          this.transferLoading = false
+          return
+        }
+
+        if (!toAddress) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('STARKNET')
+          this.transferLoading = false
+          return
+        }
+      }
+
       if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
         toAddress = web3State.solana.solanaAddress
         isConnected = await solanaHelper.isConnect()
@@ -2093,13 +2114,13 @@ export default {
       }
 
       try {
-        const hash = await sendTransfer(
-          from,
+        const hash = await sendTransferV3({
+          targetAddress: from,
           tokenAddress,
-          selectMakerConfig.recipient,
-          new BigNumber(value),
-          fromChainID
-        )
+          makerAddress: selectMakerConfig.recipient,
+          amount: new BigNumber(value),
+          chainID: fromChainID,
+        })
         try {
           this.$gtag.event('click', {
             event_category: 'Transfer',
@@ -2583,23 +2604,20 @@ export default {
         }
 
         if (
-          orbiterHelper.isSolanaChain({chainId: toChainID}) || 
-          orbiterHelper.isTonChain({chainId: toChainID}) || 
-          orbiterHelper.isTronChain({chainId: toChainID}) 
-
+          orbiterHelper.isNotEVMChain({chainId: toChainID}) 
         ) {
           await this.transferToSolanaOrTon()
           this.transferLoading = false
           return
         }
 
-        if (
-          toChainID === CHAIN_ID.starknet ||
-          toChainID === CHAIN_ID.starknet_test
-        ) {
-          this.transferToStarkNet(tValue.tAmount)
-          return
-        }
+        // if (
+        //   toChainID === CHAIN_ID.starknet ||
+        //   toChainID === CHAIN_ID.starknet_test
+        // ) {
+        //   this.transferToStarkNet(tValue.tAmount)
+        //   return
+        // }
 
         if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
           this.imxTransfer(tValue.tAmount)
