@@ -199,6 +199,11 @@ export default {
         },
         {
           isConnect: false,
+          icon: 'binance wallet',
+          title: BINANCEWALLET,
+        },
+        {
+          isConnect: false,
           icon: 'walletconnect',
           title: WALLETCONNECT,
         },
@@ -216,11 +221,6 @@ export default {
           isConnect: false,
           icon: 'okxwallet',
           title: OKXWALLET,
-        },
-        {
-          isConnect: false,
-          icon: 'binance wallet',
-          title: BINANCEWALLET,
         },
         {
           isConnect: false,
