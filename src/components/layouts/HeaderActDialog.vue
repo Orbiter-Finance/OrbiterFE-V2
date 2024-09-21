@@ -42,7 +42,7 @@
               <div class="text_97">{{ networkName }}</div>
             </div>
             <div
-              v-clipboard:copy="currentAddress"
+              v-clipboard:copy="currentWalletAddress"
               v-clipboard:success="onCopySuccess"
               class="label_17"
             >
