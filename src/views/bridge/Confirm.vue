@@ -2036,31 +2036,31 @@ export default {
         return
       }
 
-      if (
-        orbiterHelper.isNotEVMChain({chainId: toChainID})
-      ) {
-        const hash = await sendTransferV3({
-          targetAddress: toAddress,
-          tokenAddress,
-          makerAddress: selectMakerConfig.recipient,
-          amount: new BigNumber(value),
-          chainID: fromChainID,
-        })
-        try {
-          this.$gtag.event('click', {
-            event_category: 'Transfer',
-            event_label: selectMakerConfig.recipient.toLocaleLowerCase(),
-            userAddress: toAddress,
-            hash: hash,
-          })
-        } catch (error) {
-          console.error('click error', error)
-        }
+      // if (
+      //   orbiterHelper.isNotEVMChain({chainId: toChainID})
+      // ) {
+      //   const hash = await sendTransferV3({
+      //     targetAddress: toAddress,
+      //     tokenAddress,
+      //     makerAddress: selectMakerConfig.recipient,
+      //     amount: new BigNumber(value),
+      //     chainID: fromChainID,
+      //   })
+      //   try {
+      //     this.$gtag.event('click', {
+      //       event_category: 'Transfer',
+      //       event_label: selectMakerConfig.recipient.toLocaleLowerCase(),
+      //       userAddress: toAddress,
+      //       hash: hash,
+      //     })
+      //   } catch (error) {
+      //     console.error('click error', error)
+      //   }
 
-        if (hash) {
-          this.onTransferSucceed(toAddress, value, fromChainID, hash)
-        }
-      }
+      //   if (hash) {
+      //     this.onTransferSucceed(toAddress, value, fromChainID, hash)
+      //   }
+      // }
       // from =
       //     compatibleGlobalWalletConf.value.walletPayload.walletAddress
       // if (isBrowserApp()) {
@@ -2082,7 +2082,7 @@ export default {
 
       try {
         const hash = await sendTransferV3({
-          targetAddress: from,
+          targetAddress: toAddress,
           tokenAddress,
           makerAddress: selectMakerConfig.recipient,
           amount: new BigNumber(value),
