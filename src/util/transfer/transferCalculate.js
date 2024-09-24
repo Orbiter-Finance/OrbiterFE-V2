@@ -1134,6 +1134,7 @@ export default {
           chainId: localChainID,
           userAddress,
           tokenAddress,
+          isMaker,
         })
 
         return String(tokenAccountBalance || '0')
@@ -1337,8 +1338,6 @@ export default {
 
   safeCode() {
     const { selectMakerConfig, toChainID, fromCurrency } = transferDataState
-
-    console.log('toChainID', toChainID, selectMakerConfig)
 
     const f = selectMakerConfig?.fromChain?.decimals
     const t = selectMakerConfig?.toChain?.decimals

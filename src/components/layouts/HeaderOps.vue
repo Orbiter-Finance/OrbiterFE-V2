@@ -114,7 +114,6 @@ import {
   compatibleGlobalWalletConf,
   walletIsLogin,
 } from '../../composition/walletsResponsiveData'
-import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
 import { CHAIN_ID } from '../../config'
 import { requestPointSystem, requestLotteryCard } from '../../common/openApiAx'
 import util from '../../util/util'
@@ -137,6 +136,11 @@ export default {
       required: false,
       default: false,
     },
+    drawerVisible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    }
   },
   computed: {
     claimCardModalAmountInfoData() {
@@ -264,6 +268,12 @@ export default {
     currentConenctInfoList: function () {
       this.initGetAddressBatch()
     },
+    isMobile: function () {
+      this.initGetAddressBatch()
+    },
+    drawerVisible: function () {
+      this.initGetAddressBatch()
+    },
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
@@ -337,17 +347,17 @@ export default {
       }
     },
     async connectAWallet() {
-      const firstGroup = this.fromGroup
-      if (!firstGroup) return
+      const fromGroup = this.fromGroup
+      if (!fromGroup) return
       const isConnect =
-        firstGroup?.address &&
-        firstGroup?.address !== "0x" &&
-        firstGroup?.address !== 'Connect Wallet' &&
-        firstGroup?.address !== 'not connected'
+        fromGroup?.address &&
+        fromGroup?.address !== "0x" &&
+        fromGroup?.address !== 'Connect Wallet' &&
+        fromGroup?.address !== 'not connected'
       if (!isConnect) {
-        await firstGroup.open()
+        await fromGroup.open()
       } else {
-        setActConnectWalletInfo(firstGroup)
+        setActConnectWalletInfo(fromGroup)
         setActDialogVisible(true)
       }
     },

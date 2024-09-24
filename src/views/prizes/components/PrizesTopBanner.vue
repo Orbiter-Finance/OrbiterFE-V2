@@ -182,7 +182,7 @@ export default {
 <style scoped lang="scss">
 .prizes-top-banner {
   width: 100%;
-  padding: 5% 0 15% 80px;
+  padding: 5% 0 0 80px;
   background-image: url('../../../assets/prizes/bg.png');
   background-size: cover;
   background-position: 75% 0;
@@ -190,6 +190,7 @@ export default {
   justify-content: center;
   align-items: center;
   background-repeat: no-repeat;
+  height: 680px;
   .prizes-content {
     width: 100%;
 
@@ -310,8 +311,8 @@ export default {
 
 @media (max-width: 960px) {
   #prizes-top-banner {
-    padding: 5% 0 15%;
-
+    padding: 5% 0 0;
+    height: 420px;
     .prizes-content {
       .group {
         justify-content: center;

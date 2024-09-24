@@ -41,18 +41,17 @@ export default {
             '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥3 TX Traders:</span> Share 5% of the prize pool',
             '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥8 TX Traders:</span> Share 10% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Gamma Badge</span> on scroll.',
             '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥15 TX Traders:</span> Share 18% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Beta Badge</span> on scroll.',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 9-100 Traders (with ≥20 TX Traders):</span> Share 32% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Alpha Badge</span> on scroll.',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 1-8 Traders (with ≥20 TX Traders):</span> Share 35% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Alpha Badge</span> on scroll.',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 9-100 Traders (with ≥20 TX):</span> Share 32% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Alpha Badge</span> on scroll.',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 1-8 Traders (with ≥20 TX):</span> Share 35% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Alpha Badge</span> on scroll.',
           ],
         },
         {
-          label: '3.What are the prize pool and bridging fee rebates rules?',
+          label: '3.What are the rules of different prize pool tiers and bridging fee rebates?',
           image: "rule.png",
           text: [
             '<span class="orbiter_global_prizes_rule_tag">Note:</span>',
             '- The prize pool will be unlocked when the amount of transactions (TX) ≥ 2,500;',
             '- TOP 1 to 8 users, up to 96% bridging fees (except for gas fees) will be rebated.',
-            '- One address can only receive up to 420 opoints.'
           ],
         },
         {
@@ -60,7 +59,8 @@ export default {
           text: [
             'Participants can earn additional event points by completing the following tasks:',
             "- Complete ≥1 transactions for 7 days to earn extra 126 Opoints.",
-            "- Complete ≥1 transactions for 14 days to earn extra 420 Opoints."
+            "- Complete ≥1 transactions for 14 days to earn extra 420 Opoints.",
+            '- One address can only receive up to 420 opoints.'
           ],
         },
         {
@@ -72,7 +72,7 @@ export default {
         {
           label: '6.When will the rewards be distributed?',
           text: [
-            '- All rewards will be distributed after the event ends, including USDC and bridging fee rebates for the top 20 users.',
+            '- All rewards will be distributed after the event ends, including USDC, Opoints and bridging fee rebates.',
             '- Please stay informed and claim your rewards within 3 days of the reward claim portal opening!'
           ],
         },
