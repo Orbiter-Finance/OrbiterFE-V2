@@ -3422,7 +3422,7 @@
                 "name": "evm-rpc"
             }
         ],
-        "infoURL": "https://rpc.api.lisk.com",
+        "infoURL": "https://blockscout.lisk.com",
         "internalId": 86,
         "name": "Lisk",
         "nativeCurrency": {
