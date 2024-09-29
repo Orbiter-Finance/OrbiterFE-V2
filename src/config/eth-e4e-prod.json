@@ -9346,7 +9346,7 @@
     },
     "72-19": {
         "ETH-ETH": {
-            "gasFee": 0,
+            "gasFee": 26,
             "tradingFee": 0.0005,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",

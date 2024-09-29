@@ -202,11 +202,11 @@ export default {
           icon: 'binance wallet',
           title: BINANCEWALLET,
         },
-        {
-          isConnect: false,
-          icon: 'walletconnect',
-          title: WALLETCONNECT,
-        },
+        // {
+        //   isConnect: false,
+        //   icon: 'walletconnect',
+        //   title: WALLETCONNECT,
+        // },
         {
           isConnect: false,
           icon: 'coinbase',
