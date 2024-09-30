@@ -1,95 +1,93 @@
 <template>
   <div id="prizes-rank" class="prizes-rank">
     <div class="prizes-rank-title">Top 100 Leaderboard</div>
-    <div class="rank-title">
-      <!-- <div class="rank-tabs">
-        <div class="tab1">Rank 1-8 (0 Bridging Fee)</div>
-        <div class="tab2">Rank 9-20 (50% Bridging Fee)</div>
-      </div> -->
-      <div class="refresh-time">
-        update time: {{ calculateRelativeTime(refreshTime) }}
+    <PrizesCard>
+      <div class="rank-title">
+        <!-- <div class="rank-tabs">
+          <div class="tab1">Rank 1-8 (0 Bridging Fee)</div>
+          <div class="tab2">Rank 9-20 (50% Bridging Fee)</div>
+        </div> -->
+        <div class="refresh-time">
+          update time: {{ calculateRelativeTime(refreshTime) }}
+        </div>
       </div>
-    </div>
-    <div class="rank-list-group">
-      <div class="rank-list">
-        <div class="rank-list-header rank-list-card-item">
-          <div class="ranking">
-            Rank
-            <o-tooltip>
-              <template v-slot:titleDesc>
-                <span style="margin-left: -20px">
-                  <span>
-                    The Top 100 leaderboard only displays users with ≥20
-                    transactions.
+      <div class="rank-list-group">
+        <div class="rank-list">
+          <div class="rank-list-header rank-list-card-item">
+            <div class="ranking">
+              Rank
+              <o-tooltip>
+                <template v-slot:titleDesc>
+                  <span style="margin-left: -20px">
+                    <span>
+                      The Top 100 leaderboard only displays users with ≥20
+                      transactions.
+                    </span>
                   </span>
+                </template>
+                <span class="tips">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-circle-help"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                    <path d="M12 17h.01" />
+                  </svg>
                 </span>
-              </template>
-              <span class="tips">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-circle-help"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                  <path d="M12 17h.01" />
-                </svg>
-              </span>
-            </o-tooltip>
-          </div>
-          <div class="user-address">User</div>
-          <div class="cumulative-tx">Total Transaction</div>
-          <div class="bridge-fee" v-if="current <= 1">Bridging fee rebate</div>
-          <div class="emit-reward">Estimated Earnings</div>
-        </div>
-        <div
-          class="rank-list-item rank-list-card-item"
-          v-for="(item, index) in rankData"
-          :key="index"
-          :style="`background-color:${
-            !!(index % 2)
-              ? 'rgba(255, 255, 255, 0.08)'
-              : 'rgba(255, 255, 255, 0.05)'
-          };`"
-        >
-          <div class="ranking">
-            <div :class="'ranking-' + item.rank">{{ item.rank }}</div>
-          </div>
-          <div class="user-address">
-            {{ shortAddress(item.address, isMobile ? 4 : 6) }}
-          </div>
-          <div class="cumulative-tx">
-            {{ decimalNumC(item.txAmount, 0, ',') }} tx
-          </div>
-          <div class="bridge-fee" v-if="current <= 1">
-            {{ bridgingFee(item) }}
-          </div>
-          <div class="emit-reward">
-            <div>
-              {{ emiteReward(item) }}
+              </o-tooltip>
             </div>
-            <span>{{ emiteRewardU(item) }}</span>
+            <div class="user-address">User</div>
+            <div class="cumulative-tx">Total Transaction</div>
+            <div class="bridge-fee" v-if="current <= 1">Bridging fee rebate</div>
+            <div class="emit-reward">Estimated Earnings</div>
           </div>
-        </div>
-        <div class="pagination-group">
-          <el-pagination
-            @current-change="curChange"
-            class="rank-pagination"
-            layout="prev, pager, next"
-            :current-page="1"
-            :total="len"
+          <div
+            class="rank-list-item rank-list-card-item"
+            v-for="(item, index) in rankData"
+            :key="index"
           >
-          </el-pagination>
+            <div class="ranking">
+              <div :class="'ranking-' + item.rank">{{ item.rank }}</div>
+            </div>
+            <div class="user-address">
+              {{ shortAddress(item.address, isMobile ? 4 : 6) }}
+            </div>
+            <div class="cumulative-tx">
+              {{ decimalNumC(item.txAmount, 0, ',') }} tx
+            </div>
+            <div class="bridge-fee" v-if="current <= 1">
+              {{ bridgingFee(item) }}
+            </div>
+            <div class="emit-reward">
+              <div>
+                {{ emiteReward(item) }}
+              </div>
+              <span>{{ emiteRewardU(item) }}</span>
+            </div>
+          </div>
+          <div class="pagination-group">
+            <el-pagination
+              @current-change="curChange"
+              class="rank-pagination"
+              layout="prev, pager, next"
+              :current-page="1"
+              :total="len"
+            >
+            </el-pagination>
+          </div>
         </div>
       </div>
-    </div>
+    </PrizesCard>
+    
   </div>
 </template>
 
@@ -105,12 +103,16 @@ import {
 } from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
 import dayjs from 'dayjs'
+import PrizesCard from "./PrizesCard.vue"
 let rankA = 8
 let rankB = 20
 let txBase = 3
 
 export default {
   name: 'PrizesRank',
+  components: {
+    PrizesCard
+  },
   data() {
     return {
       current: 1,
@@ -121,58 +123,58 @@ export default {
       const tx = this.totalTx
       return [
         {
-          tx: '0~2,499 Tx',
+          tx: '0~3,999 Tx',
           reward: '',
-          range: [0, 2499],
+          range: [0, 3999],
           bridge50Fee: 0,
           bridge100Fee: 0,
           isLock: tx < 0,
           isPromotion: tx > 0,
         },
         {
-          tx: '2,500~11,999 Tx',
-          reward: '$2,500',
-          range: [2500, 11999],
+          tx: '4,000~14,999 Tx',
+          reward: '$1,750',
+          range: [4000, 14999],
           bridge50Fee: 5,
           bridge100Fee: 15,
-          isLock: tx < 2500,
-          isPromotion: tx > 2500,
+          isLock: tx < 4000,
+          isPromotion: tx > 4000,
         },
         {
-          tx: '12,000~32,999 Tx',
-          reward: '$7,500',
-          range: [12000, 32999],
+          tx: '15,000~39,999 Tx',
+          reward: '$5,250',
+          range: [15000, 39999],
           bridge50Fee: 10,
           bridge100Fee: 30,
-          isLock: tx < 12000,
-          isPromotion: tx > 12000,
+          isLock: tx < 15000,
+          isPromotion: tx > 15000,
         },
         {
-          tx: '33,000~59,999 Tx',
-          reward: '$22,500',
-          range: [33000, 59999],
+          tx: '40,000~99,999 Tx',
+          reward: '$15,750',
+          range: [40000, 99999],
           bridge50Fee: 20,
           bridge100Fee: 45,
-          isLock: tx < 33000,
-          isPromotion: tx > 33000,
+          isLock: tx < 40000,
+          isPromotion: tx > 40000,
         },
         {
-          tx: '60,000~149,999 Tx',
-          reward: '$40,000',
-          range: [60000, 149999],
+          tx: '100,000~249,999 Tx',
+          reward: '$28,000',
+          range: [100000, 249999],
           bridge50Fee: 20,
           bridge100Fee: 60,
-          isLock: tx < 60000,
-          isPromotion: tx > 60000,
+          isLock: tx < 100000,
+          isPromotion: tx > 100000,
         },
         {
-          tx: '≥150,000 Tx',
-          reward: '$50,000',
-          range: [149999, 999999],
+          tx: '≥250,000 Tx',
+          reward: '$35,000',
+          range: [250000, 9999999],
           bridge50Fee: 50,
           bridge100Fee: 96,
           isColor: true,
-          isLock: tx < 149999,
+          isLock: tx < 250000,
           isPromotion: false,
         },
       ]
@@ -452,15 +454,8 @@ export default {
     text-align: left;
     margin-top: 24px;
     position: relative;
-    border-radius: 16px;
-
-    background: linear-gradient(
-        -3.58deg,
-        rgba(15, 34, 37, 0.2) 60.731%,
-        rgba(209, 112, 85, 0.2) 102.158%
-      ),
-      rgb(15, 34, 37);
-
+    background-color: #040809;
+    border: 1px solid rgb(69, 35, 48);
     .rank-list-card-item {
       width: 100%;
       padding: 14px 32px;
@@ -556,12 +551,16 @@ export default {
 
     .rank-list-header {
       font-size: 14px;
-      background: rgba(255, 255, 255, 0.05);
+      background: #1E140E;
+      border-bottom: 1px solid rgb(69, 35, 48);
+
     }
 
     .rank-list-item {
       font-family: GeneralSans-SemiBold;
       height: 76px;
+      border-bottom: 1px solid rgb(69, 35, 48);
+      background: rgb(4, 8, 9);
       .emit-reward {
         color: #ffd166;
         span {

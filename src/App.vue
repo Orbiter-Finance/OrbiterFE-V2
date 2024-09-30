@@ -293,7 +293,7 @@ export default {
     },
     fromChainID: function(a, b) {
       if(a && a !== b) {
-        this.connectWallet(a)
+        // this.connectWallet(a)
       }
     }
   },

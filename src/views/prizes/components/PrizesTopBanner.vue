@@ -2,7 +2,7 @@
   <div id="prizes-top-banner" class="prizes-top-banner">
     <div class="prizes-content">
       <div class="group">
-        <div class="badge">Mint Scroll Alpha Badge</div>
+        <div class="badge">Optimism Superchain</div>
       </div>
       <div class="group">
         <div class="title orbiter-linear-text">$50,000 Prize Pool</div>
@@ -182,31 +182,28 @@ export default {
 <style scoped lang="scss">
 .prizes-top-banner {
   width: 100%;
-  padding: 5% 0 15% 80px;
+  padding: 5% 0 80px;
   background-image: url('../../../assets/prizes/bg.png');
   background-size: cover;
-  background-position: 75% 0;
+  background-position: 50% 0;
   display: flex;
   justify-content: center;
   align-items: center;
   background-repeat: no-repeat;
+  height: 680px;
   .prizes-content {
     width: 100%;
 
     .group {
       width: 100%;
       display: flex;
-      justify-content: start;
+      justify-content: center;
       align-items: center;
       .badge {
         border-radius: 999px;
-        background: linear-gradient(
-          176deg,
-          rgb(255, 232, 181) 31.351%,
-          rgb(255, 196, 125) 51.355%
-        );
+        background: #ea3431;
         padding: 12px 40px;
-        color: #0a1313;
+        color: #ffffff;
         font-family: GeneralSans-SemiBold;
         font-size: 24px;
         white-space: nowrap;
@@ -215,7 +212,7 @@ export default {
         margin-top: 16px;
         white-space: nowrap;
         color: #ffc47d;
-        background-image: linear-gradient(to right, #fff2f0 80%, #ffdeb5 100%);
+        background-image: linear-gradient(to right, #ffffff 80%, #ff8482 100%);
         font-size: 72px;
         line-height: 1;
         font-family: GeneralSans-SemiBold;
@@ -226,7 +223,7 @@ export default {
       }
       .amount {
         margin-top: 16px;
-        background-image: linear-gradient(to right, #fff2f0 80%, #ffdeb5 100%);
+        background-image: linear-gradient(to right, #ffffff 80%, #ff8482 100%);
         color: #ffc47d;
         font-size: 72px;
         line-height: 1.2;
@@ -234,7 +231,7 @@ export default {
         font-family: GeneralSans-SemiBold;
         white-space: nowrap;
         .chain {
-          background-image: linear-gradient(to top, #ffc47d, #ffc47d);
+          background-image: linear-gradient(to right, #ea3431, #cc8dff);
         }
       }
     }
@@ -254,7 +251,7 @@ export default {
             rgba(21, 63, 66, 0),
             rgba(255, 21, 0, 0.2) 100%
           ),
-          rgb(71, 55, 21);
+          rgb(71, 21, 21);
         margin: 0 6px;
         .card-item-value {
           font-size: 28px;
@@ -270,7 +267,7 @@ export default {
           letter-spacing: 0px;
           text-align: center;
           margin-top: 4px;
-          color: #FFDEB5;
+          color: #ffdeb5;
         }
       }
     }
@@ -310,8 +307,8 @@ export default {
 
 @media (max-width: 960px) {
   #prizes-top-banner {
-    padding: 5% 0 15%;
-
+    padding: 5% 0 0;
+    height: 420px;
     .prizes-content {
       .group {
         justify-content: center;

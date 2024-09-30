@@ -11,13 +11,13 @@ import {
   setClaimCardModalOtherDataInfo,
   setPrizesRankList,
   setPrizesRankRefreshTime,
-  setPrizesProjectTaskDetailsList,
   setPrizesUserList,
   setPrizesProjectTime,
   setQuestsInfoList,
   setQuestsUserInfoList,
-  setPrizesTotaltx,
   setPrizesUserRank,
+  updateCoinbase,
+  setPrizesTotaltx,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -31,7 +31,7 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import util from '../../util/util'
 import { ethers } from 'ethers'
 
-const activityProjectId = 'b591e7c8-63ee-4a87-9b00-9fb8c9b43ec1'
+const activityProjectId = '3da5b717-b342-4ee3-bea3-ac659f08a44b'
 
 let timer
 let timer1
@@ -209,6 +209,7 @@ export default {
     web3State.localLogin = localLogin
     updatelpAccountInfo(null)
     updatelpApiKey(null)
+    updateCoinbase('')
   },
   setInnerWH(state, { innerWidth, innerHeight }) {
     state.innerWH.innerWidth = innerWidth
@@ -357,22 +358,6 @@ export default {
     }, 500)
   },
 
-  async getPrizesProjectDetail(state) {
-    clearTimeout(timer2)
-    timer2 = setTimeout(async () => {
-      const response = await fetch(
-        `${process.env.VUE_APP_OPEN_URL}${
-          isDev() ? '/activity' : '/active-platform'
-        }/projectStatus/detail?projectId=${activityProjectId}`
-      )
-      const res = await response.json()
-      setPrizesTotaltx(res?.result?.projectDetail?.totalTxsCount)
-      setPrizesProjectTaskDetailsList(
-        res?.result?.projectDetail.taskDetails || []
-      )
-    }, 500)
-  },
-
   async getPrizesProjectInfo(state) {
     clearTimeout(timer3)
     timer3 = setTimeout(async () => {
@@ -394,6 +379,7 @@ export default {
         }/competition/rankReward?projectId=${activityProjectId}`
       )
       const res = await response.json()
+      setPrizesTotaltx(res?.result?.totalTransactions)
       setPrizesRankList(res?.result?.rankRewards || [])
       setPrizesRankRefreshTime(res?.result?.updateInfo?.lastRefreshTime || '')
     }, 500)

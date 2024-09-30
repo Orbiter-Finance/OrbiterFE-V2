@@ -143,7 +143,16 @@ import walletDispatchers, {
   BINANCEWALLET,
   PHANTOMWALLET,
   BACKPACKWALLET,
-  BYBITWALLET
+  BYBITWALLET,
+  METAMASK_APP,
+  COINBASE_APP,
+  BIT_KEEP_APP,
+  OKXWALLET,
+  IM_TOKEN_APP,
+  ZERION_APP,
+  BLOCKWALLET,
+  TALLYHO,
+  BRAVE_APP
 } from '../../util/walletsDispatchers'
 
 import util, { isMobileDevice, isBrowserApp } from '../../util'
@@ -186,32 +195,32 @@ export default {
         {
           isConnect: false,
           icon: 'metamask',
-          title: 'MetaMask',
-        },
-        {
-          isConnect: false,
-          icon: 'walletconnect',
-          title: 'WalletConnect',
-        },
-        {
-          isConnect: false,
-          icon: 'coinbase',
-          title: 'Coinbase',
-        },
-        {
-          isConnect: false,
-          icon: 'bitkeep',
-          title: 'BitgetWallet',
-        },
-        {
-          isConnect: false,
-          icon: 'okxwallet',
-          title: 'OKXWallet',
+          title: METAMASK_APP,
         },
         {
           isConnect: false,
           icon: 'binance wallet',
           title: BINANCEWALLET,
+        },
+        // {
+        //   isConnect: false,
+        //   icon: 'walletconnect',
+        //   title: WALLETCONNECT,
+        // },
+        {
+          isConnect: false,
+          icon: 'coinbase',
+          title: COINBASE_APP,
+        },
+        {
+          isConnect: false,
+          icon: 'bitkeep',
+          title: BIT_KEEP_APP,
+        },
+        {
+          isConnect: false,
+          icon: 'okxwallet',
+          title: OKXWALLET,
         },
         {
           isConnect: false,
@@ -221,7 +230,7 @@ export default {
         {
           isConnect: false,
           icon: 'imtokenapp',
-          title: 'imTokenApp',
+          title: IM_TOKEN_APP,
         },
         {
           isConnect: false,
@@ -236,7 +245,7 @@ export default {
         {
           isConnect: false,
           icon: 'zerion',
-          title: 'Zerion',
+          title: ZERION_APP,
         },
         {
           isConnect: false,
@@ -246,17 +255,17 @@ export default {
         {
           isConnect: false,
           icon: 'blockwallet',
-          title: 'BlockWallet',
+          title: BLOCKWALLET,
         },
         {
           isConnect: false,
           icon: 'brave',
-          title: 'Brave',
+          title: BRAVE_APP,
         },
         {
           isConnect: false,
           icon: 'tallyho',
-          title: 'Taho',
+          title: TALLYHO,
         },
         {
           isConnect: false,

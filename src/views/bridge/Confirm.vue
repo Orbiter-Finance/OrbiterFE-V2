@@ -434,19 +434,18 @@ export default {
       orbiterHelper.openConnectModal({ chainId: toChainID })
     },
     toCrossAddressReceipt() {
-      const { toChainID } = transferDataState
+      const { toChainID, isCrossAddress, crossAddressReceipt } = transferDataState
       const group = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
       const address = group?.address || ""
-      console.log("addressaddressaddress", address, this.isCrossAddress)
-      if (this.isCrossAddress) {
+      if (isCrossAddress) {
         if (
-          !!this.crossAddressReceipt ||
+          !!crossAddressReceipt &&
           !!orbiterHelper.checkAddress({
-            address: this.crossAddressReceipt,
+            address: crossAddressReceipt,
             chainId: toChainID,
           })
         ) {
-          return this.crossAddressReceipt
+          return crossAddressReceipt
         }
       }
       if (
@@ -759,9 +758,6 @@ export default {
         fromCurrency,
       } = transferDataState
 
-      if (!walletIsLogin.value) {
-        return
-      }
       const from =
         compatibleGlobalWalletConf.value.walletPayload.walletAddress ||
         web3State.coinbase
@@ -884,9 +880,6 @@ export default {
     async transferToStarkNet(value) {
       const { selectMakerConfig, fromChainID, transferExt } = transferDataState
 
-      if (!walletIsLogin.value) {
-        return
-      }
       const { fromAddress } = transferExt
       const contractAddress = selectMakerConfig.fromChain.tokenAddress
       const recipient = selectMakerConfig.recipient
@@ -1904,8 +1897,6 @@ export default {
 
     },
     async tronTransfer(value) {
-
-      console.log('value', value)
       const { selectMakerConfig, fromChainID, toChainID, transferValue } =
         transferDataState
 
@@ -1955,28 +1946,10 @@ export default {
         }
       }
 
-      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        const solanaAddress = web3State.solana.solanaAddress
-        const isConnect = solanaHelper.isConnect()
-
-        targetAddress = solanaAddress
-
-        if (!solanaAddress || !isConnect) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
-          this.transferLoading = false
-          return
-        }
-      }
-
-      if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-        targetAddress = tonHelper.account()
-        const isConnected = await tonHelper.isConnected()
-
-        if (!targetAddress || !isConnected) {
-          await tonHelper.connect()
-          return
-        }
+      targetAddress = this.toCrossAddressReceipt()
+      if(!targetAddress) {
+        this.transferLoading = false
+        return 
       }
       try {
         const tokenAddress = selectMakerConfig.fromChain.tokenAddress
@@ -2063,37 +2036,31 @@ export default {
         return
       }
 
-      if (
-        orbiterHelper.isNotEVMChain({chainId: toChainID})
-      ) {
-        const hash = await sendTransferV3({
-          targetAddress: toAddress,
-          tokenAddress,
-          makerAddress: selectMakerConfig.recipient,
-          amount: new BigNumber(value),
-          chainID: fromChainID,
-        })
-        try {
-          this.$gtag.event('click', {
-            event_category: 'Transfer',
-            event_label: selectMakerConfig.recipient.toLocaleLowerCase(),
-            userAddress: toAddress,
-            hash: hash,
-          })
-        } catch (error) {
-          console.error('click error', error)
-        }
+      // if (
+      //   orbiterHelper.isNotEVMChain({chainId: toChainID})
+      // ) {
+      //   const hash = await sendTransferV3({
+      //     targetAddress: toAddress,
+      //     tokenAddress,
+      //     makerAddress: selectMakerConfig.recipient,
+      //     amount: new BigNumber(value),
+      //     chainID: fromChainID,
+      //   })
+      //   try {
+      //     this.$gtag.event('click', {
+      //       event_category: 'Transfer',
+      //       event_label: selectMakerConfig.recipient.toLocaleLowerCase(),
+      //       userAddress: toAddress,
+      //       hash: hash,
+      //     })
+      //   } catch (error) {
+      //     console.error('click error', error)
+      //   }
 
-        if (hash) {
-          this.onTransferSucceed(toAddress, value, fromChainID, hash)
-        }
-      }
-
-
-      if (!walletIsLogin.value) {
-        this.transferLoading = false
-        return
-      }
+      //   if (hash) {
+      //     this.onTransferSucceed(toAddress, value, fromChainID, hash)
+      //   }
+      // }
       // from =
       //     compatibleGlobalWalletConf.value.walletPayload.walletAddress
       // if (isBrowserApp()) {
@@ -2114,13 +2081,13 @@ export default {
       }
 
       try {
-        const hash = await sendTransfer(
-          toAddress,
+        const hash = await sendTransferV3({
+          targetAddress: toAddress,
           tokenAddress,
-          selectMakerConfig.recipient,
-          new BigNumber(value),
-          fromChainID
-        )
+          makerAddress: selectMakerConfig.recipient,
+          amount: new BigNumber(value),
+          chainID: fromChainID,
+        })
         try {
           this.$gtag.event('click', {
             event_category: 'Transfer',
@@ -2386,10 +2353,10 @@ export default {
       this.transferLoading = false
     },
     async RealTransfer() {
-      if (!walletIsLogin.value) {
-        Middle.$emit('connectWallet', true)
-        return
-      }
+      // if (!walletIsLogin.value) {
+      //   Middle.$emit('connectWallet', true)
+      //   return
+      // }
       if (!(await util.isLegalAddress())) {
         this.$notify.error({
           title: `Contract address is not supported, please use EVM address.`,
@@ -2532,10 +2499,10 @@ export default {
           return
         }
 
-        if (orbiterHelper.isStarknetChain({ chainId: toChainID })) {
-          this.transferToStarkNet(tValue.tAmount)
-          return
-        }
+        // if (orbiterHelper.isStarknetChain({ chainId: toChainID })) {
+        //   this.transferToStarkNet(tValue.tAmount)
+        //   return
+        // }
 
         if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
           this.imxTransfer(tValue.tAmount)
@@ -2556,13 +2523,13 @@ export default {
           return
         }
 
-        // EVM contract
-        if (util.isExecuteXVMContract()) {
-          this.transferLoading = true
-          await this.handleXVMContract()
-          this.transferLoading = false
-          return
-        }
+        // // EVM contract
+        // if (util.isExecuteXVMContract()) {
+        //   this.transferLoading = true
+        //   await this.handleXVMContract()
+        //   this.transferLoading = false
+        //   return
+        // }
 
         // EVM V3 contract
         if (isCrossAddress) {

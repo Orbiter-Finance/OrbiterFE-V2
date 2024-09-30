@@ -6,16 +6,17 @@ import fuelsHelper from './fuels/fuels_helper'
 import {
   setConnectWalletGroupKey,
   setSelectWalletDialogVisible,
+  updateCoinbase,
   web3State,
 } from '../composition/hooks'
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData/index.js'
-import { WALLETCONNECT } from './walletsDispatchers/constants.js'
+import { METAMASK, WALLETCONNECT } from './walletsDispatchers/constants.js'
 import { ethereumClient } from './walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher.js'
 import { store } from '../store/index.js'
 import { disConnectStarkNetWallet } from './constants/starknet/helper.js'
 import fractalHelper from './fractal/fractal_helper.js'
 import aptosHelper from './aptos/aptos_helper.js'
-import { walletDispatchersOnDisconnect } from './walletsDispatchers'
+import walletsDispatchers from './walletsDispatchers'
 import tronHelper from './tron/tron_helper.js'
 
 const checkStarknetAddress = (address) => {
@@ -156,17 +157,23 @@ const currentConnectChainInfo = ({ chainId, isList }) => {
     open: openEvmConnectModal,
     isConnected: !!evmAddress && evmAddress !== '0x',
     checkAddress: checkEvmAddress,
-    walletIcon: compatibleGlobalWalletConf?.walletType?.toLocaleLowerCase(),
+    walletIcon:
+      compatibleGlobalWalletConf?.walletType?.toLocaleLowerCase() ||
+      METAMASK.toLocaleLowerCase(),
     type: 'EVM',
+    chainId: String(
+      Number(compatibleGlobalWalletConf.value?.walletPayload?.networkId)
+    ),
     disconnect: () => {
       localStorage.setItem('selectedWallet', JSON.stringify({}))
       store.commit('updateLocalLogin', false)
       localStorage.setItem('localLogin', false)
+      updateCoinbase('')
       if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
         ethereumClient.disconnect()
         localStorage.setItem('wc@2:client:0.3//session', null)
       }
-      walletDispatchersOnDisconnect[
+      walletsDispatchers?.walletDispatchersOnDisconnect?.[
         compatibleGlobalWalletConf.value.walletType
       ]()
     },
@@ -311,7 +318,7 @@ const currentConnectChainInfo = ({ chainId, isList }) => {
   return current
     ? {
         ...current,
-        chainId,
+        chainId: current?.chainId || chainId,
       }
     : current
 }

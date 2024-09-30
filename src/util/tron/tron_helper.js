@@ -2,6 +2,8 @@ import util from '../util'
 
 import { web3State } from '../../composition/useCoinbase'
 import { CHAIN_ID } from '../../config'
+import tronUtils from './tron_utils'
+import { parseEther } from 'ethers/lib/utils'
 
 const TRON_WALLET_NAME = 'TRON_WALLET_NAME'
 
@@ -122,9 +124,9 @@ const tronAddress = () => {
   return address?.toString()
 }
 
-const getBalance = async ({ tokenAddress, chainId, userAddress }) => {
+const getBalance = async ({ tokenAddress, chainId, userAddress, isMaker }) => {
   const provider = getProvider()
-  if (!provider) return '0'
+  if (!provider) return isMaker ? parseEther('100000').toString() : '0'
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
   const nativeCurrency = chainInfo?.nativeCurrency?.address
   if (nativeCurrency === tokenAddress) {
@@ -233,14 +235,22 @@ const transfer = async ({
 }
 
 const checkAddress = (address) => {
-  const provider = getProvider()
-  let isAddress = false
-  try {
-    isAddress = provider.isAddress(address)
-  } catch (error) {
-    console.log('error', error)
+  if (address.length === 42) {
+    try {
+      return checkAddress(
+        tronUtils.getBase58CheckAddress(
+          tronUtils.hexStr2byteArray(address) // it throws an error if the address starts with 0x
+        )
+      )
+    } catch (err) {
+      return false
+    }
   }
-  return !!address && isAddress
+  try {
+    return tronUtils.isAddressValid(address)
+  } catch (err) {
+    return false
+  }
 }
 
 const tronHelper = {

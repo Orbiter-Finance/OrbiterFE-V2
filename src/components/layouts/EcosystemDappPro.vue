@@ -123,8 +123,6 @@
           :btnLabel="'Mint'"
         />
       </el-carousel-item> -->
-
-    
         <el-carousel-item>
           <EcosystemDapp
             :holders="holders"
