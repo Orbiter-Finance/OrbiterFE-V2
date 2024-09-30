@@ -339,15 +339,25 @@ export default {
   },
   methods: {
     openTelegram(option) {
-      const name = 'PRIZES_V7_CHAIN_LINK_' + option.chain
-      const url = option.link
-      try {
-        this.$gtag.event(name, {
-          event_category: name,
-          event_label: url,
+      const address = this.evmAddress
+      if (!address || address === '0x' || this.isEnd) return
+      const name = 'PRIZES_V7_BANNER_TO_BRIDGE'
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: 'to home',
+      })
+      localStorage.setItem(
+        'last_page_before_history',
+        JSON.stringify({
+          params: {},
+          path: '/',
+          query: { source: 'Ethereum', dest: 'Optimism', token: 'ETH' },
         })
-      } catch (error) {}
-      window.open(url, '_blank')
+      )
+
+      const url = location.origin + '/?source=Ethereum&dest=Optimism&token=ETH'
+
+      window.open(url, '_self')
     },
   },
 }
