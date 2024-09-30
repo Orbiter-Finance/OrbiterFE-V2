@@ -1,0 +1,113 @@
+<svg
+    class="icon"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="24.000000"
+    height="24.000000"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <defs>
+      <clipPath id="clip2425_1183">
+        <rect
+          id="X.10d54851.svg"
+          rx="6.000000"
+          width="24.000000"
+          height="24.000000"
+          fill="white"
+          fill-opacity="0"
+        />
+      </clipPath>
+    </defs>
+    <rect
+      id="X.10d54851.svg"
+      rx="6.000000"
+      width="24.000000"
+      height="24.000000"
+      fill="#031215"
+      fill-opacity="1.000000"
+    />
+    <g clip-path="url(#clip2425_1183)">
+      <path
+        id="Vector"
+        d="M8.66 3.66L8.66 6.16"
+        stroke="#FFFFFF"
+        stroke-opacity="1.000000"
+        stroke-width="1.000000"
+        stroke-linejoin="round"
+        stroke-linecap="square"
+      />
+      <path
+        id="Vector"
+        d="M15.33 3.66L15.33 6.16"
+        stroke="#FFFFFF"
+        stroke-opacity="1.000000"
+        stroke-width="1.000000"
+        stroke-linejoin="round"
+        stroke-linecap="square"
+      />
+      <path
+        id="Vector"
+        d="M4.91 9.57L19.08 9.57"
+        stroke="#FFFFFF"
+        stroke-opacity="1.000000"
+        stroke-width="1.000000"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+      />
+      <path
+        id="Vector"
+        d="M15.05 18.09C14.94 18.2 14.83 18.42 14.8 18.58L14.64 19.7C14.59 20.11 14.87 20.39 15.28 20.34L16.4 20.18C16.56 20.15 16.79 20.04 16.89 19.93L19.85 16.98C20.35 16.47 20.6 15.88 19.85 15.13C19.1 14.39 18.51 14.63 18 15.14L15.05 18.09Z"
+        stroke="#FFFFFF"
+        stroke-opacity="1.000000"
+        stroke-width="1.000000"
+        stroke-linejoin="round"
+      />
+      <path
+        id="Vector"
+        d="M17.58 15.56C17.83 16.46 18.53 17.16 19.43 17.41"
+        stroke="#FFFFFF"
+        stroke-opacity="1.000000"
+        stroke-width="1.000000"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+      />
+      <path
+        id="Vector"
+        d="M12 20.33L8.66 20.33C5.75 20.33 4.5 18.66 4.5 16.16L4.5 9.08C4.5 6.58 5.75 4.91 8.66 4.91L15.33 4.91C18.25 4.91 19.5 6.58 19.5 9.08L19.5 12"
+        stroke="#FFFFFF"
+        stroke-opacity="1.000000"
+        stroke-width="1.000000"
+        stroke-linejoin="round"
+        stroke-linecap="square"
+      />
+      <g opacity="0.000000" />
+      <path
+        id="Vector"
+        d="M11.58 13L12.41 13"
+        stroke="#FFFFFF"
+        stroke-opacity="1.000000"
+        stroke-width="1.000000"
+        stroke-linejoin="round"
+        stroke-linecap="square"
+      />
+      <path
+        id="Vector"
+        d="M8.49 13L9.33 13"
+        stroke="#FFFFFF"
+        stroke-opacity="1.000000"
+        stroke-width="1.000000"
+        stroke-linejoin="round"
+        stroke-linecap="square"
+      />
+      <path
+        id="Vector"
+        d="M8.49 15.5L9.33 15.5"
+        stroke="#FFFFFF"
+        stroke-opacity="1.000000"
+        stroke-width="1.000000"
+        stroke-linejoin="round"
+        stroke-linecap="square"
+      />
+    </g>
+  </svg>

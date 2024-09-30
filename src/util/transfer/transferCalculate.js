@@ -429,10 +429,10 @@ export default {
   },
 
   transferSpentTime(fromChainID, toChainID) {
-    if (String(toChainID) ==='167000') {
-      return '1m';
+    if (String(toChainID) === '167000') {
+      return '1m'
     }
-    return '5s';
+    return '5s'
     // let timeSpent = 0
     // if ([CHAIN_ID.mainnet, CHAIN_ID.nova].includes(fromChainID)) {
     //   timeSpent = 30
