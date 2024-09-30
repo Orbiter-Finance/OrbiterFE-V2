@@ -1,6 +1,6 @@
 <template>
   <div class="time-out">
-    <div class="time-content">optimism superhain</div>
+    <div class="time-content">optimism superchain</div>
   </div>
 </template>
 
