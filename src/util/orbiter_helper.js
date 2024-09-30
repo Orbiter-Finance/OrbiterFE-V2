@@ -161,6 +161,9 @@ const currentConnectChainInfo = ({ chainId, isList }) => {
       compatibleGlobalWalletConf?.walletType?.toLocaleLowerCase() ||
       METAMASK.toLocaleLowerCase(),
     type: 'EVM',
+    chainId: String(
+      Number(compatibleGlobalWalletConf.value?.walletPayload?.networkId)
+    ),
     disconnect: () => {
       localStorage.setItem('selectedWallet', JSON.stringify({}))
       store.commit('updateLocalLogin', false)
@@ -315,7 +318,7 @@ const currentConnectChainInfo = ({ chainId, isList }) => {
   return current
     ? {
         ...current,
-        chainId,
+        chainId: current?.chainId || chainId,
       }
     : current
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="time-out">
-    <div class="time-content">scroll</div>
+    <div class="time-content">Optimism</div>
   </div>
 </template>
 
@@ -20,12 +20,13 @@ export default {
   justify-content: flex-end;
   align-items: center;
   .time-content {
-    background-color: #FFC47D;
+    background-color: #FF4F4F;
     font-size: 12px;
     border-radius: 999px;
     padding: 0px 8px;
     scale: 0.8;
-    color: #0a1313;
+    //color: #0a1313;
+    color: #FFFFFF;
   }
   
 }

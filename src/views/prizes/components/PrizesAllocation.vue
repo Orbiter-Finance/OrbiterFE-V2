@@ -5,45 +5,10 @@
       <br class="title-br" />
       composition and allocation
     </div>
-    <div class="prizes-badge-group">
-      <div class="prizes-badge-item" v-for="item in badgeList" :key="item.text">
-        <div class="prizes-badge-item-group">
-          <img :src="require(`../../../assets/prizes/${item.img}`)" alt="" />
-        </div>
-        <div class="prizes-badge-item-group">
-          <div :style="item.color" class="text">{{ item.reward }}</div>
-        </div>
-        <div class="prizes-badge-item-group">
-          <div class="des">{{ item.condition }}</div>
-          <div v-if="item.isComment">Up to 96% bridging fee rebate</div>
-        </div>
-      </div>
-    </div>
-    <div class="prizes-ratio-group">
-      <div class="prizes-ratio-item" v-for="item in ratioList" :key="item.text">
-        <div class="prizes-ratio-item-group">
-          <img :src="require(`../../../assets/prizes/${item.img}`)" alt="" />
-        </div>
-        <div class="prizes-ratio-item-group">
-          <div :style="item.color" class="text orbiter-linear-text">
-            {{ item.reward }}
-          </div>
-        </div>
-        <div class="prizes-ratio-item-group">
-          <div class="des">{{ item.condition }}</div>
-          <div v-if="item.isComment">Up to 96% bridging fee rebate</div>
-        </div>
-      </div>
-    </div>
+  <PrizesCard>
     <div class="prizes-allocation-card">
       <div class="title">
         <div>My progress</div>
-        <img
-          @click="openScroll"
-          :src="require(`../../../assets/prizes/marks.png`)"
-          alt=""
-          class="marks"
-        />
       </div>
 
       <div class="user-info">
@@ -85,7 +50,9 @@
               :key="item.position"
               :style="`left: ${(item.position / 20) * 100}%;visibility:${
                 item.position ? 'visable' : 'hidden'
-              };background-color:${item.isSuccess ? '#FFC47D' : '#0A1618'};`"
+              };background-color:${
+                item.isSuccess ? '#ffc47d' : 'rgb(40, 20, 13)'
+              };`"
             ></div>
           </div>
           <div class="progress-tx-group">
@@ -103,7 +70,7 @@
       </div>
       <div class="inv"></div>
       <div class="task-title">
-        <div>Quest</div>
+        <div>Transaction quest</div>
         <div class="update-time">Check-in update time: UTC 11:00 AM</div>
       </div>
 
@@ -133,120 +100,7 @@
                 class="icon"
                 iconName="task-icon"
               ></svg-icon>
-              <svg
-                v-else
-                class="icon"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                width="24.000000"
-                height="24.000000"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <defs>
-                  <clipPath id="clip2425_1183">
-                    <rect
-                      id="X.10d54851.svg"
-                      rx="6.000000"
-                      width="24.000000"
-                      height="24.000000"
-                      fill="white"
-                      fill-opacity="0"
-                    />
-                  </clipPath>
-                </defs>
-                <rect
-                  id="X.10d54851.svg"
-                  rx="6.000000"
-                  width="24.000000"
-                  height="24.000000"
-                  fill="#031215"
-                  fill-opacity="1.000000"
-                />
-                <g clip-path="url(#clip2425_1183)">
-                  <path
-                    id="Vector"
-                    d="M8.66 3.66L8.66 6.16"
-                    stroke="#FFFFFF"
-                    stroke-opacity="1.000000"
-                    stroke-width="1.000000"
-                    stroke-linejoin="round"
-                    stroke-linecap="square"
-                  />
-                  <path
-                    id="Vector"
-                    d="M15.33 3.66L15.33 6.16"
-                    stroke="#FFFFFF"
-                    stroke-opacity="1.000000"
-                    stroke-width="1.000000"
-                    stroke-linejoin="round"
-                    stroke-linecap="square"
-                  />
-                  <path
-                    id="Vector"
-                    d="M4.91 9.57L19.08 9.57"
-                    stroke="#FFFFFF"
-                    stroke-opacity="1.000000"
-                    stroke-width="1.000000"
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                  />
-                  <path
-                    id="Vector"
-                    d="M15.05 18.09C14.94 18.2 14.83 18.42 14.8 18.58L14.64 19.7C14.59 20.11 14.87 20.39 15.28 20.34L16.4 20.18C16.56 20.15 16.79 20.04 16.89 19.93L19.85 16.98C20.35 16.47 20.6 15.88 19.85 15.13C19.1 14.39 18.51 14.63 18 15.14L15.05 18.09Z"
-                    stroke="#FFFFFF"
-                    stroke-opacity="1.000000"
-                    stroke-width="1.000000"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    id="Vector"
-                    d="M17.58 15.56C17.83 16.46 18.53 17.16 19.43 17.41"
-                    stroke="#FFFFFF"
-                    stroke-opacity="1.000000"
-                    stroke-width="1.000000"
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                  />
-                  <path
-                    id="Vector"
-                    d="M12 20.33L8.66 20.33C5.75 20.33 4.5 18.66 4.5 16.16L4.5 9.08C4.5 6.58 5.75 4.91 8.66 4.91L15.33 4.91C18.25 4.91 19.5 6.58 19.5 9.08L19.5 12"
-                    stroke="#FFFFFF"
-                    stroke-opacity="1.000000"
-                    stroke-width="1.000000"
-                    stroke-linejoin="round"
-                    stroke-linecap="square"
-                  />
-                  <g opacity="0.000000" />
-                  <path
-                    id="Vector"
-                    d="M11.58 13L12.41 13"
-                    stroke="#FFFFFF"
-                    stroke-opacity="1.000000"
-                    stroke-width="1.000000"
-                    stroke-linejoin="round"
-                    stroke-linecap="square"
-                  />
-                  <path
-                    id="Vector"
-                    d="M8.49 13L9.33 13"
-                    stroke="#FFFFFF"
-                    stroke-opacity="1.000000"
-                    stroke-width="1.000000"
-                    stroke-linejoin="round"
-                    stroke-linecap="square"
-                  />
-                  <path
-                    id="Vector"
-                    d="M8.49 15.5L9.33 15.5"
-                    stroke="#FFFFFF"
-                    stroke-opacity="1.000000"
-                    stroke-width="1.000000"
-                    stroke-linejoin="round"
-                    stroke-linecap="square"
-                  />
-                </g>
-              </svg>
+              <svg-icon v-else class="icon" iconName="more"></svg-icon>
 
               <div class="content-text-group">
                 <span class="content-text" v-html="item.text"></span>
@@ -267,14 +121,13 @@
                     </span>
                   </template>
                   <span class="orbiter_global_prizes_tips_underline tip-text">
-                    Specific networks
+                    Optimism Superchain
                   </span>
                 </o-tooltip>
-                <span v-if="item.specificChain">from/to Scroll</span>
+                <!-- <span v-if="item.specificChain">from/to Scroll</span> -->
                 <span class="content-text" v-html="item.lastText"></span>
               </div>
             </div>
-            <div v-if="item.icon === 'bridge'">
               <div v-if="item.isPromotion" class="prizes-promotion">
                 Already entered in higher stage pools
               </div>
@@ -326,124 +179,16 @@
                   </svg>
                 </div>
               </div>
-            </div>
-            <div v-else>
-              <div v-if="item.isSuccess" class="earn-nft">
-                + {{ item.opoints }}
-                <svg-icon class="icon" iconName="O-Points"></svg-icon>
-                <div class="text">OPoints</div>
-                <svg
-                  class="icon"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  width="24.000000"
-                  height="24.000000"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <g opacity="0.400000">
-                    <rect
-                      rx="12.000000"
-                      width="24.000000"
-                      height="24.000000"
-                      fill="#DDF600"
-                      fill-opacity="0"
-                    />
-                    <rect
-                      x="0.500000"
-                      y="0.500000"
-                      rx="11.500000"
-                      width="23.000000"
-                      height="23.000000"
-                      stroke="#979797"
-                      stroke-opacity="0"
-                      stroke-width="1.000000"
-                    />
-                    <rect
-                      x="2.000000"
-                      y="2.000000"
-                      rx="10.000000"
-                      width="20.000000"
-                      height="20.000000"
-                      fill="#DDF600"
-                      fill-opacity="1.000000"
-                    />
-                    <rect
-                      x="2.500000"
-                      y="2.500000"
-                      rx="9.500000"
-                      width="19.000000"
-                      height="19.000000"
-                      stroke="#979797"
-                      stroke-opacity="0"
-                      stroke-width="1.000000"
-                    />
-                    <path
-                      d="M7.73 12.81L10.58 15.65L15.94 10.29"
-                      stroke="#000000"
-                      stroke-opacity="1.000000"
-                      stroke-width="1.500000"
-                      stroke-linejoin="round"
-                      stroke-linecap="round"
-                    />
-                  </g>
-                </svg>
-              </div>
-              <div v-else>
-                <div class="prizes-promotion">
-                  <div class="task-reward-laebl" :style="`color:#FFC47D;`">
-                    Earn {{ item.opoints }} Opoints
-                    <span class="vice"
-                      >({{ item.current }}/{{ item.total }})</span
-                    >
-                  </div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    width="24.000000"
-                    height="24.000000"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <rect
-                      width="24.000000"
-                      height="24.000000"
-                      fill="#D8D8D8"
-                      fill-opacity="0"
-                    />
-                    <rect
-                      x="0.500000"
-                      y="0.500000"
-                      width="23.000000"
-                      height="23.000000"
-                      stroke="#979797"
-                      stroke-opacity="0"
-                      stroke-width="1.000000"
-                    />
-                    <path
-                      d="M11.18 6.05L11.18 6.08L10.67 6.59L16.31 12.24L10.67 17.88L11.18 18.4L11.18 18.42C10.89 18.72 10.42 18.72 10.12 18.42C9.82 18.13 9.82 17.66 10.12 17.36L10.15 17.36L10.65 17.87L10.65 6.61L10.15 7.11L10.12 7.11C9.82 6.81 9.82 6.35 10.12 6.05C10.42 5.75 10.89 5.75 11.18 6.05Z"
-                      fill="#D8D8D8"
-                      fill-opacity="0"
-                      fill-rule="evenodd"
-                    />
-                    <path
-                      d="M10.65 17.89L16.31 12.24L10.65 6.58"
-                      stroke="#FFFFFF"
-                      stroke-opacity="1.000000"
-                      stroke-width="1.500000"
-                      stroke-linejoin="round"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
         <div v-if="isEnd" class="prizes-end-modal">End of event</div>
-      </div>
+      </div>      
+
+      <DayCheckInTaskList></DayCheckInTaskList>
+      <BridgeChainLinksCard ></BridgeChainLinksCard>
     </div>
+  </PrizesCard>
   </div>
 </template>
 
@@ -459,18 +204,26 @@ import {
 import PrizesTaskSuccessIcon from './PrizesTaskSuccess.vue'
 import { decimalNum } from '../../../util/decimalNum'
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
+import BridgeChainLinksCard from "./BridgeChainLinksCard.vue"
+import DayCheckInTaskList from "./DayCheckInTaskList.vue"
+import PrizesCard from "./PrizesCard.vue"
+
 export default {
   name: 'PrizesAllocation',
   components: {
     PrizesTaskSuccessIcon,
     SvgIcon,
+    BridgeChainLinksCard,
+    DayCheckInTaskList,
+    PrizesCard
   },
   data() {
     return {}
   },
   computed: {
     isEnd() {
-      return prizesTimeEnd.value
+      // return prizesTimeEnd.value
+      return false
     },
     userList() {
       return prizesUserList.value
@@ -511,25 +264,6 @@ export default {
     evmAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
     },
-    badgeList() {
-      return [
-        {
-          img: 'badge1.png',
-          condition: 'Bridge ≥ 8 tx',
-          reward: 'Gamma Badge',
-        },
-        {
-          img: 'badge2.png',
-          reward: 'Beta Badge',
-          condition: 'Bridge ≥ 15 tx',
-        },
-        {
-          img: 'badge3.png',
-          reward: 'Alpha Badge',
-          condition: 'Top 100',
-        },
-      ]
-    },
     progressStage() {
       const tx = this.tx
       const rank = this.rank
@@ -547,8 +281,8 @@ export default {
         {
           img: 'ratio5.png',
           condition: 'Bridge ≥3 tx',
-          position: 3,
-          reward: '5%',
+          position: 7,
+          reward: '40%',
           label: '3Tx',
           value: 3,
           isSuccess: Number(tx) >= 3,
@@ -556,31 +290,9 @@ export default {
             'background-image: linear-gradient(180.00deg, rgb(225, 222, 217),rgb(100, 81, 81));',
         },
         {
-          img: 'ratio10.png',
-          reward: '10%',
-          position: 7,
-          condition: 'Bridge ≥8 tx',
-          label: '8Tx',
-          value: 8,
-          isSuccess: Number(tx) >= 8,
-          color:
-            'background-image: linear-gradient(180.00deg, rgb(221, 218, 194),rgb(188, 109, 106));',
-        },
-        {
-          img: 'ratio18.png',
-          reward: '18%',
-          position: 11,
-          condition: 'Bridge ≥15 tx',
-          label: '15Tx',
-          value: 15,
-          isSuccess: Number(tx) >= 15,
-          color:
-            'background-image: linear-gradient(180.00deg, rgb(222, 244, 255),rgb(108, 151, 155));',
-        },
-        {
           img: 'ratio32.png',
-          reward: '32%',
-          position: 15,
+          reward: '35%',
+          position: 13,
           condition: 'Top 100',
           label: 'Top 100',
           value: top100,
@@ -590,7 +302,7 @@ export default {
         },
         {
           img: 'ratio35.png',
-          reward: '35%',
+          reward: '25%',
           position: 20,
           condition: 'Top 8',
           label: 'Top 8',
@@ -665,32 +377,10 @@ export default {
       const count = this.userSignTotal
       return [
         {
-          icon: 'task',
-          text: `Check-in: Bridge <span class='orbiter_global_prizes_tx-color'>1 TX</span> for <span class='orbiter_global_prizes_tx-color'>7 Days</span>`,
-          specificChain: false,
-          isPromotion: Number(count) >= 7,
-          isSuccess: Number(count) >= 7,
-          lastText: '',
-          opoints: 126,
-          total: 7,
-          current: Number(count) >= 7 ? 7 : count,
-        },
-        {
-          icon: 'task',
-          text: `Check-in: Bridge <span class='orbiter_global_prizes_tx-color'>1 TX</span> for <span class='orbiter_global_prizes_tx-color'>14 Days</span>`,
-          specificChain: false,
-          isPromotion: Number(count) >= 14,
-          isSuccess: Number(count) >= 14,
-          lastText: '',
-          opoints: 420,
-          total: 14,
-          current: count,
-        },
-        {
           icon: 'bridge',
-          color: '#E1DED9',
-          reward: '5% Prize Pool',
-          text: `Bridge <span class='orbiter_global_prizes_tx-color'>3 TX</span>`,
+          color: '#BC6D6A',
+          reward: '40% Prize Pool',
+          text: `<span class='orbiter_global_prizes_tx-color'>Bridge >=3 TX</span>`,
           specificChain: true,
           isPromotion: tx >= 8,
           isSuccess: tx >= 3,
@@ -698,29 +388,9 @@ export default {
         },
         {
           icon: 'bridge',
-          color: '#BC6D6A',
-          reward: '10% prize pool &  Gamma Badge',
-          text: `Bridge <span class='orbiter_global_prizes_tx-color'>8 TX</span>`,
-          specificChain: true,
-          isPromotion: tx >= 15,
-          isSuccess: tx >= 8,
-          lastText: '',
-        },
-        {
-          icon: 'bridge',
-          color: '#6C979B',
-          reward: '18% prize pool &  Beta Badge',
-          text: `Bridge <span class='orbiter_global_prizes_tx-color'>15 TX</span>`,
-          specificChain: true,
-          isPromotion: tx >= 20 && rank <= 100,
-          isSuccess: tx >= 15,
-          lastText: '',
-        },
-        {
-          icon: 'bridge',
           color: '#A8E2EF',
-          reward: '32% prize pool & Alpha Badge',
-          text: `Bridge`,
+          reward: '35% prize pool',
+          text: `<span class='orbiter_global_prizes_tx-color'>Bridge >=20 TX</span>`,
           specificChain: true,
           isPromotion: tx >= 20 && rank <= 8,
           isSuccess: tx >= 20 && rank <= 100,
@@ -730,8 +400,8 @@ export default {
         {
           icon: 'bridge',
           color: '#ECC031',
-          reward: '35% prize pool & Alpha Badge',
-          text: `Bridge`,
+          reward: '25% prize pool',
+          text: `Bridge to`,
           specificChain: true,
           isPromotion: false,
           isSuccess: tx >= 20 && rank <= 8,
@@ -739,20 +409,9 @@ export default {
             "to achieve <span class='orbiter_global_prizes_tx-color'>Top 8 </span>",
         },
       ]
-    },
+    }
   },
   methods: {
-    openScroll() {
-      const name = 'SCROLL_BADGE'
-      const url = 'https://scroll.io/sessions'
-      try {
-        this.$gtag.event('PRIZES_V6_TO_' + name, {
-          event_category: name,
-          event_label: url,
-        })
-      } catch (error) {}
-      window.open(url, '_blank')
-    },
     decimalNumC(num, decimal, delimiter, symbol) {
       return decimalNum(num, decimal, delimiter, symbol)
     },
@@ -776,7 +435,7 @@ export default {
     openTelegram(option) {
       const address = this.evmAddress
       if (!address || address === '0x' || this.isEnd) return
-      const name = 'PRIZES_V6_BANNER_TO_BRIDGE'
+      const name = 'PRIZES_V7_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
         event_category: name,
         event_label: 'to home',
@@ -786,11 +445,11 @@ export default {
         JSON.stringify({
           params: {},
           path: '/',
-          query: { source: 'Ethereum', dest: 'Scroll', token: 'ETH' },
+          query: { source: 'Ethereum', dest: 'Optimism', token: 'ETH' },
         })
       )
 
-      const url = location.origin + '/?source=Ethereum&dest=Scroll&token=ETH'
+      const url = location.origin + '/?source=Ethereum&dest=Optimism&token=ETH'
 
       window.open(url, '_self')
     },
@@ -811,84 +470,12 @@ export default {
       display: none;
     }
   }
-  .prizes-badge-group {
-    margin-top: 16px;
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: start;
-    .prizes-badge-item {
-      margin-top: 16px;
-      width: 20%;
-      max-width: 180px;
-      .prizes-badge-item-group {
-        width: 100%;
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        flex-direction: column;
-        & > img {
-          width: 144px;
-          height: 144px;
-        }
-        .text {
-          margin-top: 12px;
-          font-size: 24px;
-          font-family: GeneralSans-SemiBold;
-          color: #ffc47d;
-          white-space: nowrap;
-        }
-        .des {
-          white-space: nowrap;
-          font-size: 14px;
-        }
-      }
-    }
-  }
-  .prizes-ratio-group {
-    margin-top: 16px;
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: start;
-    .prizes-ratio-item {
-      margin-top: 16px;
-      width: 20%;
-      max-width: 180px;
-      .prizes-ratio-item-group {
-        width: 100%;
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        flex-direction: column;
-        & > img {
-          width: 120px;
-          height: 120px;
-        }
-        .text {
-          margin-top: 12px;
-          font-size: 24px;
-          font-family: GeneralSans-SemiBold;
-          color: #ffc47d;
-        }
-        .des {
-          white-space: nowrap;
-          font-size: 14px;
-        }
-      }
-    }
-  }
   .prizes-allocation-card {
     width: 100%;
     padding: 24px;
-    margin-top: 32px;
-    border-radius: 16px;
-    background: linear-gradient(
-        -3.58deg,
-        rgba(15, 34, 37, 0.2) 60.508%,
-        rgba(209, 112, 85, 0.2) 98.796%
-      ),
-      rgb(15, 34, 37);
+    border: 2px solid rgb(69, 35, 48);
+    background: linear-gradient(179.63deg, rgba(239, 47, 45, 0.04) -25.193%,rgba(255, 102, 101, 0.04) 127.356%);
+      background-color: #040809;
     .title {
       width: 100%;
       font-size: 20px;
@@ -996,7 +583,7 @@ export default {
           justify-content: start;
           align-items: center;
           border-radius: 12px;
-          background: #0a1618;
+          background: #1e140e;
           position: relative;
           top: 0;
           left: 0;
@@ -1010,8 +597,8 @@ export default {
             top: 50%;
             width: 24px;
             height: 24px;
-            border: 2px solid rgb(15, 34, 37);
-            background: rgb(10, 22, 24);
+            border: 2px solid rgb(69, 35, 48);
+            background: rgb(40, 20, 13);
             border-radius: 50%;
             transform: translate(-50%, -50%);
           }
@@ -1193,7 +780,7 @@ export default {
         }
       }
       .task-card-pool-group.task-quest {
-        background: rgba(255, 196, 125, 0.1);
+        background: #1e140e;
       }
       .task-card-pool-group.task-opoints-quest-success {
         background: rgb(10, 22, 24);
@@ -1208,7 +795,7 @@ export default {
       .task-card-pool-group {
         width: 100%;
         padding: 16px;
-        background: rgb(10, 22, 24);
+        background: #1e140e;
         margin-top: 12px;
         border-radius: 12px;
         cursor: pointer;
@@ -1326,18 +913,6 @@ export default {
         .rank-tx-amount {
           font-size: 14px;
         }
-      }
-    }
-    .prizes-ratio-group {
-      flex-wrap: wrap;
-      .prizes-ratio-item {
-        width: calc(50% - 24px);
-      }
-    }
-    .prizes-badge-group {
-      flex-wrap: wrap;
-      .prizes-badge-item {
-        width: calc(50% - 24px);
       }
     }
     .task-title {

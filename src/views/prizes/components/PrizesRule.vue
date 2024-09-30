@@ -5,7 +5,7 @@
       <div v-for="(item, index) in ruleList" :key="index">
         <div class="card-label">{{ item.label }}</div>
         <div v-if="item.image" class="image">
-          <img :src="require(`../../../assets/prizes/${item.image}`)" alt="">
+          <img :src="require(`../../../assets/prizes/${item.image}`)" alt="" />
         </div>
         <div
           class="card-rule-text"
@@ -27,30 +27,35 @@ export default {
         {
           label: '1.Which networks are participating in this event?',
           text: [
-            '- <span class="orbiter_global_prizes_rule_tag">Bridge from specific networks to Scroll Chain or bridge from Scroll Chain to specific networks.</span>',
-            '- Specific Chains include: Ethereum, Arbitrum, zkSync Lite, Linea, Base, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair, Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse',
-            '- The minimum amount required: 0.03 ETH',
-            '- Bridge token: ETH',
+            '- <span class="orbiter_global_prizes_rule_tag">Bridge from specific networks to Optimism Superchain.</span>',
+            '- Optimism Superchain includes: Optimism, Base, Mode, Fractal, Cyber, Bob, Mint, Kroma, Lisk, Redstone, Zora',
+            '- Specific Chains include: Ethereum, Arbitrum, zkSync Lite, Linea, Base, Scroll, Polygon,Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Manta, zkFair, Blast, ZetaChain, B² Network, zkLink Nova, Proof of Play Apex, Merlin, BEVM, Core, Bitlayer, BounceBit, Optopia, AlienxChain, Zircuit, Fuse',
+            '- The minimum amount required: 0.03 ETH / 0.0012BTC',
+            '- Bridge token: ETH/BTC',
           ],
         },
         {
-          label:'2.How to share the up to 50,000 USDC prize pool and mint Badge on scroll?',
+          label:
+            '2.How to share the up to 50,000 USDC prize pool?',
           text: [
             '- Complete <span class="orbiter_global_prizes_rule_tag">≥3 transactions </span> to qualify for a share of the prize pool.',
             '- <span class="orbiter_global_prizes_rule_tag">Prize Pool Breakdown:</span>',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥3 TX Traders:</span> Share 5% of the prize pool',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥8 TX Traders:</span> Share 10% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Gamma Badge</span> on scroll.',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥15 TX Traders:</span> Share 18% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Beta Badge</span> on scroll.',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 9-100 Traders (with ≥20 TX):</span> Share 32% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Alpha Badge</span> on scroll.',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 1-8 Traders (with ≥20 TX):</span> Share 35% of the prize pool and qualify for <span class="orbiter_global_prizes_rule_tag">minting Alpha Badge</span> on scroll.',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">≥3 TX Traders:</span> Share 40% of the prize pool.',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 9-100 Traders (with ≥20 TX):</span> Share 35% of the prize pool.',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 1-8 Traders (with ≥20 TX):</span> Share 25% of the prize pool.',
+            '- The ranking is determined based on transactions. If users have the same number of transactions, ranking will be based on the transaction value. More transactions, greater chance to win!',
+            '- <span class="orbiter_global_prizes_rule_tag">Extra bonus: </span>',
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Bridge at least 3000 TXs daily and rank in the top 5 fastest traders:</span> earn a $200 USDC daily bonus.',
+            '- The ranking is determined based on transactions and completed time. If users have the same number of transactions within the same time frame, ranking will be based on the transactions. More transactions, greater chance to win!'
           ],
         },
         {
-          label: '3.What are the rules of different prize pool tiers and bridging fee rebates?',
-          image: "rule.png",
+          label:
+            '3.What are the rules of different prize pool tiers and bridging fee rebates?',
+          image: 'rule.png',
           text: [
             '<span class="orbiter_global_prizes_rule_tag">Note:</span>',
-            '- The prize pool will be unlocked when the amount of transactions (TX) ≥ 2,500;',
+            '- The prize pool will be unlocked when the amount of transactions (TX) ≥ 4,000;',
             '- TOP 1 to 8 users, up to 96% bridging fees (except for gas fees) will be rebated.',
           ],
         },
@@ -58,22 +63,17 @@ export default {
           label: '4.How to Earn O-Points Rewards?',
           text: [
             'Participants can earn additional event points by completing the following tasks:',
-            "- Complete ≥1 transactions for 7 days to earn extra 126 Opoints.",
-            "- Complete ≥1 transactions for 14 days to earn extra 420 Opoints.",
-            '- One address can only receive up to 420 opoints.'
+            '- Complete ≥3 transactions for 7 days to earn extra 150 Opoints.',
+            '- Complete ≥3 transactions for 14 days to earn extra 450 Opoints.',
+            '<span class="orbiter_global_prizes_rule_tag">Note:</span>',
+            '- One address can only receive up to 450 Opoints.'
           ],
         },
         {
-          label: '5.What is the rule of ranking?',
+          label: '5.When will the rewards be distributed?',
           text: [
-            '-The ranking is determined based on transactions. If users have the same number of transactions, ranking will be based on the transaction value. More transactions, greater chance to win!',
-          ],
-        },
-        {
-          label: '6.When will the rewards be distributed?',
-          text: [
-            '- All rewards will be distributed after the event ends, including USDC, Opoints and bridging fee rebates.',
-            '- Please stay informed and claim your rewards within 3 days of the reward claim portal opening!'
+            '- All rewards will be distributed after the event ends.',
+            '- Please stay informed and claim your rewards within 3 days of the reward claim portal opening!',
           ],
         },
       ],
@@ -97,8 +97,13 @@ export default {
   .prizes-rule-card {
     padding: 8px 24px 24px;
     width: 100%;
-    border-radius: 16px;
-    background: linear-gradient(-3.58deg, rgba(15, 34, 37, 0.2) 60.756%,rgba(209, 112, 85, 0.2) 102.538%),rgb(15, 34, 37);
+    border: 4px solid rgb(69, 35, 48);
+    background: radial-gradient(
+        96% 96% at 50% 50%,
+        rgba(27, 21, 37, 0) 1.849%,
+        rgba(255, 70, 68, 0.2) 100%
+      ),
+      rgb(18, 4, 30);
     text-align: left;
     margin-top: 16px;
     .card-label {

@@ -429,65 +429,69 @@ export default {
   },
 
   transferSpentTime(fromChainID, toChainID) {
-    let timeSpent = 0
-    if ([CHAIN_ID.mainnet, CHAIN_ID.nova].includes(fromChainID)) {
-      timeSpent = 30
-    } else if (
-      [
-        CHAIN_ID.zksync,
-        CHAIN_ID.zksync_test,
-        CHAIN_ID.zkspace,
-        CHAIN_ID.zkspace_test,
-        CHAIN_ID.imx,
-        CHAIN_ID.imx_test,
-      ].includes(fromChainID)
-    ) {
-      timeSpent = 5
-    } else if (
-      [CHAIN_ID.zkspace, CHAIN_ID.zkspace_test].includes(fromChainID)
-    ) {
-      timeSpent = 20
-    } else if (
-      [CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID)
-    ) {
-      timeSpent = 180
-    } else {
-      timeSpent = 15
+    if (String(toChainID) === '167000') {
+      return '1m'
     }
+    return '5s'
+    // let timeSpent = 0
+    // if ([CHAIN_ID.mainnet, CHAIN_ID.nova].includes(fromChainID)) {
+    //   timeSpent = 30
+    // } else if (
+    //   [
+    //     CHAIN_ID.zksync,
+    //     CHAIN_ID.zksync_test,
+    //     CHAIN_ID.zkspace,
+    //     CHAIN_ID.zkspace_test,
+    //     CHAIN_ID.imx,
+    //     CHAIN_ID.imx_test,
+    //   ].includes(fromChainID)
+    // ) {
+    //   timeSpent = 5
+    // } else if (
+    //   [CHAIN_ID.zkspace, CHAIN_ID.zkspace_test].includes(fromChainID)
+    // ) {
+    //   timeSpent = 20
+    // } else if (
+    //   [CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID)
+    // ) {
+    //   timeSpent = 180
+    // } else {
+    //   timeSpent = 15
+    // }
 
-    if ([CHAIN_ID.mainnet, CHAIN_ID.nova].includes(toChainID)) {
-      timeSpent += 30
-    } else if (
-      [CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(toChainID)
-    ) {
-      timeSpent += 180
-    } else if (
-      [
-        CHAIN_ID.zksync,
-        CHAIN_ID.zksync_test,
-        CHAIN_ID.zkspace,
-        CHAIN_ID.zksync_test,
-        CHAIN_ID.imx,
-        CHAIN_ID.imx_test,
-        CHAIN_ID.dydx,
-        CHAIN_ID.dydx_test,
-      ].includes(toChainID)
-    ) {
-      timeSpent += 5
-    } else if (
-      [
-        CHAIN_ID.linea,
-        CHAIN_ID.linea_test,
-        CHAIN_ID.pozkevm,
-        CHAIN_ID.pozkevm_test,
-      ].includes(toChainID)
-    ) {
-      timeSpent += 30
-    } else {
-      timeSpent += 15
-    }
+    // if ([CHAIN_ID.mainnet, CHAIN_ID.nova].includes(toChainID)) {
+    //   timeSpent += 30
+    // } else if (
+    //   [CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(toChainID)
+    // ) {
+    //   timeSpent += 180
+    // } else if (
+    //   [
+    //     CHAIN_ID.zksync,
+    //     CHAIN_ID.zksync_test,
+    //     CHAIN_ID.zkspace,
+    //     CHAIN_ID.zksync_test,
+    //     CHAIN_ID.imx,
+    //     CHAIN_ID.imx_test,
+    //     CHAIN_ID.dydx,
+    //     CHAIN_ID.dydx_test,
+    //   ].includes(toChainID)
+    // ) {
+    //   timeSpent += 5
+    // } else if (
+    //   [
+    //     CHAIN_ID.linea,
+    //     CHAIN_ID.linea_test,
+    //     CHAIN_ID.pozkevm,
+    //     CHAIN_ID.pozkevm_test,
+    //   ].includes(toChainID)
+    // ) {
+    //   timeSpent += 30
+    // } else {
+    //   timeSpent += 15
+    // }
 
-    return timeSpent + 's'
+    // return timeSpent + 's'
   },
 
   transferOrginTime(fromChainID, toChainID) {

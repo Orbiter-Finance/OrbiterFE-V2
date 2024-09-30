@@ -32,7 +32,7 @@ export default {
     PrizesPool,
     PrizesRank,
     PrizesRule,
-    PrizesAllocation
+    PrizesAllocation,
   },
   computed: {
     evmAddress() {
