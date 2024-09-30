@@ -133,26 +133,6 @@
 
             <div class="content-text-group">
               <span class="content-text" v-html="item.text"></span>
-              <o-tooltip v-if="item.specificChain">
-                <template v-slot:titleDesc>
-                  <span style="margin-left: -20px">
-                    <span>
-                      <span>Specific networks include: </span>
-                      <br />
-                      Ethereum, Arbitrum, zkSync Lite, Linea, Base, Polygon,
-                      Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova,
-                      Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair, Blast,
-                      ZetaChain, B² Network, Mode, zkLink Nova, Proof of Play
-                      Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit,
-                      Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse
-                    </span>
-                  </span>
-                </template>
-                <span class="orbiter_global_prizes_tips_underline tip-text">
-                  Specific networks
-                </span>
-              </o-tooltip>
-              <span v-if="item.specificChain">from/to Scroll</span>
               <span class="content-text" v-html="item.lastText"></span>
             </div>
           </div>
@@ -222,7 +202,7 @@
               <div class="task-reward-laebl" :style="`color:#FFC47D;`">
                 
                 <span v-if="item.isU">
-                  200USDC Extra  Bonus
+                  200 $USDC Extra Bonus
                 </span>
                 <span v-else>
                   Earn {{ item.opoints }} Opoints
@@ -278,32 +258,41 @@
 </template>
 
 <script>
-import { prizesUserList, prizesTimeEnd } from '../../../composition/hooks'
+import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
+
+import { prizesUserList, prizesTimeEnd, prizesAchieveList } from '../../../composition/hooks'
 export default {
   name: 'DayCheckInTaskList',
   computed: {
+    evmAddress() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
     isEnd() {
-      // return prizesTimeEnd.value
-      return false
+      return prizesTimeEnd.value
     },
     userList() {
       return prizesUserList.value
+    },
+    achieveList() {
+      return prizesAchieveList.value
     },
     userSignTotal() {
       const userList = this.userList || []
       let count = 0
       userList.forEach((item) => {
-        console.log("item", item)
         count += !!(Number(item?.task_result) >= 3)
       })
       return count
     },
     userAchieveTotal() {
-      const userList = this.userList || []
+      const achieveList = this.achieveList || []
       let count = 0
-      userList.forEach((item) => {
-        console.log("item", item)
-        count += !!(Number(item?.task_result) >= 3000)
+      achieveList.forEach((item) => {
+        count += !!(
+          item?.result?.some((option)=>{
+            return option?.address?.toLocaleLowerCase() === this.evmAddress?.toLocaleLowerCase()
+          })
+        )
       })
       return count
     },
@@ -313,7 +302,7 @@ export default {
       return [
         {
           icon: 'task',
-          text: `<span class='orbiter_global_prizes_tx-color'>Bridge >=3 TX</span> for <span class='orbiter_global_prizes_tx-color'>7 Days</span>`,
+          text: `<span class='orbiter_global_prizes_tx-color'>Bridge ≥3 TX</span> for <span class='orbiter_global_prizes_tx-color'>7 Days</span>`,
           specificChain: false,
           isPromotion: Number(count) >= 7,
           isSuccess: Number(count) >= 7,
@@ -324,7 +313,7 @@ export default {
         },
         {
           icon: 'task',
-          text: `<span class='orbiter_global_prizes_tx-color'>Bridge >=3 TX</span> for <span class='orbiter_global_prizes_tx-color'>14 Days</span>`,
+          text: `<span class='orbiter_global_prizes_tx-color'>Bridge ≥3 TX</span> for <span class='orbiter_global_prizes_tx-color'>14 Days</span>`,
           specificChain: false,
           isPromotion: Number(count) >= 14,
           isSuccess: Number(count) >= 14,
@@ -335,7 +324,7 @@ export default {
         },
         {
           icon: 'task',
-          text: `<span class='orbiter_global_prizes_tx-color'>Bridge >=3000 TX</span>  each day to achieve  <span class='orbiter_global_prizes_tx-color'>Top 5</span> fastest trader`,
+          text: `<span class='orbiter_global_prizes_tx-color'>Bridge ≥3000 TX</span> each day to achieve  <span class='orbiter_global_prizes_tx-color'>Top 5</span> fastest trader`,
           specificChain: false,
           isPromotion: false,
           isSuccess:false,
