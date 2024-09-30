@@ -449,6 +449,7 @@ export default {
   },
   created() {
     this.$store.commit('getPrizesProjectInfo')
+    
   }
 }
 </script>

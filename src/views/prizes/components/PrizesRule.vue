@@ -29,14 +29,14 @@ export default {
           text: [
             '- <span class="orbiter_global_prizes_rule_tag">Bridge from specific networks to Optimism Superchain.</span>',
             '- Optimism Superchain includes: Optimism, Base, Mode, Fractal, Cyber, Bob, Mint, Kroma, Lisk, Redstone, Zora',
-            '- Specific Chains include: Ethereum, Arbitrum, zkSync Lite, Linea, Base, Scroll, Polygon,Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Manta, zkFair, Blast, ZetaChain, B² Network, zkLink Nova, Proof of Play Apex, Merlin, BEVM, Core, Bitlayer, BounceBit, Optopia, AlienxChain, Zircuit, Fuse',
-            '- The minimum amount required: 0.03 ETH / 0.0012BTC',
-            '- Bridge token: ETH/BTC',
+            '- Specific Chains include: Ethereum, Arbitrum, linea,scroll,zkSync Lite, Polygon, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, zkFair, Blast, zkLink Nova, Proof of Play Apex, BEVM, Core, Bitlayer, BounceBit, Optopia, AlienxChain, Fraxtal, Zircuit, Fuse',
+            '- The minimum amount required: 0.03 ETH',
+            '- Bridge token: ETH',
           ],
         },
         {
           label:
-            '2.How to share the up to 50,000 USDC prize pool?',
+            '2.How to share the prize pool and extra bonus?',
           text: [
             '- Complete <span class="orbiter_global_prizes_rule_tag">≥3 transactions </span> to qualify for a share of the prize pool.',
             '- <span class="orbiter_global_prizes_rule_tag">Prize Pool Breakdown:</span>',
@@ -45,8 +45,8 @@ export default {
             '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 1-8 Traders (with ≥20 TX):</span> Share 25% of the prize pool.',
             '- The ranking is determined based on transactions. If users have the same number of transactions, ranking will be based on the transaction value. More transactions, greater chance to win!',
             '- <span class="orbiter_global_prizes_rule_tag">Extra bonus: </span>',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Bridge at least 3000 TXs daily and rank in the top 5 fastest traders:</span> earn a $200 USDC daily bonus.',
-            '- The ranking is determined based on transactions and completed time. If users have the same number of transactions within the same time frame, ranking will be based on the transactions. More transactions, greater chance to win!'
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Rank in the top 5 fastest traders daily (Bridge at least 3000 TXs daily): </span> earn a 200 $USDC daily bonus. An address can receive a maximum extra bonus of 3,000 $USDC.',
+            '- The ranking is determined based on transactions and daliy completed time. If users have the same number of transactions within the same time frame, ranking will be based on the transactions. More transactions, greater chance to win!'
           ],
         },
         {
@@ -66,7 +66,7 @@ export default {
             '- Complete ≥3 transactions for 7 days to earn extra 150 Opoints.',
             '- Complete ≥3 transactions for 14 days to earn extra 450 Opoints.',
             '<span class="orbiter_global_prizes_rule_tag">Note:</span>',
-            '- One address can only receive up to 450 Opoints.'
+            '- One address can receive a maximum of 450 Opoints.'
           ],
         },
         {

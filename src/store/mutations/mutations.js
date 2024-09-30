@@ -16,8 +16,10 @@ import {
   setQuestsInfoList,
   setQuestsUserInfoList,
   setPrizesUserRank,
+  setPrizesAchieveList,
   updateCoinbase,
   setPrizesTotaltx,
+  setPrizesTaskList,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -367,6 +369,8 @@ export default {
         }/project/info?projectId=${activityProjectId}`
       )
       const res = await response.json()
+      console.log('res', res)
+      setPrizesTaskList(res?.result?.tasks || [])
       setPrizesProjectTime(res?.result?.end_time || '')
     }, 500)
   },
@@ -414,6 +418,19 @@ export default {
     }, 500)
   },
 
+  async getPrizesUserRankTopAchieve(state) {
+    clearTimeout(timer1)
+    timer1 = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}/${
+          isDev() ? 'activity' : 'active-platform'
+        }/competition/topAchieve?projectId=${activityProjectId}`
+      )
+      const res = await response.json()
+      setPrizesAchieveList(res?.result || [])
+    }, 500)
+  },
+
   async getTaskInfoList(state) {
     clearTimeout(timer7)
     timer7 = setTimeout(async () => {
@@ -433,6 +450,7 @@ export default {
       } catch (error) {}
     }, 500)
   },
+
   async getUserTaskInfoList(state, { projectList, address }) {
     clearTimeout(timer8)
     const list = projectList.filter((item) => !!item)
