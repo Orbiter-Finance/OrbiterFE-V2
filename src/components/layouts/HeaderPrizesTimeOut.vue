@@ -1,6 +1,6 @@
 <template>
   <div class="time-out">
-    <div class="time-content">Optimism</div>
+    <div class="time-content">optimism superchain</div>
   </div>
 </template>
 
@@ -14,7 +14,8 @@ export default {
 <style scoped lang="scss">
 .time-out {
   position: absolute;
-  right: -50%;
+  left: 50%;
+  transform: translateX(-50%);
   top: -12px;
   display: flex;
   justify-content: flex-end;
