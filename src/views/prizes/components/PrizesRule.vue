@@ -29,7 +29,7 @@ export default {
           text: [
             '- <span class="orbiter_global_prizes_rule_tag">Bridge from specific networks to Optimism Superchain.</span>',
             '- Optimism Superchain includes: Optimism, Base, Mode, Cyber, Bob, Mint, Kroma, Lisk, Zora',
-            '- Specific Chains include: Ethereum, Arbitrum, linea,scroll,zkSync Lite, Polygon, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, zkFair, Blast, zkLink Nova, Proof of Play Apex, BEVM, Core, Bitlayer, BounceBit, Optopia, AlienxChain, Fraxtal, Zircuit, Fuse',
+            '- Specific Chains include: Ethereum, Arbitrum, linea,scroll,zkSync Lite, Polygon, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Manta, zkFair, Blast, zkLink Nova, Proof of Play Apex, BEVM, Core, Bitlayer, BounceBit, Optopia, AlienxChain, Fraxtal, Zircuit, Fuse',
             '- The minimum amount required: 0.03 ETH',
             '- Bridge token: ETH',
           ],
