@@ -88,7 +88,7 @@ export default {
         chain: "60808",
         label: "Bridge to BOB",
         reward: "Join Fusion Season 3 to get BOB spices",
-        link: "https://www.gobob.xyz/#about"
+        link: "https://app.gobob.xyz/fusion"
       }, {
         chain: "185",
         label: "Bridge to Mint",
