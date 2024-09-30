@@ -88,17 +88,17 @@ export default {
         chain: "60808",
         label: "Bridge to BOB",
         reward: "Join Fusion Season 3 to get BOB spices",
-        link: "https://www.mintchain.io/airdrop"
+        link: "https://www.gobob.xyz/#about"
       }, {
         chain: "185",
         label: "Bridge to Mint",
         reward: "Join in Mint Expedition Season 3 airdrop",
-        link: "https://www.mode.network/about-the-airdrop"
+        link: "https://www.mintchain.io/airdrop"
       }, {
         chain: "34443",
         label: "Bridge to Mode",
         reward: "Join in Mode Season2 airdrop",
-        link: "https://www.gobob.xyz/#about"
+        link: "https://www.mode.network/about-the-airdrop"
       }, {
         chain: "7560",
         label: "Bridge to Cyber",

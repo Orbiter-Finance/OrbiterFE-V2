@@ -26,6 +26,11 @@
           <div class="info-label">Accumulated:</div>
           <div class="info-value">{{ tx }} Tx</div>
         </div>
+        <div class="info-item">
+          <div class="info-label">Extra bonus:</div>
+          <div class="info-value">{{ userAchieveTotalReward }} USDC</div>
+        </div>
+        
       </div>
 
       <div class="progress-group-scroll">
@@ -71,7 +76,6 @@
       <div class="inv"></div>
       <div class="task-title">
         <div>Transaction quest</div>
-        <div class="update-time">Check-in update time: UTC 11:00 AM</div>
       </div>
 
       <div class="task-list-group">
@@ -110,13 +114,22 @@
                       <span>
                         <span>Specific networks include: </span>
                         <br />
-                        Ethereum, Arbitrum, zkSync Lite, Linea, Base, Polygon,
-                        Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova,
-                        Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair,
-                        Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof
-                        of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer,
-                        BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal,
-                        Zircuit, Fuse
+                        Ethereum, Arbitrum, linea,scroll,zkSync Lite, Polygon, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, zkFair, Blast, zkLink Nova, Proof of Play Apex, BEVM, Core, Bitlayer, BounceBit, Optopia, AlienxChain, Fraxtal, Zircuit, Fuse
+                      </span>
+                    </span>
+                  </template>
+                  <span class="orbiter_global_prizes_tips_underline tip-text">
+                    Specific networks 
+                  </span>
+                </o-tooltip>
+                to
+                <o-tooltip v-if="item.specificChain">
+                  <template v-slot:titleDesc>
+                    <span style="margin-left: -20px">
+                      <span>
+                        <span>Optimism Superchain include: </span>
+                        <br />
+                        Optimism, Base, Mode, Cyber, Bob, Mint, Kroma, Lisk, Zora
                       </span>
                     </span>
                   </template>
@@ -200,6 +213,7 @@ import {
   prizesUserList,
   prizesRankList,
   prizesTotaltx,
+  prizesAchieveList
 } from '../../../composition/hooks'
 import PrizesTaskSuccessIcon from './PrizesTaskSuccess.vue'
 import { decimalNum } from '../../../util/decimalNum'
@@ -222,8 +236,7 @@ export default {
   },
   computed: {
     isEnd() {
-      // return prizesTimeEnd.value
-      return false
+      return prizesTimeEnd.value
     },
     userList() {
       return prizesUserList.value
@@ -256,6 +269,9 @@ export default {
       })
       return count
     },
+    achieveList() {
+      return prizesAchieveList.value
+    },
     rank() {
       const tx = this.tx
       const rank = prizesUserRank.value
@@ -263,6 +279,18 @@ export default {
     },
     evmAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
+    userAchieveTotalReward() {
+      const achieveList = this.achieveList || []
+      let count = 0
+      achieveList.forEach((item) => {
+        count += !!(
+          item?.result?.some((option)=>{
+            return option?.address?.toLocaleLowerCase() === this.evmAddress?.toLocaleLowerCase()
+          })
+        )
+      })
+      return count * 200
     },
     progressStage() {
       const tx = this.tx
@@ -380,7 +408,7 @@ export default {
           icon: 'bridge',
           color: '#BC6D6A',
           reward: '40% Prize Pool',
-          text: `<span class='orbiter_global_prizes_tx-color'>Bridge >=3 TX</span>`,
+          text: `<span class='orbiter_global_prizes_tx-color'>Bridge ≥3 TX</span> from`,
           specificChain: true,
           isPromotion: tx >= 8,
           isSuccess: tx >= 3,
@@ -390,7 +418,7 @@ export default {
           icon: 'bridge',
           color: '#A8E2EF',
           reward: '35% prize pool',
-          text: `<span class='orbiter_global_prizes_tx-color'>Bridge >=20 TX</span>`,
+          text: `<span class='orbiter_global_prizes_tx-color'>Bridge ≥20 TX</span> from`,
           specificChain: true,
           isPromotion: tx >= 20 && rank <= 8,
           isSuccess: tx >= 20 && rank <= 100,
@@ -401,7 +429,7 @@ export default {
           icon: 'bridge',
           color: '#ECC031',
           reward: '25% prize pool',
-          text: `Bridge to`,
+          text: `Bridge from`,
           specificChain: true,
           isPromotion: false,
           isSuccess: tx >= 20 && rank <= 8,

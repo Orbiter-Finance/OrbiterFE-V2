@@ -5,12 +5,12 @@
         <div class="badge">Optimism Superchain</div>
       </div>
       <div class="group">
-        <div class="title orbiter-linear-text">$50,000 Prize Pool</div>
+        <div class="title orbiter-linear-text">$50000 Prize Pool</div>
       </div>
       <div class="group">
         <div class="amount orbiter-linear-text">
-          <span class="chain orbiter-linear-text">Scroll</span>
-          Trading Frenzy
+          <span class="chain orbiter-linear-text">Optimism</span>
+          superchain Voyage
         </div>
       </div>
       <div class="group">
