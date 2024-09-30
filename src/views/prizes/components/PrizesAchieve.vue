@@ -24,7 +24,7 @@
               {{ dayTime(item) }}
             </div>
             <div class="cumulative-tx">
-              {{ decimalNumC(item.count, 0, ',') }} tx
+              {{ decimalNumC(item.txsCount, 0, ',') }} tx
             </div>
             <div class="emit-reward">
               <div>
@@ -65,11 +65,11 @@ export default {
         endTime >= now
       })?.[0]?.id  || taskList?.[taskList?.length-1 || 0]?.id 
 
-      const list = achieveList.filter((item)=>{
+      const group = achieveList.filter((item)=>{
         return item.taskId === taskId
-      })
+      })?.[0]
 
-      return list?.result || []
+      return group?.result || []
 
     }
   },
