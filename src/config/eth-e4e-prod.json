@@ -12005,5 +12005,366 @@
             "startTime": 0,
             "endTime": 99999999999999
         }
+    },
+
+    "1-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-1": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0.5,
+            "tradingFee": 0.0055,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "2-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-2": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 1,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "7-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-7": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "23-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-23": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 1,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "21-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-21": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "20-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-20": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 1,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "19-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-19": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 1,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "14-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-14": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 1,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "4-89": {
+        "ETH-ETH": {
+            "makerAddress": "0x064A24243F2Aabae8D2148FA878276e6E6E452E3941b417f3c33b1649EA83e11",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-4": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0x064A24243F2Aabae8D2148FA878276e6E6E452E3941b417f3c33b1649EA83e11",
+            "gasFee": 1,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "6-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-6": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 1,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "15-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-15": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 1,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "30-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 2.5,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-30": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 1,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "40-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 2.5,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-40": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 1,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "57-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 6,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-57": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 1,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "47-89": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 6,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "89-47": {
+        "ETH-ETH": {
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "gasFee": 1,
+            "tradingFee": 0.001,
+            "maxPrice": 3,
+            "minPrice": 0.00005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
     }
 }
