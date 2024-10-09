@@ -3527,11 +3527,11 @@
               "name": "evm-rpc"
           }
       ],
-      "infoURL": "https://scope.klaytn.com",
+      "infoURL": "https://kaiascan.io",
       "explorers": [
          {
              "name": "Explorer",
-             "url": "https://scope.klaytn.com"
+             "url": "https://kaiascan.io"
          }
      ],
       "internalId": "89",
