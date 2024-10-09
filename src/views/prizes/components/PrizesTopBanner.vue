@@ -105,8 +105,8 @@ export default {
       return Date.parse(d2)
     },
     toBridgeCall() {
-      const address = this.evmAddress
-      if (!address || address === '0x' || this.isEnd) return
+      // const address = this.evmAddress
+      // if (!address || address === '0x' || this.isEnd) return
       const name = 'PRIZES_V6_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
         event_category: name,
