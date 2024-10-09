@@ -48,6 +48,7 @@
             <div class="user-address">User</div>
             <div class="cumulative-tx">Total Transaction</div>
             <div class="bridge-fee" v-if="current <= 1">Bridging fee rebate</div>
+            <div class="bridge-fee">Extra Bonus</div>
             <div class="emit-reward">Estimated Earnings</div>
           </div>
           <div
@@ -66,6 +67,9 @@
             </div>
             <div class="bridge-fee" v-if="current <= 1">
               {{ bridgingFee(item) }}
+            </div>
+            <div class="bridge-fee">
+              {{ extraBonus(item) }}
             </div>
             <div class="emit-reward">
               <div>
@@ -342,6 +346,12 @@ export default {
 
       return !!bridgeFee ? bridgeFee + '%' : '--'
     },
+
+    extraBonus(group) {
+      const amount = group?.extBonus?.amount
+      const symbol = group?.extBonus?.name
+      return  Number(amount) ? `${decimalNum(amount, 2)} ${symbol}` : "--"
+    },
     emiteReward(group) {
       const amount = group?.reward?.amount || 0
       const symbol = group?.reward?.name || ''
@@ -479,11 +489,11 @@ export default {
       }
 
       .user-address {
-        width: 26%;
+        width: 20%;
       }
 
       .cumulative-tx {
-        width: 26%;
+        width: 20%;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -495,7 +505,7 @@ export default {
       }
 
       .bridge-fee {
-        width: 26%;
+        width: 15%;
       }
 
       .emit-reward {
@@ -658,7 +668,7 @@ export default {
       overflow: auto;
       .rank-list {
         width: 100%;
-        min-width: 520px;
+        min-width: 640px;
         margin-top: 24px;
         .rank-list-item {
           height: 54px;
@@ -681,7 +691,6 @@ export default {
             }
           }
           .bridge-fee {
-            width: 30%;
             text-align: center;
           }
           .ranking,
