@@ -8,7 +8,7 @@ export function onCopySuccess() {
 }
 // copy error
 export function onCopyError() {
-  this.$notify.error({ title: 'copy faild', duration: 2000 })
+  this.$notify.error({ title: this.$t('copy faild'), duration: 2000 })
 }
 
 export function toggleBodyCls() {
@@ -39,22 +39,22 @@ function padZero(tar) {
 }
 
 export function customSort(specifiedOrder, objectArray) {
-  const orderMap = new Map();
-  specifiedOrder.forEach((id, index) => orderMap.set(id, index));
+  const orderMap = new Map()
+  specifiedOrder.forEach((id, index) => orderMap.set(id, index))
   objectArray.sort((a, b) => {
-      const orderA = orderMap.get(a.localID);
-      const orderB = orderMap.get(b.localID);
-      if (orderA !== undefined && orderB !== undefined) {
-      return orderA - orderB;
-      }
-      if (orderA !== undefined) {
-      return -1;
-      }
-      if (orderB !== undefined) {
-      return 1;
-      }
-      return 0;
-  });
+    const orderA = orderMap.get(a.localID)
+    const orderB = orderMap.get(b.localID)
+    if (orderA !== undefined && orderB !== undefined) {
+      return orderA - orderB
+    }
+    if (orderA !== undefined) {
+      return -1
+    }
+    if (orderB !== undefined) {
+      return 1
+    }
+    return 0
+  })
 
-  return objectArray;
-  }
+  return objectArray
+}

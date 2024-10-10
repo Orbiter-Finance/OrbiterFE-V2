@@ -78,18 +78,19 @@ export default {
     },
   },
   data() {
+
     return {
       navs: [
         {
-          name: 'L2 Bridge',
+          name: this.$t('L2 Bridge'),
           href: '/',
           children: [
             {
-              name: 'Sender',
+              name: this.$t('Sender'),
               phref: '/',
             },
             {
-              name: 'Maker',
+              name: this.$t('Maker'),
               phref: '/',
             },
           ],
@@ -99,11 +100,11 @@ export default {
         //   href: '/data',
         // },
         {
-          name: 'Explore',
+          name: this.$t('Explore'),
           href: '/statistics',
         },
         {
-          name: 'Prizes',
+          name: this.$t('Prizes'),
           href: '/prizes',
         },
         // {

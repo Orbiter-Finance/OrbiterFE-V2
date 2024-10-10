@@ -64,7 +64,7 @@
             <el-popover popper-class="TVL-popover" :placement="'bottom'" width="280" trigger="hover">
               <div class="TVL-desc">
                 Total Value Locked in Rollups & Types of cryptocurrencies.
-                <a href="https://docs.orbiter.finance/l2data" target="_blank"> Read More </a>
+                <a href="https://docs.orbiter.finance/l2data" target="_blank"> {{ $t("Read More") }}</a>
               </div>
               <div class="TVL-help" slot="reference">
                 <help />

@@ -6,8 +6,8 @@
           ? 'Transcation Failed'
           : 'Detail'
         : isCompleted
-        ? 'Completed'
-        : 'Processing'
+        ? $t('Completed')
+        : $t('Processing')
     }}</CommBoxHeader>
     <div class="ProceedContent">
       <div v-for="item in proceedData" :key="item.title" class="contentItem">
@@ -356,11 +356,11 @@ export default {
       if (this.detailData) {
         return [
           {
-            title: 'Timestamp',
+            title: this.$t("Timestamp"),
             desc: this.detailData.fromTimeStamp,
           },
           {
-            title: 'Value',
+            title: this.$t("Value"),
             desc:
               this.detailData.userAmount.toString() +
               ' ' +
@@ -370,13 +370,13 @@ export default {
       }
       return [
         {
-          title: 'Timestamp',
+          title: this.$t("Timestamp"),
           desc: util.transferTimeStampToTime(
             this.$store.state.proceeding.userTransfer.timeStamp
           ),
         },
         {
-          title: 'Value',
+          title: this.$t("Value"),
           desc:
             (
               this.$store.state.proceeding.userTransfer.amount /

@@ -62,7 +62,7 @@
         <div class="description" v-html="description"></div>
 
         <div v-show="!isProgress"  :class="['join', { 'join-end': isEnd }]" @click="openUrl()">
-          Join
+          {{ $t("Join") }}
         </div>
       </div>
       <div v-show="isProgress" class="bottom">
@@ -140,7 +140,7 @@ export default {
   },
   computed: {
     joinLabel() {
-      return this.btnLabel || "Join"
+      return this.btnLabel || this.$t("Join")
     },
     tooltipText () {
       return this.tooltipLabel || ""

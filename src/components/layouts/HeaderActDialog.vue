@@ -55,7 +55,7 @@
                 viewBox="0 0 24 24"
                 version="1.1"
               >
-                <title>Copy Address</title>
+                <title>{{ $t("Copy Address") }}</title>
   
                 <g
                   id="page-1"
@@ -110,7 +110,7 @@
               <div class="text_98"
               @click="openUserInfoDetailsCardModal"
               >
-                Total O-Points
+                {{ $t("Total O-Points") }}
                 <img :src="require('../../assets/activity/extends.svg')" alt="">
               </div>
               <div class="text_99">
@@ -131,7 +131,7 @@
                   @click="openClaimRewardModal"
                   class="reward">
                     <svg-icon iconName="ORBGUY"></svg-icon>
-                    Reward
+                    {{ $t("Reward") }}
                   </div>
                   
                 </div>
@@ -151,7 +151,7 @@
         <div ref="block_top_group">
         </div>
         <div style="width: 100%; display: flex;">
-          <span class="text_21">🛸 Quests </span>
+          <span class="text_21">🛸 {{ $t("Quests") }} </span>
         </div>
         <div class="ativity-list"  id="ativity-list"
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
@@ -161,7 +161,7 @@
         <div>
           <div v-if="!actDataList || actDataList.length<=0" id="no-quests">
             <img :src="require('../../assets/NoQuests.png')" alt="">
-            <p class="no-quests-text">No Active Quests Available</p>
+            <p class="no-quests-text">{{ $t("No Active Quests Available") }}</p>
           </div>
           <div :key="index" v-for="(item, index) in actDataList">
             <div class="activity-card">
@@ -232,7 +232,7 @@
 
                     <div class="group-reward">
                       <svg-icon iconName="O-Points"></svg-icon>
-                      + {{ option.points }} OPoints
+                      + {{ option.points }} {{ $t("OPoints") }}
                     </div>
                     
 
@@ -242,7 +242,7 @@
                           ? `${option.progress.current}/${option.progress.total}`
                           : '0/0'
                       }}</span>
-                      <span v-else class="text_28">Undone</span>
+                      <span v-else class="text_28">{{$t("Undone")}}</span>
                     </div>
                     
                   </div>

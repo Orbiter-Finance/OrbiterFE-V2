@@ -77,7 +77,7 @@
           referrerpolicy="no-referrer"
           :src="require('../../assets/activity/add_flower.png')"
         />
-        <span class="text-group_1">{{ addPoint }} O-Points</span>
+        <span class="text-group_1">{{ addPoint }} {{ $t("O-Points") }}</span>
         <img
           class="thumbnail_1"
           referrerpolicy="no-referrer"

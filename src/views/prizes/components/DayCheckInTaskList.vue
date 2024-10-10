@@ -139,7 +139,7 @@
           <div v-if="item.isSuccess" class="earn-nft">
             + {{ item.opoints }}
             <svg-icon class="icon" iconName="O-Points"></svg-icon>
-            <div class="text">OPoints</div>
+            <div class="text">{{ $t("OPoints") }}</div>
             <svg
               class="icon"
               xmlns="http://www.w3.org/2000/svg"

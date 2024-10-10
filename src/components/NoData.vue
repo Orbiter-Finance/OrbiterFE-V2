@@ -2,7 +2,7 @@
     <div class="no-data-box">
         <div class="box-wrap">
             <SvgIconThemed icon="nodata" size="xs" />
-            <div class="title"><slot>No Data</slot></div>
+            <div class="title"><slot>{{ $t("No Data") }}</slot></div>
         </div>
     </div>
 </template>

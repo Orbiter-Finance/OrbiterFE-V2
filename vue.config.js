@@ -68,6 +68,17 @@ module.exports = {
         plugins: [LogicalAssignmentOperators, NumericSeparator],
       })
       .end()
+    config.module
+      .rule('fuels')
+      .test(/(\.mjs$)|(\.js$)/)
+      .include.add(path.resolve(__dirname, 'node_modules/vue-i18n'))
+      .end()
+      .use('babel-loader')
+      .loader('babel-loader')
+      .options({
+        plugins: [LogicalAssignmentOperators, NumericSeparator],
+      })
+      .end()
 
     config.module
       .rule('aptos')

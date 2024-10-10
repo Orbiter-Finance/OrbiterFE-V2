@@ -2,7 +2,7 @@
   <div class="join-media-card">
     <div class="card-info">
       <div class="card-info-title">
-        <div class="label">Join LIKWID Group</div>
+        <div class="label">{{ $t("Join LIKWID Group")}}</div>
         <svg
           class="media-icon"
           xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +44,7 @@
         </svg>
       </div>
       <div class="card-info-des">
-        Input “/Price”to get the latest price and find more ALPHA!
+        {{ $t("ALPHA") }}
       </div>
       <div @click="openLink" class="link-url">{{ url }}</div>
     </div>

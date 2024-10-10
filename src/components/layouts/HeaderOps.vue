@@ -14,7 +14,7 @@
       @click="connectAWallet"
       class="ops-item not-mode"
       style="margin-right: 10px"
-      >Connect a Wallet</CommBtn
+      >{{$t("Connect a Wallet")}}</CommBtn
     >
     <template
       v-if="isLogin && $route.path !== '/home' && $route.path !== '/statistics'"
@@ -32,7 +32,7 @@
           referrerpolicy="no-referrer"
           :src="require('../../assets/activity/point.png')"
         />
-        {{ totalPoint }} O-Points
+        {{ totalPoint }} {{ $t("O-Points") }}
         <div
           v-if="!isMobile"
           :class="addPointVisible ? 'shake-top' : ''"
@@ -45,7 +45,7 @@
             referrerpolicy="no-referrer"
             :src="require('../../assets/activity/add_flower.png')"
           />
-          <span class="text_2"> {{ addPoint }} O-Points </span>
+          <span class="text_2"> {{ addPoint }} {{ $t("O-Points") }} </span>
           <img
             class="thumbnail_1"
             referrerpolicy="no-referrer"
@@ -78,6 +78,10 @@
           :iconName="connectFirstWalletIcon"
         ></svg-icon>
         <span class="address">{{ connectFirstAddress }}</span>
+      </div>
+
+      <div>
+        <LangCard />
       </div>
     </template>
     <!-- <div @click="toggleThemeMode" class="ops-mode">
@@ -123,13 +127,16 @@ import { decimalNum } from '../../util/decimalNum'
 import { ethers } from 'ethers'
 import orbiterHelper from '../../util/orbiter_helper.js'
 import { shortenAddress } from '../../util/shortenAddress'
+import SvgIcon from '../SvgIcon/SvgIcon.vue'
+import LangCard from './LangCard.vue'
+
 
 let timer1
 
 const addressPointMap = {}
 export default {
   name: 'HeaderOps',
-  components: { CommBtn, SvgIconThemed },
+  components: { CommBtn, SvgIconThemed, SvgIcon, LangCard },
   props: {
     verical: {
       type: Boolean,
@@ -207,11 +214,11 @@ export default {
       const address = this.fromGroup?.address || ''
       return !!address && address !== '0x'
         ? shortenAddress(address)
-        : 'Connect wallet'
+        : this.$t('Connect wallet')
     },
     connectAddress() {
       const address = this.toGroup?.address || ''
-      return !!address ? shortenAddress(address) : 'Connect wallet'
+      return !!address ? shortenAddress(address) : this.$t('Connect wallet')
     },
     currentWalletAddress() {
       return [

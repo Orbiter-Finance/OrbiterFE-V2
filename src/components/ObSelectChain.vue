@@ -2,7 +2,7 @@
   <div id="obSelectChainBody" class="obSelectChainBody">
     <div @click.stop="stopPenetrate" class="selectChainContent">
       <div class="topItem">
-        <span>Select a Chain</span>
+        <span>{{ $t("Select a Chain") }}</span>
         <div @click="closerButton" style="position: absolute; top: 0; right: 0">
           <SvgIconThemed
             style="width: 20px; height: 20px; cursor: pointer"

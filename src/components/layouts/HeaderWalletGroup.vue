@@ -7,7 +7,7 @@
       <div class="close" @click.stop="closeSelectWalletDialog">
         <img :src="require('../../assets/data/close.png')" />
       </div>
-      <div class="title">Connect a Wallet</div>
+      <div class="title">{{$t("Connect a Wallet")}}</div>
       <div class="wallet-list">
         <div v-if="connectWalletGroupKey === 'EVM'" class="wallet-group">
           <div class="wallet-group-title">EVM Wallet</div>
