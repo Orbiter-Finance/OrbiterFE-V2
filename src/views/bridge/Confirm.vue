@@ -3,7 +3,7 @@
       <CommBoxHeader
         :back="closerButton"
         :style="isMobile ? '' : 'margin-bottom:30px;'"
-        >Confirm</CommBoxHeader
+        >{{ $t("Confirm") }}</CommBoxHeader
       >
       <div
         v-for="item in confirmData"
@@ -353,7 +353,7 @@ export default {
       const comm = [
         {
           icon: 'withholding',
-          title: 'Withholding Fee',
+          title: this.$t('Withholding Fee'),
           notice: this.$t("long.TheMaker"),
           desc: selectMakerConfig.tradingFee + ' ' + symbol,
         //   tieredFee: type === TieredFeeKey.discountFee ? `(↓${tieredFeeMax}%)` : "",
@@ -368,14 +368,14 @@ export default {
         },
         {
           icon: 'security',
-          title: 'Identification Code',
+          title: this.$t('Identification Code'),
           notice: this.$t("long.InOrbiter"),
           desc: transferCalculate.safeCode(),
           haveSep: true,
         },
         {
           icon: 'send',
-          title: 'Total Send',
+          title: this.$t('Total Send'),
           notice: this.$t("long.TotalAmount"),
           desc:
             realTransferAmount +
@@ -386,7 +386,7 @@ export default {
         },
         {
           icon: 'received',
-          title: 'Received',
+          title: this.$t('Received'),
           isDiscount: !!Number(discount),
           discount:  nRevicedAmount +
             ' ' +

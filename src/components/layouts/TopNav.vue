@@ -91,7 +91,7 @@
           @click="connectWallet"
           class="wallet-status connect-wallet-btn"
         >
-          Connect Wallet
+          {{ $t("Connect Wallet") }}
         </div>
         <div
           v-else-if="$route.path !== '/home' && $route.path !== '/statistics'"

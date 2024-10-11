@@ -38,7 +38,7 @@
               <span class="col col-2">{{ $t("Time")}}</span>
               <span class="col col-3">{{ $t("TiValueme")}}</span>
               <span class="col col-4" style="text-align: center"
-              >From</span
+              >{{ $t("From") }}</span
               >
               <span class="col col-5" style="text-align: center">{{ $t("To") }}</span>
             </div>

@@ -15,7 +15,7 @@
         {{ address }}
       </div>
       <div v-else class="connect-wallet" @click="connetcWallet">
-        Connect Wallet
+        {{ $t("Connect Wallet") }}
       </div>
     </div>
   </div>

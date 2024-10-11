@@ -34,11 +34,11 @@
             <template v-slot:titleDesc>
               <span v-html="starkAddress"></span>
             </template>
-            <div class="left">From</div>
+            <div class="left">{{ $t("From") }}</div>
           </o-tooltip>
-          <div v-else class="left">From</div>
+          <div v-else class="left">{{ $t("From") }}</div>
           <div v-if="fromBalance !== '-1'" class="right">
-            Balance:
+            {{ $t("Balance") }}:
             <CommLoading
                     :hidden="!fromBalanceLoading"
                     style="left: 0.3rem; top: 0.2rem"
@@ -107,7 +107,7 @@
           </o-tooltip>
           <div v-else class="left">{{ $t("To") }}</div>
           <!-- <div v-if="isLogin" class="right">
-            Balance:
+            {{ $t("Balance") }}:
             <CommLoading
                     :hidden="!toBalanceLoading"
                     style="left: 0.3rem; top: 0.2rem"
@@ -197,7 +197,7 @@
               :style="`border-radius: 40px;${!isNewVersion || isCrossAddress ? '' : 'margin-top: 10px'}`"
       >
       <span class="w700 s16" style="letter-spacing: 0.15rem">
-        {{ sendBtnInfo && sendBtnInfo.text }}
+        {{ sendBtnInfo && $t(sendBtnInfo.text) }}
       </span>
       </CommBtn>
       <div v-if="selectFromToken === 'USDC' && (!!isTipFromTokenAddress || !!isTiptargetTokenAddress)" class="transfer-coin-tip">
@@ -258,7 +258,7 @@
           <SvgIconThemed style="margin-right: 6px" icon="orbiter" size="sm" />
           <span class="border">{{ $t("Gas Fee Saved") }} </span>
           <span class="red">
-          Save
+          {{ $t("Save") }}
           <CommLoading
                   :hidden="!saveGasLoading"
                   style="margin: 0 1rem"
@@ -284,7 +284,7 @@
           <span :hidden="timeSpenLoading">{{ timeSpent }}</span>
         </span>
           <span class="red">
-          Save
+          {{ $t("Save") }}
           <CommLoading
                   :hidden="!saveTimeLoading"
                   style="margin: 0 1rem"
@@ -522,8 +522,6 @@ export default {
       transferValue: '',
       toValue: 0,
       isShowExchangeIcon: true,
-
-      toValueToolTip: 'Sender pays a 0.00% trading fee for each transfer.',
 
       exchangeToUsdPrice: 0,
 
@@ -822,6 +820,11 @@ export default {
     currentConenctInfoList() {
       return orbiterHelper.currentConnectChainInfo({ isList: true })
     },
+    toValueToolTip() {
+      const { selectMakerConfig } = transferDataState
+
+      return this.$t("Sender pays", [parseFloat(((orbiterCore.getGasFee(this.transferValue, selectMakerConfig) || 0) / 10).toFixed(3))]);
+    }
   },
   watch: {
     'transferDataState.fromChainID': function (value) {
@@ -1020,7 +1023,6 @@ export default {
     },
     tipsGasFee() {
       const { selectMakerConfig } = transferDataState
-      this.toValueToolTip = `Sender pays a ${ parseFloat(((orbiterCore.getGasFee(this.transferValue, selectMakerConfig) || 0) / 10).toFixed(3))}% trading fee for each transfer.`;
     },
     goToPrizes(){
       this.$gtag.event("TRANSFER_TO_PRIZESV3", {
@@ -1222,7 +1224,7 @@ export default {
           const tradingFee = ` <br /><b>${this.$t("Fees using Orbiter costs")}:</b><br />${this.$t("Trading Fee")}: $${ (
               this.orbiterTradingFee * this.exchangeToUsdPrice
           ).toFixed(2) }`;
-          const withholdingGasFee = `<br />Withholding Fee: $${
+          const withholdingGasFee = `<br />${this.$t("Withholding Fee")}: $${
               selectMakerConfig
                   ? (
                       selectMakerConfig.tradingFee * this.exchangeToUsdPrice
@@ -1550,7 +1552,7 @@ export default {
       let makerMin = new BigNumber(this.userMinPrice);
       let transferValue = new BigNumber(this.transferValue || 0);
       const info = {
-        text: 'SEND',
+        text: this.$t('SEND'),
         disabled: null,
       };
       // if (walletIsLogin.value) {
