@@ -4,7 +4,7 @@
       detailData
         ? isFailed
           ? 'Transcation Failed'
-          : 'Detail'
+          : $t('Details')
         : isCompleted
         ? $t('Completed')
         : $t('Processing')

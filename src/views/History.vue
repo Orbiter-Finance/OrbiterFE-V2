@@ -36,7 +36,7 @@
             <div class="table-header">
               <span class="col col-1">&nbsp;</span>
               <span class="col col-2">{{ $t("Time")}}</span>
-              <span class="col col-3">{{ $t("TiValueme")}}</span>
+              <span class="col col-3">{{ $t("Value")}}</span>
               <span class="col col-4" style="text-align: center"
               >{{ $t("From") }}</span
               >
