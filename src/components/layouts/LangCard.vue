@@ -1,6 +1,6 @@
 <template>
   <div class="lang-card" @click="openChange">
-    <svg-icon class="lang" iconName="lang" fill="currentColor"></svg-icon>
+    <svg-icon-themed class="lang" icon="lang"></svg-icon-themed>
     <span class="label">{{ label }}</span>
     <div v-if="open" class="lang-modal">
       <div
@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import SvgIcon from '../SvgIcon/SvgIcon.vue'
+import SvgIconThemed from '../SvgIconThemed.vue'
 export default {
   name: 'LangCard',
-  components: { SvgIcon },
+  components: { SvgIconThemed },
   data() {
     return {
       lang: localStorage.getItem('ORBITER_LANG') || 'en',
@@ -95,6 +95,18 @@ export default {
     .active {
       border-radius: 4px;
       background: rgb(245, 245, 245);
+    }
+  }
+}
+.dark-theme {
+  .lang-card{
+    background-color: #3F4159;
+    color: #B3B3BD;
+    .lang-modal {
+      background-color: #3F4159;
+      .active {
+        background-color: #28293B;
+      }
     }
   }
 }
