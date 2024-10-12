@@ -20,6 +20,10 @@ export const lotteryCardTotal = ref('0')
 export const lotteryCardModalShow = ref(false)
 export const claimCardModalShow = ref(false)
 
+export const luckyModalShow = ref(false)
+
+export const setLuckyModalShow = (flag) => (luckyModalShow.value = flag)
+
 // LUCKY_BAG CARD REWARD
 export const claimCardModalType = ref('REWARD')
 

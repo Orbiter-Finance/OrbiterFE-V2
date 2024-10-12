@@ -13,11 +13,11 @@ export default {
 
 <style scoped lang="scss">
 .time-out {
+  display: none;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   top: -12px;
-  display: flex;
   justify-content: flex-end;
   align-items: center;
   .time-content {
