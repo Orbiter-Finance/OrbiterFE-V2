@@ -145,23 +145,15 @@ export default {
     },
     taskList() {
       const list = this.list
-      let total = this.total
       return list.map((item) => {
-        let current = 0
-        if (total >= Number(item.target)) {
-          ;(current = Number(item.target) || 0),
-            (total -= Number(item.target) || 0)
-        } else {
-          ;(current = total || 0), (total = 0)
-        }
-
+        const current = this.total >= Number(item.target) ? Number(item.target) : Number(this.total)
         return {
           ...item,
           label: `Bridge ≥ ${item.target} tx to/from scroll`,
           tag: !item?.number
             ? 'Get 0 Bridging fee Eligibility'
             : '100% get $USDC Reward',
-          current,
+          current: current || 0,
         }
       })
     },
@@ -181,8 +173,6 @@ export default {
   },
   methods: {
     async drawBag(item) {
-      console.log('111111', this.currentEvmAddress, !this.currentEvmAddress)
-
       if (!this.currentEvmAddress) return
       const response = await fetch(
         `${process.env.VUE_APP_OPEN_URL}${
@@ -191,11 +181,9 @@ export default {
           this.currentEvmAddress
         }`
       )
-      console.log('response', response)
 
       const res = await response.json()
 
-      console.log('res1111', res)
       this.getData()
     },
     async getData() {
@@ -208,7 +196,7 @@ export default {
       const res = await response.json()
 
       this.list = res?.result?.resultList || []
-      this.total = Number(res?.txsCount)
+      this.total = Number(res?.result?.txsCount) || 0
     },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
