@@ -1,6 +1,6 @@
 <template>
   <div v-if="!!bannerList.length" class="act-dialog-banner">
-    <div class="title">More: Partners' Incentives</div>
+    <div class="title">{{$t("More: Partners' Incentives")}}</div>
     <el-carousel :interval="4000" trigger="click" height="110px">
       <el-carousel-item v-for="(item, index) in bannerList" :key="index">
         <div

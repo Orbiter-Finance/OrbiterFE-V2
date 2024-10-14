@@ -69,7 +69,6 @@ const getProvider = (chainId) => {
     updateWalletName('')
   }
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
-  console.log('chainInfo', chainInfo)
   const rpc = chainInfo?.rpc?.[0]
   //   wallet?.networkInfo?.url
   //   const config = new AptosConfig({ network: Network.LOCAL }) // default network is devnet

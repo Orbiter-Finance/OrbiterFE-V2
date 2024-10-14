@@ -76,20 +76,18 @@ export default {
     curPageTabState() {
       return curPageTabState.value
     },
-  },
-  data() {
-    return {
-      navs: [
+    navs(){
+      return [
         {
-          name: 'L2 Bridge',
+          name: this.$t('L2 Bridge'),
           href: '/',
           children: [
             {
-              name: 'Sender',
+              name: this.$t('Sender'),
               phref: '/',
             },
             {
-              name: 'Maker',
+              name: this.$t('Maker'),
               phref: '/',
             },
           ],
@@ -99,11 +97,11 @@ export default {
         //   href: '/data',
         // },
         {
-          name: 'Explore',
+          name: this.$t('Explore'),
           href: '/statistics',
         },
         {
-          name: 'Prizes',
+          name: this.$t('Prizes'),
           href: '/prizes',
         },
         // {
@@ -114,9 +112,16 @@ export default {
         //   name: 'More',
         //   children: []
         // },
-      ],
+      ]
     }
   },
+  data() {
+
+    return {
+
+    }
+  },
+  
   methods: {
     route2(tar) {
       if (tar.name.toLocaleLowerCase() === 'prizes'.toLocaleLowerCase()) {

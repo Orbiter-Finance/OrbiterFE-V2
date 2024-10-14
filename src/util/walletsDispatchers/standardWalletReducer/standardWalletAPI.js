@@ -117,7 +117,7 @@ export const performWalletInformation = async (
 
   if (!walletAddress)
     showMessage(
-      `get coinbase failed，please unlock ${walletType} or generate a new address`,
+      `get coinbase failed, please unlock ${walletType} or generate a new address`,
       'error'
     )
   else performResult.walletAddress = walletAddress

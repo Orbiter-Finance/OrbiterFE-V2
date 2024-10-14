@@ -23,7 +23,7 @@
                   </div>
                 </template>
                 <span class="orbiter_global_prizes_tips_underline tip-text"
-                  >specific network</span
+                  >{{ $t("specific network") }}</span
                 >
               </o-tooltip>
               <span>to Scroll</span>
@@ -44,7 +44,7 @@
 
             <div class="group-reward">
               <svg-icon iconName="O-Points"></svg-icon>
-              +{{ item.opoints }} OPoints
+              +{{ item.opoints }} {{ $t("OPoints") }}
             </div>
 
             <div class="task-progress">

@@ -169,6 +169,10 @@ input {
   align-items: center;
 }
 
+.scroll-symbol {
+  color: rgb(255, 222, 181);
+}
+
 /* ::-webkit-scrollbar {
   width: 3px;
   height: 3px;

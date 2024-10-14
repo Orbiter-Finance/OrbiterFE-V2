@@ -21,12 +21,12 @@
                     },
                 ]"
             >
-              {{ nav }}
+              {{ $t(nav) }}
             </div>
           </template>
         </div>
         <div :hidden="currentNav !== 'History'">
-          <div v-if="!isMobile" class="title">History</div>
+          <div v-if="!isMobile" class="title">{{ $t("History")}}</div>
           <!--            <div class="title" style="margin-bottom: 100px;">History</div>-->
           <!--            <span style="line-height: 25px;width:400px;font-size:18px;font-family: 'Inter Regular';color:#81807C">-->
           <!--                Our Hisory is temporarily offline for essential maintenance.<br>-->
@@ -35,12 +35,12 @@
           <div class="table historyContent">
             <div class="table-header">
               <span class="col col-1">&nbsp;</span>
-              <span class="col col-2">Time</span>
-              <span class="col col-3">Value</span>
+              <span class="col col-2">{{ $t("Time")}}</span>
+              <span class="col col-3">{{ $t("Value")}}</span>
               <span class="col col-4" style="text-align: center"
-              >From</span
+              >{{ $t("From") }}</span
               >
-              <span class="col col-5" style="text-align: center">To</span>
+              <span class="col col-5" style="text-align: center">{{ $t("To") }}</span>
             </div>
             <div class="dydx-limit" v-if="isShowDydxLimit">
               Limited by the dydx mechanism, the history of dYdX cannot be
@@ -102,7 +102,7 @@
           <NoData
             v-if="!isApiLoading && historyData && historyData.length === 0"
             style="padding-top: 200px"
-          >No history</NoData
+          >{{ $t("No history") }}</NoData
           >
           <el-pagination
             v-if="!isApiLoading && historyData && historyData.length !== 0"
@@ -126,7 +126,7 @@
             label-width="140px"
           >
             <div style="text-align: left;justify-content: left;padding-left: 20px;margin-bottom: 30px">
-              Your Transaction Details
+              {{ $t("Your Transaction Details") }}
             </div>
             <el-form-item label="* Tx Hash">
               <el-input style="width: 70%;height:30px"
@@ -148,7 +148,7 @@
                      :style="`border-radius: 40px;margin-right:40px;width:100%`"
             >
                           <span style="letter-spacing: 0.15rem">
-                            Submit
+                            {{ $t("Submit") }}
                           </span>
             </CommBtn>
           </div>
@@ -159,10 +159,10 @@
               channel, we will help you on this. Your assets are safe.
             </div>
             <div class="search" style="margin-top: 20px;">
-              <span class="text" style="font-size: 16px;">To confirm that your Transaction Hash was generated from Orbiter, you can:</span><br>
-              <span class="text">1. Make sure that this Transaction Hash was initiated at <span class="bold">Orbiter official website</span>.</span><br>
-              <span class="text">2. The last four digits of your Tx value contain an ID code starts with <span class="bold">90XX</span>.</span><br>
-              <span class="text">3. Your transaction <span class="bold">amount</span> is supported by Orbiter.</span>
+              <span class="text" style="font-size: 16px;">{{ $t("To confirm that your Transaction Hash was generated from Orbiter, you can") }}:</span><br>
+              <span class="text" v-html="$t('Make sure that this Transaction Hash was initiated at', [`<span class='bold'>${$t('Orbiter official website')}</span>`])"></span><br>
+              <span class="text" v-html="$t('The last four digits of your Tx value contain an ID code starts with', [`<span class='bold'>90XX</span>`])"></span><br>
+              <span class="text" v-html="$t('Your transaction is supported by Orbiter', [`<span class='bold'>${$t('amount')}</span>`])"></span>
             </div>
           </div>
         </div>
@@ -309,11 +309,11 @@ import orbiterHelper from '../util/orbiter_helper';
         const selectChainId = this.selectChainId;
         let txHash = this.txHash;
         if (!selectChainId) {
-          util.showMessage("Please enter From Chain", "error");
+          util.showMessage(this.$t("Please enter From Chain"), "error");
           return;
         }
         if (!txHash) {
-          util.showMessage("Hash error", "error");
+          util.showMessage(this.$t("Hash error"), "error");
           return;
         }
         if (orbiterHelper.isStarknetChain({chainId: selectChainId})) {
@@ -329,11 +329,11 @@ import orbiterHelper from '../util/orbiter_helper';
           // tron
         }  else if (selectChainId === CHAIN_ID.imx || selectChainId === CHAIN_ID.imx_test) {
           if (!Number(txHash)) {
-            util.showMessage("Hash error", "error");
+            util.showMessage(this.$t("Hash error"), "error");
             return;
           }
         } else if (txHash.length !== 66 || txHash.substring(0, 2) !== '0x') {
-          util.showMessage("Hash error", "error");
+          util.showMessage(this.$t("Hash error"), "error");
           return;
         }
 
@@ -341,14 +341,14 @@ import orbiterHelper from '../util/orbiter_helper';
         const res = await requestOpenApi(RequestMethod.getTransactionByHash, [txHash, selectChainId]);
         this.searchLoading = false;
         if (!res) {
-          util.showMessage("Request frequent", "error");
+          util.showMessage(this.$t("Request frequent"), "error");
           return;
         }
         let { status, txList } = res;
         if (status === -1) {
           const v2Res = await requestOpenApi(RequestMethod.getTransactionByHash, [txHash, selectChainId], false);
           if (!v2Res) {
-            util.showMessage("Request frequent", "error");
+            util.showMessage(this.$t("Request frequent"), "error");
             return;
           }
           status = v2Res.status;

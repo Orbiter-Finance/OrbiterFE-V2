@@ -1,72 +1,70 @@
 <template>
   <div id="prizes-pool" class="prizes-pool">
-    <PrizesCard :isPool="true">
-      <div class="pool-total">
-        <div class="pool">
-          <div>Prize Pool (USDC)</div>
-          <div :class="`pool-total-amount ${!currentPool ? '' : 'current'}`">
-            {{ totalPool }}
-          </div>
-        </div>
-        <div class="participants">
-          <div>Tx Amount</div>
-          <div class="participants-total-amount">{{ totalTxAmount }}</div>
-        </div>
+    <div class="pool-total">
+      <div class="pool">
+        <div>Prize Pool (USDC)</div>
+        <div class="pool-total-amount"
+        :style="`font-size: ${ !currentPool ? '32px' : '32px'};`"
+        >{{ totalPool }}</div>
       </div>
-      <div class="progress-group">
-        <div class="progress-pool-title">Prize pool</div>
-        <div class="progress-info-scroll">
-          <div class="progress-info">
-            <div class="progress-pool-amount-group">
-              <div class="progress-pool-amount">
-                <div
-                  :class="`pool-item ${
-                    totalPool === item.reward ? 'pool-item-active' : ''
-                  }`"
-                  v-for="item in group"
-                  :key="item.reward"
-                >
-                  {{ item.reward }}
-                </div>
-              </div>
-            </div>
-
-            <div class="progress-content">
-              <div class="progress-box">
-                <div
-                  class="progress-box-item"
-                  v-for="item in group"
-                  :key="item.reward"
-                >
-                  <svg-icon v-if="item.isLock" iconName="lock"></svg-icon>
-                </div>
-                <div v-if="isLast" class="progress-skeleton">
-                  <div class="skeleton"></div>
-                </div>
-                <div class="progress" :style="`width: ${ratio}%;`">
-                  <div v-if="!isLast" class="skeleton"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="progress-participants-amount-group">
-              <div class="progress-participants-amount">
-                <div
-                  :class="`participants-item ${
-                    totalPool === item.reward ? 'participants-item-active' : ''
-                  }`"
-                  v-for="item in group"
-                  :key="item.tx"
-                >
-                  {{ item.tx }}
-                </div>
+      <div class="participants">
+        <div>Tx Amount</div>
+        <div class="participants-total-amount">{{ totalTxAmount }}</div>
+      </div>
+    </div>
+    <div class="progress-group">
+      <div class="progress-pool-title">Prize pool</div>
+      <div class="progress-info-scroll">
+        <div class="progress-info">
+          <div class="progress-pool-amount-group">
+            <div class="progress-pool-amount">
+              <div
+                :class="`pool-item ${
+                  totalPool === item.reward ? 'pool-item-active' : ''
+                }`"
+                v-for="item in group"
+                :key="item.reward"
+              >
+                {{ item.reward }}
               </div>
             </div>
           </div>
+
+          <div class="progress-content">
+            <div class="progress-box">
+              <div
+                class="progress-box-item"
+                v-for="item in group"
+                :key="item.reward"
+              >
+                <svg-icon v-if="item.isLock" iconName="lock"></svg-icon>
+              </div>
+              <div v-if="isLast" class="progress-skeleton">
+                <div class="skeleton"></div>
+              </div>
+              <div class="progress" :style="`width: ${ratio}%;`">
+                <div v-if="!isLast" class="skeleton"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="progress-participants-amount-group">
+            <div class="progress-participants-amount">
+              <div
+                :class="`participants-item ${
+                  totalPool === item.reward ? 'participants-item-active' : ''
+                }`"
+                v-for="item in group"
+                :key="item.tx"
+              >
+                {{ item.tx }}
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="progress-participants-title">Tx Amount</div>
       </div>
-    </PrizesCard>
+      <div class="progress-participants-title">Tx Amount</div>
+    </div>
   </div>
 </template>
 
@@ -135,11 +133,21 @@ export default {
         {
           tx: '≥250,000 Tx',
           reward: '$35,000',
-          range: [250000, 9999999],
+          range: [250000, 479999],
           bridge50Fee: 50,
           bridge100Fee: 96,
-          isColor: true,
           isLock: tx < 250000,
+          isPromotion: tx > 250000,
+        },
+        {
+          tx: '≥480,000 Tx',
+          reward: '$42,000',
+          range: [480000, 9999999],
+          bridge50Fee: 50,
+          bridge100Fee: 95,
+          bridgeTop3Fee: 98,
+          isColor: true,
+          isLock: tx<480000,
           isPromotion: false,
         },
       ]
@@ -173,7 +181,7 @@ export default {
       let ratioAmount = 0
       const list = this.group
       list.forEach((item) => {
-        if (!item.isLock) {
+        if (!!item.isPromotion) {
           ratioAmount += 100 / this.group.length
         } else {
           ratioAmount += 0
@@ -303,12 +311,7 @@ export default {
             border-radius: 999px;
             backdrop-filter: blur(156px);
             // background-color: rgb(15, 34, 37);
-            background: rgb(15, 34, 37),
-              linear-gradient(
-                179.63deg,
-                rgba(239, 47, 45, 0.04) 34.849%,
-                rgba(255, 102, 101, 0.04) 57.408%
-              );
+            background-color: #f3ba2f;
             display: flex;
             justify-content: space-between;
             align-items: center;

@@ -369,7 +369,6 @@ export default {
         }/project/info?projectId=${activityProjectId}`
       )
       const res = await response.json()
-      console.log('res', res)
       setPrizesTaskList(res?.result?.tasks || [])
       setPrizesProjectTime(res?.result?.end_time || '')
     }, 500)

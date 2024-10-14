@@ -47,8 +47,13 @@
             </div>
             <div class="user-address">User</div>
             <div class="cumulative-tx">Total Transaction</div>
-            <div class="bridge-fee" v-if="current <= 1">Bridging fee rebate</div>
+            <div class="bridge-fee" v-if="current <= 1">
+              Bridging fee rebate
+            </div>
+            <div class="bridge-fee">Extra Bonus</div>
             <div class="emit-reward">Estimated Earnings</div>
+            <div class="extend-reward">Extended Earnings</div>
+            
           </div>
           <div
             class="rank-list-item rank-list-card-item"
@@ -67,11 +72,20 @@
             <div class="bridge-fee" v-if="current <= 1">
               {{ bridgingFee(item) }}
             </div>
+            <div class="bridge-fee">
+              {{ extraBonus(item) }}
+            </div>
             <div class="emit-reward">
               <div>
                 {{ emiteReward(item) }}
               </div>
-              <span>{{ emiteRewardU(item) }}</span>
+              <!-- <span>{{ emiteRewardU(item) }}</span> -->
+            </div>
+            <div class="extend-reward">
+              <div>
+                {{ extReward(item) }}
+              </div>
+              <!-- <span>{{ emiteRewardU(item) }}</span> -->
             </div>
           </div>
           <div class="pagination-group">
@@ -103,7 +117,7 @@ import {
 } from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
 import dayjs from 'dayjs'
-import PrizesCard from "./PrizesCard.vue"
+import PrizesCard from './PrizesCard.vue'
 let rankA = 8
 let rankB = 20
 let txBase = 3
@@ -128,6 +142,7 @@ export default {
           range: [0, 3999],
           bridge50Fee: 0,
           bridge100Fee: 0,
+          bridgeTop3Fee: 0,
           isLock: tx < 0,
           isPromotion: tx > 0,
         },
@@ -137,6 +152,7 @@ export default {
           range: [4000, 14999],
           bridge50Fee: 5,
           bridge100Fee: 15,
+          bridgeTop3Fee: 15,
           isLock: tx < 4000,
           isPromotion: tx > 4000,
         },
@@ -146,6 +162,7 @@ export default {
           range: [15000, 39999],
           bridge50Fee: 10,
           bridge100Fee: 30,
+          bridgeTop3Fee: 30,
           isLock: tx < 15000,
           isPromotion: tx > 15000,
         },
@@ -155,6 +172,7 @@ export default {
           range: [40000, 99999],
           bridge50Fee: 20,
           bridge100Fee: 45,
+          bridgeTop3Fee: 45,
           isLock: tx < 40000,
           isPromotion: tx > 40000,
         },
@@ -164,17 +182,30 @@ export default {
           range: [100000, 249999],
           bridge50Fee: 20,
           bridge100Fee: 60,
+          bridgeTop3Fee: 60,
           isLock: tx < 100000,
           isPromotion: tx > 100000,
         },
         {
           tx: '≥250,000 Tx',
           reward: '$35,000',
-          range: [250000, 9999999],
+          range: [250000, 479999],
           bridge50Fee: 50,
           bridge100Fee: 96,
+          bridgeTop3Fee: 96,
           isColor: true,
           isLock: tx < 250000,
+          isPromotion: tx > 250000,
+        },
+        {
+          tx: '≥480,000 Tx',
+          reward: '$42,000',
+          range: [480000, 9999999],
+          bridge50Fee: 50,
+          bridge100Fee: 95,
+          bridgeTop3Fee: 98,
+          isColor: true,
+          isLock: tx < 480000,
           isPromotion: false,
         },
       ]
@@ -334,7 +365,9 @@ export default {
       const rank = Number(group?.rank) || 0
       const fee = this.currentPool
       let bridgeFee = 0
-      if (rank <= 8) {
+      if (rank <= 3) {
+        bridgeFee = fee?.bridgeTop3Fee
+      } else if (rank <= 8) {
         bridgeFee = fee?.bridge100Fee
       } else {
         bridgeFee = ''
@@ -342,10 +375,23 @@ export default {
 
       return !!bridgeFee ? bridgeFee + '%' : '--'
     },
+
+    extraBonus(group) {
+      const amount = group?.extBonus?.amount
+      const symbol = group?.extBonus?.name
+      return Number(amount) ? `${decimalNum(amount, 2)} ${symbol}` : '--'
+    },
     emiteReward(group) {
       const amount = group?.reward?.amount || 0
       const symbol = group?.reward?.name || ''
       return Number(amount)
+        ? '+' + this.decimalNumC(Number(amount) || 0, 4, ',') + ` ${symbol}`
+        : '--'
+    },
+    extReward(group) {
+      const amount = group?.extReward?.amount || 0
+      const symbol = group?.extReward?.name || ''
+      return  Number(amount)
         ? '+' + this.decimalNumC(Number(amount) || 0, 4, ',') + ` ${symbol}`
         : '--'
     },
@@ -479,11 +525,11 @@ export default {
       }
 
       .user-address {
-        width: 26%;
+        width: 16%;
       }
 
       .cumulative-tx {
-        width: 26%;
+        width: 16%;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -495,11 +541,16 @@ export default {
       }
 
       .bridge-fee {
-        width: 26%;
+        width: 15%;
       }
 
       .emit-reward {
         flex: 1;
+        text-align: right;
+      }
+
+      .extend-reward {
+        width: 15%;
         text-align: right;
       }
     }
@@ -551,9 +602,8 @@ export default {
 
     .rank-list-header {
       font-size: 14px;
-      background: #1E140E;
+      background: #1e140e;
       border-bottom: 1px solid rgb(69, 35, 48);
-
     }
 
     .rank-list-item {
@@ -562,11 +612,14 @@ export default {
       border-bottom: 1px solid rgb(69, 35, 48);
       background: rgb(4, 8, 9);
       .emit-reward {
-        color: #ffd166;
+        // color: #ffd166;
         span {
           font-size: 14px;
-          color: rgba(#ffd166, 0.6);
+          // color: rgba(#ffd166, 0.6);
         }
+      }
+      .extend-reward {
+        color: #ffd166;
       }
     }
 
@@ -658,7 +711,7 @@ export default {
       overflow: auto;
       .rank-list {
         width: 100%;
-        min-width: 520px;
+        min-width: 840px;
         margin-top: 24px;
         .rank-list-item {
           height: 54px;
@@ -681,7 +734,6 @@ export default {
             }
           }
           .bridge-fee {
-            width: 30%;
             text-align: center;
           }
           .ranking,

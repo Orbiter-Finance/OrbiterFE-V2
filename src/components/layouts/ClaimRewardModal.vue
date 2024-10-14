@@ -9,23 +9,23 @@
           <div class="lottery-dialog-card lottery-dialog-card-animation">
             <div class="lottery-dialog-card-face">
               <div v-if="isClaimed && isAmount" class="card-title-reward">
-                Claimed
+                {{ $t("Claimed") }}
               </div>
               <div
                 v-else-if="claimCardModalType === 'LUCKY_BAG'"
                 class="card-title"
               >
                 🎉
-                <div class="label">Congratulations!</div>
+                <div class="label">{{ $t("Congratulations") }}!</div>
                 🎉
               </div>
               <div
                 v-else-if="claimCardModalType === 'REWARD' || !isAmount"
                 class="card-title-reward"
               >
-                Your Rewards
+                {{ $t("Your Rewards") }}
               </div>
-              <div v-else class="card-title-card">Your Rewards</div>
+              <div v-else class="card-title-card">{{ $t("Your Rewards") }}</div>
 
               <div class="token-symbol">
                 <img
@@ -43,14 +43,14 @@
                 {{ decimalNumC(claimAmount, 0) }} $ORBGUY
               </div>
 
-              <div v-else class="not-token-amount">No rewards found</div>
+              <div v-else class="not-token-amount">{{ $t("No rewards found") }}</div>
 
               <div v-if="!isAmount" class="not-token-amount-tips">
-                Explore Orbiter to grab some
+                {{ $t("Explore Orbiter to grab some") }}
               </div>
 
               <div v-if="!!isAmount && !isLuckyBagTask" class="card-des">
-                The 1st Meme for Orbiter Community
+                {{ $t("The 1st Meme for Orbiter Community") }}
               </div>
               <div
                 class="claim-btn"
@@ -60,21 +60,19 @@
                 @click="claim"
                 v-if="!isClaimed && !showMediaStepCard && !!isAmount && !isLuckyBagTask"
               >
-                {{ loading ? 'loading...' : 'Claim' }}
+                {{ loading ? `${$t("loading")}...` : $t("Claim") }}
               </div>
 
               <div v-if="showProgress && isAmount" class="progress-group">
                 <div class="progress-info">
                   <div class="progress-title">
-                    <div class="progress-label">Claim Progress</div>
+                    <div class="progress-label">{{ $t("Claim Progress") }}</div>
                     <o-tooltip>
                       <template v-slot:titleDesc>
                         <div style="margin-left: -20px">
                           <span
-                            >Over 50 O-points users can claim a reward randomly.
-                            A total reward of
-                            {{ decimalNumC(max, 0, ',') }} $ORBGUY available.
-                            Rewards are claimed on Arbitrum network. FCFS!</span
+                            >
+                            {{ $t("long.FCFS", [decimalNumC(max, 0, ',')]) }}</span
                           >
                         </div>
                       </template>
@@ -108,7 +106,7 @@
 
               <div v-if="isClaimed && isAmount" class="link-card">
                 <div class="link-label">
-                  Trade $ORBGUY on
+                  {{ $t("Trade $ORBGUY on") }}
                   <img
                     class="token-image"
                     :src="require('../../assets/activity/LIKWID-launch.png')"
@@ -117,11 +115,10 @@
                 </div>
               </div>
               <div v-if="showClaimChainText" class="claim-chain-text">
-                Claim your Token on
-                <span class="chain-name">{{ chainName }}</span>
+                {{ $t("Claim your Token on", [chainName]) }}
               </div>
               <div v-if="isLuckyBagTask" class="lucky_bag_task">
-                The claim channel will be opened soon. Thank you for your patience.
+                {{ $t("The claim channel will be opened soon. Thank you for your patience") }}
               </div>
             </div>
             <div

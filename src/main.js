@@ -26,6 +26,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { i18n } from './lang/i18n'
 
 // inject more powerful log method on the console object
 import './util/enhancedLogger'
@@ -70,6 +71,7 @@ export default new Vue({
   mounted() {
     init()
   },
+  i18n,
 }).$mount('#app')
 
 // if (process.env['VUE_APP_SENTRY_DSN']) {

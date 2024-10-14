@@ -68,13 +68,13 @@
           <div class="progress-group">
             <div class="holders">
               <div class="total">
-                Current Funds Raised:
+                {{ $t("Current Funds Raised") }}:
                 <div class="amount">{{ decimalNumC(amount, 2, ',') }} ETH</div>
                 <o-tooltip>
                   <template v-slot:titleDesc>
                     <div style="margin-left: -20px">
-                      <span> 100% refund for <br />
-                        oversubscribed part </span>
+                      <span> {{ $t("100% refund for") }} <br />
+                        {{ $t("oversubscribed part") }} </span>
                     </div>
                   </template>
                   <img
@@ -105,7 +105,7 @@
             :class="['join', { 'join-end': isEnd }]"
             @click="openUrl('https://likwid.meme/launch')"
           >
-            Join
+            {{ $t("Join") }}
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@
       </div>
       <div class="step1-des">
         <span class="step-des-title">Step 1: </span>
-        Join LIKWID Group
+        {{ $t("Join LIKWID Group")}}
         <svg
           class="media-icon"
           xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +54,7 @@
       <div v-if="isNext" class="step1-next" @click="stepNextClick">
         Next Step
       </div>
-      <div v-else class="step1-btn" @click="joinTelegram">Join</div>
+      <div v-else class="step1-btn" @click="joinTelegram">{{ $t("Join") }}</div>
     </div>
     <div v-else-if="currentStepStatus === 2" class="step2-content">
       <div class="step2-des">
@@ -70,7 +70,7 @@
     <div v-else class="step3-content">
       <div class="step3-des">
         <span class="step-des-title">Step 3: </span>
-        Claim your Token on <span class="chain-name">{{ chainName }}</span>
+        {{ $t("Claim your Token on", [chainName]) }}
       </div>
       <div
         class="step3-btn"
@@ -79,11 +79,11 @@
           loading ? 'not-allowed' : 'pointer'
         };`"
       >
-        {{ loading ? 'loading...' : 'Claim' }}
+        {{ loading ? 'loading...' : $t('Claim') }}
       </div>
       <div class="link-card">
         <div class="link-label">
-          Trade $ORBGUY on
+          {{ $t("Trade $ORBGUY on") }}
           <img
             class="token-image"
             :src="require('../../assets/activity/LIKWID-launch.png')"

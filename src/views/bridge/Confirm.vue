@@ -3,7 +3,7 @@
       <CommBoxHeader
         :back="closerButton"
         :style="isMobile ? '' : 'margin-bottom:30px;'"
-        >Confirm</CommBoxHeader
+        >{{ $t("Confirm") }}</CommBoxHeader
       >
       <div
         v-for="item in confirmData"
@@ -145,9 +145,7 @@
       >
         <SvgIconThemed style="margin-right: 10px" icon="info" />
         <span style="color: #df2e2d; flex: 1"
-          >Please do not modify the transaction or remove the last four digits on
-          the transfer amount in your wallet as this will cause the transaction to
-          fail.</span
+          >{{ $t("long.modify") }}</span
         >
       </div>
   
@@ -156,7 +154,7 @@
           v-if="!transferLoading"
           class="wbold s16"
           style="letter-spacing: 0.1rem"
-          >CONFIRM AND SEND</span
+          >{{ $t("CONFIRM AND SEND") }}</span
         >
         <CommLoading
           v-else
@@ -355,9 +353,8 @@ export default {
       const comm = [
         {
           icon: 'withholding',
-          title: 'Withholding Fee',
-          notice:
-            'The ‘Maker’ charges the ‘Sender’ a fixed fee to cover the fluctuating gas fees that incur when sending funds to the destination network.',
+          title: this.$t('Withholding Fee'),
+          notice: this.$t("long.TheMaker"),
           desc: selectMakerConfig.tradingFee + ' ' + symbol,
         //   tieredFee: type === TieredFeeKey.discountFee ? `(↓${tieredFeeMax}%)` : "",
         //   isTieredFee: !!Number(tieredFeeMax),
@@ -371,17 +368,15 @@ export default {
         },
         {
           icon: 'security',
-          title: 'Identification Code',
-          notice:
-            'In Orbiter, each transaction has a four digit identification code. The identification code can be seen at the end of the total amount being transferred as a way to identify the transaction. The identification code will be the evidence in the case that the ‘Maker’ does not send the assets to the target network. This will act as an evidence to claim your funds from the margin contract.',
+          title: this.$t('Identification Code'),
+          notice: this.$t("long.InOrbiter"),
           desc: transferCalculate.safeCode(),
           haveSep: true,
         },
         {
           icon: 'send',
-          title: 'Total Send',
-          notice:
-            'Total amount sent by the ‘Sender’ including the withholding fee.',
+          title: this.$t('Total Send'),
+          notice: this.$t("long.TotalAmount"),
           desc:
             realTransferAmount +
             ' ' +
@@ -391,7 +386,7 @@ export default {
         },
         {
           icon: 'received',
-          title: 'Received',
+          title: this.$t('Received'),
           isDiscount: !!Number(discount),
           discount:  nRevicedAmount +
             ' ' +
@@ -400,7 +395,7 @@ export default {
           ...(bridgeType1
             ? {
                 notice:
-                  'Token burning results in a less number of tokens received',
+                  this.$t('Token burning results in a less number of tokens received'),
               }
             : {}),
           textBold: true,
@@ -409,8 +404,8 @@ export default {
           ? [
               {
                 icon: 'gas',
-                title: 'Select Gas Token',
-                notice: 'Select Gas Token',
+                title: this.$t('Select Gas Token'),
+                notice: this.$t('Select Gas Token'),
                 desc: '',
                 isCom: true,
                 textBold: true,
@@ -419,9 +414,8 @@ export default {
           : []),
         {
           icon: 'exchange',
-          title: 'Maker Routes',
-          notice:
-            'After the ‘Sender’ submits the transaction, the assets are transferred to the ‘Maker’s’ address who will provide the liquidity. Orbiter’s contract will ensure the safety of the assets and will make sure that the ‘Sender’ receives the assets to the target network.',
+          title: this.$t('Maker Routes'),
+          notice: this.$t("long.AfterThe"),
           descInfo: this.$store.state.confirmData.routeDescInfo,
         },
       ]
@@ -483,7 +477,7 @@ export default {
 
         if (!contractAddress) {
           this.$notify.error({
-            title: 'Not Contract, ChainId: ' + fromChainID,
+            title: this.$t("Not Contract, ChainId") + fromChainID,
             duration: 3000,
           })
           return
@@ -671,7 +665,7 @@ export default {
 
           if (!decimals) {
             this.$notify.error({
-              title: 'Coin decimals Error: ' + decimals,
+              title: this.$t("Coin decimals Error") + decimals,
               duration: 3000,
             })
             this.transferLoading = false
@@ -787,7 +781,7 @@ export default {
 
       if (!contractAddress) {
         this.$notify.error({
-          title: 'Not Contract, ChainId: ' + fromChainID,
+          title: this.$t("Not Contract, ChainId") + fromChainID,
           duration: 3000,
         })
         return
@@ -903,7 +897,7 @@ export default {
           '0x0000000000000000000000000000000000000000000000000000000000000000'
       ) {
         this.$notify.error({
-          title: 'please connect correct starknet wallet address',
+          title: this.$t('please connect correct starknet wallet address'),
           duration: 3000,
         })
         return
@@ -919,7 +913,7 @@ export default {
       const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
       if (!chainInfo.contracts || !chainInfo.contracts.length) {
         this.$notify.error({
-          title: 'Contract not supported temporarily',
+          title: this.$t('Contract not supported temporarily'),
           duration: 3000,
         })
         return
@@ -1399,7 +1393,7 @@ export default {
 
         if (memo.length > 128) {
           this.$notify.error({
-            title: 'The sending address is too long',
+            title: this.$t('The sending address is too long'),
             duration: 3000,
           })
           this.transferLoading = false
@@ -1435,7 +1429,7 @@ export default {
             this.$notify({
               type: 'error',
               message:
-                '<div style="text-align:left;font-size: 1.4rem; color: black">This Loopring account is not yet activated, please activate it before transferring.</div>',
+                `<div style="text-align:left;font-size: 1.4rem; color: black">${this.$t("long.Loopring")}.</div>`,
               dangerouslyUseHTMLString: true,
               duration: 8000,
             })
@@ -1443,7 +1437,7 @@ export default {
             const notify = this.$notify({
               type: 'error',
               message:
-                '<div style="text-align:left;font-size: 1.4rem; color: black">Your Loopring account is frozen, please check your Loopring account status on Loopring website. Get more details <span style="color:blue;text-decoration: underline"> here </span>.</div>',
+                `<div style="text-align:left;font-size: 1.4rem; color: black">Your Loopring account is frozen, please check your Loopring account status on Loopring website. Get more details <span style="color:blue;text-decoration: underline"> ${this.$t("here")} </span>.</div>`,
               dangerouslyUseHTMLString: true,
               duration: 8000,
             })
@@ -1519,7 +1513,7 @@ export default {
             if (Number(selectChainID) !== windowChain) {
               this.$notify.warning({
                 title:
-                  'The current wallet connection network is inconsistent with the sending transaction network',
+                  this.$t('The current wallet connection network is inconsistent with the sending transaction network'),
                 duration: 3000,
               })
             }
@@ -1734,7 +1728,7 @@ export default {
         targetAddress = starkNetAddress
 
         if (!starkChain || (isProd() && starkChain === 'unlogin')) {
-          util.showMessage('please connect Starknet Wallet', 'error')
+          util.showMessage(this.$t('please connect Starknet Wallet'), 'error')
           this.transferLoading = false
           return
         }
@@ -1933,7 +1927,7 @@ export default {
         targetAddress = starkNetAddress
 
         if (!starkChain || (isProd() && starkChain === 'unlogin')) {
-          util.showMessage('please connect Starknet Wallet', 'error')
+          util.showMessage(this.$t('please connect Starknet Wallet'), 'error')
           this.transferLoading = false
           return
         }
@@ -2006,7 +2000,7 @@ export default {
         let { starkChain } = web3State.starkNet
         starkChain = +starkChain ? +starkChain : starkChain
         if (!starkChain || (isProd() && starkChain === 'unlogin')) {
-          util.showMessage('please connect Starknet Wallet', 'error')
+          util.showMessage(this.$t('please connect Starknet Wallet'), 'error')
           this.transferLoading = false
           return
         }
@@ -2015,7 +2009,7 @@ export default {
             toChainID === CHAIN_ID.starknet) &&
           (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')
         ) {
-          util.showMessage('please switch Starknet Wallet to mainnet', 'error')
+          util.showMessage(this.$t('please switch Starknet Wallet to mainnet'), 'error')
           this.transferLoading = false
           return
         }
@@ -2359,7 +2353,7 @@ export default {
       // }
       if (!(await util.isLegalAddress())) {
         this.$notify.error({
-          title: `Contract address is not supported, please use EVM address.`,
+          title: this.$t("Contract address is not supported, please use EVM address"),
           duration: 3000,
         })
         return
@@ -2567,7 +2561,7 @@ export default {
           if (!transferContract) {
             this.$notify.error({
               title:
-                'Failed to obtain contract information, please refresh and try again',
+                this.$t('Failed to obtain contract information, please refresh and try again'),
               duration: 3000,
             })
             return
@@ -2598,8 +2592,7 @@ export default {
             if (windowChain) {
               if (Number(selectChainID) !== windowChain) {
                 this.$notify.warning({
-                  title:
-                    'The current wallet connection network is inconsistent with the sending transaction network',
+                  title: this.$t('The current wallet connection network is inconsistent with the sending transaction network'),
                   duration: 3000,
                 })
               }

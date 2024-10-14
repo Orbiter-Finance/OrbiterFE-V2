@@ -1,12 +1,12 @@
 <template>
   <div class="bridge-cards">
     <div class="task-title">
-        <div>Superchain Airdrop Tracker</div>
+        <div>Airdrop Tracker</div>
       </div>
 
       <div class="task-list-group">
         <div
-          class="task-card-pool-group"
+          :class="item.tag ? 'task-card-pool-group task-tag' : 'task-card-pool-group'"
           v-for="item in bridgeLinkList"
           :key="item.chain"
           @click="openTelegram(item)"
@@ -25,8 +25,9 @@
                 <div class="prizes-promotion">
                   <div
                     class="task-reward-laebl"
+                    v-html="item.reward"
                   >
-                    {{ item.reward }}
+
                   </div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +60,7 @@
                     />
                     <path
                       d="M10.65 17.89L16.31 12.24L10.65 6.58"
-                      stroke="#FFFFFF"
+                      :stroke="item.tag ? '#000' : '#FFFFFF'"
                       stroke-opacity="1.000000"
                       stroke-width="1.500000"
                       stroke-linejoin="round"
@@ -80,6 +81,12 @@ export default {
   computed: {
     bridgeLinkList() {
       return [{
+        chain: "534352",
+        label: "Bridge to Scroll",
+        reward: "Get $SCR token airdrop (snapshot on Oct.19)",
+        link: "https://scroll.io/blog/scr-token",
+        tag: true
+      },{
         chain: "8453",
         label: "Bridge to Base",
         reward: "Build name on Base",
@@ -88,7 +95,7 @@ export default {
         chain: "60808",
         label: "Bridge to BOB",
         reward: "Join Fusion Season 3 to get BOB spices",
-        link: "https://www.gobob.xyz/#about"
+        link: "https://app.gobob.xyz/fusion"
       }, {
         chain: "185",
         label: "Bridge to Mint",
@@ -333,6 +340,18 @@ export default {
         }
         .task-card-pool-group-promotion {
           opacity: 0.6;
+        }
+
+        .task-card-pool-group.task-tag {
+          background: linear-gradient(176.00deg, rgb(255, 232, 181) 34.986%,rgb(255, 196, 125) 45.715%);
+          color: #222222;
+            .task-card-pool {
+              .prizes-promotion {
+                .task-reward-laebl {
+                  color: #000000;
+                }
+              }
+          }
         }
       }
 }

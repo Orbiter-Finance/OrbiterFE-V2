@@ -3,19 +3,19 @@
     <!-- <div class="title">Orbiter Statistics</div> -->
     <div class="statistics-info">
       <div class="info-item">
-        <div class="item-title">Total Tx</div>
+        <div class="item-title">{{ $t("Total Tx") }}</div>
         <div v-if="hideDataLoading" class="item-data">{{ formatTxCount }}</div>
         <CommLoading :hidden="hideDataLoading" width="3rem" height="3rem" />
       </div>
       <div class="info-item">
-        <div class="item-title">Total Volume</div>
+        <div class="item-title">{{ $t("Total Volume") }}</div>
         <div v-if="hideDataLoading" class="item-data">
           {{ formatTotalUsd }}
         </div>
         <CommLoading :hidden="hideDataLoading" width="3rem" height="3rem" />
       </div>
       <div class="info-item">
-        <div class="item-title">Total Users</div>
+        <div class="item-title">{{ $t("Total Users") }}</div>
         <div v-if="hideDataLoading" class="item-data">
           {{ formatAmountCount }}
         </div>
@@ -25,19 +25,19 @@
     <LatestTransactions></LatestTransactions>
     <div v-if="showSource" class="tx-content">
       <div class="tx-head">
-        <span class="tx-title">Tx Statistics <span>Data source: Orbiter Finance Bridge & Vizing</span></span>
+        <span class="tx-title">{{ $t("Tx Statistics") }} <span>{{ $t("Data source: Orbiter Finance Bridge & Vizing") }}</span></span>
         <div v-if="ethStatisticsData" class="tx-select">
           <div
             :class="['tx-select-item', { 'tx-focus-item': showSource }]"
             @click="clickChange()"
           >
-            Source chain
+            {{ $t("Source Chain") }}
           </div>
           <div
             :class="['tx-select-item', { 'tx-focus-item': !showSource }]"
             @click="clickChange()"
           >
-            Destination Chain
+          {{ $t("Destination Chain") }}
           </div>
         </div>
         <div class="line"></div>
@@ -56,19 +56,19 @@
     </div>
     <div v-else class="tx-content">
       <div class="tx-head">
-        <span class="tx-title">Tx Statistics <span>Data source: Orbiter Finance Bridge & Vizing</span></span>
+        <span class="tx-title">{{ $t("Tx Statistics") }} <span>{{ $t("Data source: Orbiter Finance Bridge & Vizing") }}</span></span>
         <div v-if="ethStatisticsData" class="tx-select">
           <div
             :class="['tx-select-item', { 'tx-focus-item': showSource }]"
             @click="clickChange()"
           >
-            Source chain
+            {{ $t("Source Chain") }}
           </div>
           <div
             :class="['tx-select-item', { 'tx-focus-item': !showSource }]"
             @click="clickChange()"
           >
-            Destination Chain
+          {{ $t("Destination Chain") }}
           </div>
         </div>
         <div class="line"></div>
@@ -83,7 +83,7 @@
     </div>
     <div class="amount-content">
       <div class="tx-head">
-        <span class="tx-title">Amount（USD）Statistic</span>
+        <span class="tx-title">{{ $t("Amount (USD) Statistic") }}</span>
         <div class="line"></div>
       </div>
 
@@ -101,7 +101,7 @@
     </div>
     <div class="user-content">
       <div class="tx-head">
-        <span class="tx-title">Users Statistics</span>
+        <span class="tx-title">{{ $t("Users Statistics") }}</span>
         <div class="line"></div>
       </div>
       <CommLoading
@@ -230,7 +230,7 @@ export default {
     },
     showError() {
       this.$notify.error({
-        title: `query data error; please refresh.`,
+        title: this.$t(`query data error; please refresh`),
         duration: 3000,
       })
     },

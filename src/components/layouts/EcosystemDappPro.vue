@@ -6,7 +6,7 @@
       :style="contentStyle"
     >
       <div class="title">
-        <span class="text">Ecosystem DApp </span>
+        <span class="text">{{$t("Ecosystem DApp") }}</span>
         <svg
           v-show="!isMobile"
           class="expand"

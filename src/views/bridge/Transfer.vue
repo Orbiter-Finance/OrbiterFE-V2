@@ -3,7 +3,7 @@
     <div class="transfer-box" v-loading="boxLoading" element-loading-background="rgba(0, 0, 0, 0)" v-if="!isEmpty">
 <!--      <div v-if="makerAddress" style="font-size: 15px;margin-bottom: 20px">{{ makerAddress }}</div>-->
       <div class="top-area" style="position: relative">
-        <span class="title">Token</span>
+        <span class="title">{{ $t("Token") }}</span>
         <div v-if="!isNewVersion" class="symbol">
           <ObSelect
                   :datas="fromTokenList"
@@ -34,11 +34,11 @@
             <template v-slot:titleDesc>
               <span v-html="starkAddress"></span>
             </template>
-            <div class="left">From</div>
+            <div class="left">{{ $t("From") }}</div>
           </o-tooltip>
-          <div v-else class="left">From</div>
+          <div v-else class="left">{{ $t("From") }}</div>
           <div v-if="fromBalance !== '-1'" class="right">
-            Balance:
+            {{ $t("Balance") }}:
             <CommLoading
                     :hidden="!fromBalanceLoading"
                     style="left: 0.3rem; top: 0.2rem"
@@ -69,12 +69,12 @@
                    :placeholder="
               userMinPrice ? (
               userMinPrice > fromBalance || userMinPrice >= userMaxPrice
-                ? `at least ${userMinPrice}`
+                ? $t('at least') + ` ${userMinPrice}`
                 : `${userMinPrice}~${userMaxPrice}`
                 ) : '0'
             "
             />
-            <el-button :disabled="fromBalanceLoading" @click="fromMax" class="maxBtn" style>Max</el-button>
+            <el-button :disabled="fromBalanceLoading" @click="fromMax" class="maxBtn" style>{{ $t("Max") }}</el-button>
             <div style="margin-left: 4px">
               <ObSelect :hidden="!isNewVersion"
                         :datas="fromTokenList"
@@ -103,11 +103,11 @@
             <template v-slot:titleDesc>
               <span v-html="starkAddress"></span>
             </template>
-            <div class="left">To</div>
+            <div class="left">{{ $t("To") }}</div>
           </o-tooltip>
-          <div v-else class="left">To</div>
+          <div v-else class="left">{{ $t("To") }}</div>
           <!-- <div v-if="isLogin" class="right">
-            Balance:
+            {{ $t("Balance") }}:
             <CommLoading
                     :hidden="!toBalanceLoading"
                     style="left: 0.3rem; top: 0.2rem"
@@ -159,13 +159,12 @@
                 style="width: 1rem; height: 1rem; height: 1rem; margin-right: 0.2rem"
                 iconName="tips"
         ></svg-icon>
-        Centralized transfer is provided currently and trustless transfer will be
-        launched soon.
+        {{ $t("Centralized") }}
         <a
                 style="text-decoration: underline"
                 href="https://docs.orbiter.finance/"
                 target="__blank"
-        >More</a
+        >{{ $t("More") }}</a
         >
       </div>
       <div 
@@ -174,8 +173,8 @@
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
           <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" 
            v-model="isCrossAddress" />
-          <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
-          <label v-else for="checkbox"> Recipient's Address </label>
+          <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> {{ $t("To Address", [transferDataState.selectMakerConfig.toChain.name]) }} </label>
+          <label v-else for="checkbox"> {{ $t("Recipient's Address") }} </label>
         </div>
         <div class="cross-addr-box to-area" style="margin-top: 10px;height: 48px; display:flex; justify-content: flex-start; padding: 4px 20px;" v-if="isCrossAddress">
           <div data-v-59545920="" class="topItem">
@@ -186,7 +185,7 @@
                   @blur="updateSendBtnInfo"
                   type="text"
                   v-model="crossAddressReceipt"
-                  :placeholder="`Recipient's ${chainName} Address`"
+                  :placeholder="$t('Recipient Address', [chainName])"
           />
         </div>
       </div>
@@ -198,7 +197,7 @@
               :style="`border-radius: 40px;${!isNewVersion || isCrossAddress ? '' : 'margin-top: 10px'}`"
       >
       <span class="w700 s16" style="letter-spacing: 0.15rem">
-        {{ sendBtnInfo && sendBtnInfo.text }}
+        {{ sendBtnInfo && $t(sendBtnInfo.text) }}
       </span>
       </CommBtn>
       <div v-if="selectFromToken === 'USDC' && (!!isTipFromTokenAddress || !!isTiptargetTokenAddress)" class="transfer-coin-tip">
@@ -228,39 +227,38 @@
         <div v-if="isWillUpdate" class="info-item">
           <svg-icon class="info-icon" iconName="info-warn"></svg-icon>
           <span class="warn">
-          Configuration is updated after two minutes, there is a possibility of not being able to get back the money, it is recommended to trade after two minutes.
+          {{ $t("long.Configuration") }}
           </span>
         </div>
         <div v-if="isCurrentAddress" class="info-item">
           <svg-icon class="info-icon" iconName="info-warn"></svg-icon>
           <span class="warn">
-          This is your address.
+          {{ $t("This is your address") }}
         </span>
         </div>
         <div v-if="isErrorAddress" class="info-item">
           <svg-icon class="info-icon" iconName="info"></svg-icon>
           <span class="red">
-          Address format error.
+            {{ $t("Address format error") }}
         </span>
         </div>
         <div v-if="isShowUnreachMinInfo" class="info-item">
           <svg-icon class="info-icon" iconName="info"></svg-icon>
           <span class="red">
-          Less than the minimum transfer amount.
+            {{ $t("Less than the minimum transfer amount") }}
         </span>
         </div>
         <div v-if="isShowMax" class="info-item">
           <svg-icon class="info-icon" iconName="info"></svg-icon>
           <span class="red">
-          Makers provide {{ maxPrice }}
-          {{ selectFromToken }} for liquidity.
+            {{ $t("Makers provide for liquidity", [`${maxPrice} ${selectFromToken}`]) }}
         </span>
         </div>
         <div v-if="showSaveGas" class="gas-save info-item">
           <SvgIconThemed style="margin-right: 6px" icon="orbiter" size="sm" />
-          <span class="border">Gas Fee Saved </span>
+          <span class="border">{{ $t("Gas Fee Saved") }} </span>
           <span class="red">
-          Save
+          {{ $t("Save") }}
           <CommLoading
                   :hidden="!saveGasLoading"
                   style="margin: 0 1rem"
@@ -281,12 +279,12 @@
         <div class="time-save info-item">
           <SvgIconThemed style="margin-right: 6px" icon="clock" size="sm" />
           <span class="border">
-          Time Spend
+          {{ $t("Time Spend") }}
           <CommLoading :hidden="!timeSpenLoading" width="1.2rem" height="1.2rem" />
           <span :hidden="timeSpenLoading">{{ timeSpent }}</span>
         </span>
           <span class="red">
-          Save
+          {{ $t("Save") }}
           <CommLoading
                   :hidden="!saveTimeLoading"
                   style="margin: 0 1rem"
@@ -524,8 +522,6 @@ export default {
       transferValue: '',
       toValue: 0,
       isShowExchangeIcon: true,
-
-      toValueToolTip: 'Sender pays a 0.00% trading fee for each transfer.',
 
       exchangeToUsdPrice: 0,
 
@@ -789,13 +785,9 @@ export default {
       return transferDataState.selectMakerConfig?.fromChain?.maxPrice;
     },
     timeSpenToolTip() {
-      return `It takes about ${
-              this.originTimeSpent
+      return this.$t('It takes about', [this.originTimeSpent
                       ? this.originTimeSpent.replace('~', '')
-                      : this.originTimeSpent
-      } moving funds using the native bridge, and it only takes about ${
-              this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent
-      } using Orbiter.`;
+                      : this.originTimeSpent, this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent])
     },
     timeSpent() {
       // const { selectMakerConfig } = transferDataState;
@@ -828,6 +820,11 @@ export default {
     currentConenctInfoList() {
       return orbiterHelper.currentConnectChainInfo({ isList: true })
     },
+    toValueToolTip() {
+      const { selectMakerConfig } = transferDataState
+
+      return this.$t("Sender pays", [parseFloat(((orbiterCore.getGasFee(this.transferValue, selectMakerConfig) || 0) / 10).toFixed(3))]);
+    }
   },
   watch: {
     'transferDataState.fromChainID': function (value) {
@@ -1026,7 +1023,6 @@ export default {
     },
     tipsGasFee() {
       const { selectMakerConfig } = transferDataState
-      this.toValueToolTip = `Sender pays a ${ parseFloat(((orbiterCore.getGasFee(this.transferValue, selectMakerConfig) || 0) / 10).toFixed(3))}% trading fee for each transfer.`;
     },
     goToPrizes(){
       this.$gtag.event("TRANSFER_TO_PRIZESV3", {
@@ -1222,13 +1218,13 @@ export default {
     },
       refreshGasFeeToolTip() {
           const { selectMakerConfig } = transferDataState;
-          const gasFee = `<b>Fees using the native bridge costs around:</b><br />Gas Fee: $${ this.originGasCost.toFixed(
+          const gasFee = `<b>${this.$t("Fees using the native bridge costs around")}:</b><br />${this.$t("Gas Fee")}: $${ this.originGasCost.toFixed(
               2
           ) }<br />`;
-          const tradingFee = ` <br /><b>Fees using Orbiter costs:</b><br />Trading Fee: $${ (
+          const tradingFee = ` <br /><b>${this.$t("Fees using Orbiter costs")}:</b><br />${this.$t("Trading Fee")}: $${ (
               this.orbiterTradingFee * this.exchangeToUsdPrice
           ).toFixed(2) }`;
-          const withholdingGasFee = `<br />Withholding Fee: $${
+          const withholdingGasFee = `<br />${this.$t("Withholding Fee")}: $${
               selectMakerConfig
                   ? (
                       selectMakerConfig.tradingFee * this.exchangeToUsdPrice
@@ -1556,11 +1552,11 @@ export default {
       let makerMin = new BigNumber(this.userMinPrice);
       let transferValue = new BigNumber(this.transferValue || 0);
       const info = {
-        text: 'SEND',
+        text: this.$t('SEND'),
         disabled: null,
       };
       // if (walletIsLogin.value) {
-        info.text = 'SEND';
+        info.text = this.$t('SEND');
         if (transferValue.comparedTo(0) < 0) {
           info.disabled = 'disabled';
           util.log('transferValue < 0', transferValue.toString());
@@ -1569,7 +1565,7 @@ export default {
           util.log('transferValue > userMaxPrice', transferValue.toString(), this.userMaxPrice.toString());
         }
         if (transferValue.comparedTo(userMax) > 0) {
-          info.text = 'INSUFFICIENT FUNDS';
+          info.text = this.$t('INSUFFICIENT FUNDS');
           info.disabled = 'disabled';
           util.log('transferValue > userMax', transferValue.toString(), useBalance, userMax.toString());
         } 
@@ -1579,11 +1575,11 @@ export default {
         //   util.log('transferValue > makerMax', transferValue.toString(), makerMax.toString());
         // } 
         else if (transferValue.comparedTo(makerMin) < 0) {
-          info.text = 'INSUFFICIENT FUNDS';
+          info.text = this.$t('INSUFFICIENT FUNDS');
           info.disabled = 'disabled';
           util.log('transferValue < makerMin', transferValue.toString(), makerMin.toString());
         } else if (transferValue.comparedTo(0) > 0 && this.toValue <= 0) {
-          info.text = 'INSUFFICIENT FUNDS';
+          info.text = this.$t('INSUFFICIENT FUNDS');
           info.disabled = 'disabled';
           util.log('transferValue > 0 && toValue <= 0', transferValue.toString(), this.toValue.toString());
         } 
@@ -1595,13 +1591,13 @@ export default {
         // }
         
         if (this.isShowUnreachMinInfo || this.isShowMax) {
-          info.text = 'SEND';
+          info.text = this.$t('SEND');
           info.disabled = 'disabled';
           util.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
         }
 
         if ((this.isCrossAddress && !this.checkAddressCall())) {
-          info.text = `Check ${this.chainName} Address`;
+          info.text = this.$t("Check Address", [this.chainName]);
           info.disabled = 'disabled';
           util.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring && !util.isStarkNet',
                   fromCurrency !== toCurrency, this.isCrossAddress, !util.isSupportXVMContract(), !this.isLoopring, !util.isStarkNet());
@@ -2012,7 +2008,7 @@ export default {
       }
       if (!await util.isLegalAddress()) {
         this.$notify.error({
-          title: `Contract address is not supported, please use EVM address.`,
+          title: this.$t("Contract address is not supported, please use EVM address"),
           duration: 3000,
         });
         return;
@@ -2029,14 +2025,14 @@ export default {
                 if (ban.sourceToken && ban.sourceToken === fromCurrency) {
                   if (ban.destToken && ban.destToken === toCurrency) {
                     this.$notify.error({
-                      title: description || `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
+                      title: description || this.$t("transaction maintenance, please try again later", [`${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name }`,fromCurrency ]),
                       duration: 3000,
                     });
                     return;
                   }
                   if (!ban.destToken) {
                     this.$notify.error({
-                      title: description || `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
+                      title: description ||  this.$t("transaction maintenance, please try again later", [`${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name }`,toCurrency ]),
                       duration: 3000,
                     });
                     return;
@@ -2045,7 +2041,7 @@ export default {
 
                 if (!ban.sourceToken) {
                   this.$notify.error({
-                    title: description || `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                    title: description || this.$t("transaction maintenance, please try again later", [`${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name }`, "" ]),
                     duration: 3000,
                   });
                   return;
@@ -2057,14 +2053,14 @@ export default {
               if (util.getInternalIdByChainId(fromChainID) === ban.source) {
                 if (ban.sourceToken && ban.sourceToken === fromCurrency) {
                   this.$notify.error({
-                    title: description || `The ${ selectMakerConfig.fromChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
+                    title: description || this.$t("transaction maintenance, please try again later", [selectMakerConfig.fromChain.name, fromCurrency ]),
                     duration: 3000,
                   });
                   return
                 }
                 if (!ban.sourceToken) {
                   this.$notify.error({
-                    title: description || `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
+                    title: description || this.$t("transaction maintenance, please try again later", [selectMakerConfig.fromChain.name, "" ]),
                     duration: 3000,
                   });
                   return;
@@ -2076,14 +2072,15 @@ export default {
               if (util.getInternalIdByChainId(toChainID) === ban.dest) {
                 if (ban.destToken && ban.destToken === toCurrency) {
                   this.$notify.error({
-                    title: description || `The ${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
+                    title: description || 
+                    this.$t("transaction maintenance, please try again later", [selectMakerConfig.toChain.name, toCurrency ]),
                     duration: 3000,
                   });
                   return;
                 }
                 if (!ban.destToken) {
                   this.$notify.error({
-                    title: description || `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                    title: description || this.$t("transaction maintenance, please try again later", [selectMakerConfig.toChain.name, "" ]),
                     duration: 3000,
                   });
                   return;
@@ -2100,14 +2097,14 @@ export default {
 
         if (!check.checkPrice(this.transferValue)) {
           this.$notify.error({
-            title: `The format of input amount is incorrect`,
+            title: this.$t("The format of input amount is incorrect"),
             duration: 3000,
           });
           return;
         }
         if (this.fromBalance === null) {
           this.$notify.error({
-            title: `Waiting for account balance to be obtained`,
+            title: this.$t("Waiting for account balance to be obtained"),
             duration: 3000,
           });
           return;
@@ -2173,14 +2170,14 @@ export default {
             // }
             if ((fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) && (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')) {
             util.showMessage(
-                    'please switch Starknet Wallet to mainnet',
+                    this.$t('please switch Starknet Wallet to mainnet'),
                     'error'
             );
             return;
             }
             if ((fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) && (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')) {
             util.showMessage(
-                    'please switch Starknet Wallet to testNet',
+                    this.$t('please switch Starknet Wallet to testNet'),
                     'error'
             );
             return;

@@ -7,30 +7,29 @@
   >
     <div class="card-content">
       <div class="card-title">
-        <div class="label">Details</div>
+        <div class="label">{{ $t("Details") }}</div>
         <div @click="close">
           <svg-icon iconName="close" class="close"></svg-icon>
         </div>
       </div>
       <div class="card-info">
-        <div class="label">Total O-Points</div>
+        <div class="label">{{ $t("Total O-Points") }}</div>
         <div class="amount">{{ totalPoint }}</div>
         <div class="opints-content">
           <div class="options-default base-options-group">
             <div class="options-label">
-              <div class="option-title">Basic points</div>
+              <div class="option-title">{{ $t("Basic points") }}</div>
               <o-tooltip>
                 <template v-slot:titleDesc>
                   <div style="margin-left: -20px">
                     <span>
-                      Basic contribution rewards for using Orbiter Finance for
-                      bridge transactions.
+                      {{ $t("Basic contribution rewards for using Orbiter Finance for bridge transactions") }}
                     </span>
                     <a
                       class="points_more"
                       href="https://docs.orbiter.finance/o-points#basic-points-and-exchange-standards"
                       target="_blank"
-                      >More</a
+                      >{{ $t("More") }}</a
                     >
                   </div>
                 </template>
@@ -44,19 +43,18 @@
           </div>
           <div class="options-default activity-options-group">
             <div class="options-label">
-              <div class="option-title">Activity points</div>
+              <div class="option-title">{{ $t("Activity points") }}</div>
               <o-tooltip>
                 <template v-slot:titleDesc>
                   <div style="margin-left: -20px">
                     <span
-                      >Task rewards for participating in Orbiter Finance-related
-                      activities.</span
+                      >{{ $t("Task rewards for participating in Orbiter Finance-related activities") }}</span
                     >
                     <a
                       class="points_more"
                       href="https://docs.orbiter.finance/o-points#activity-points-and-exchange-standards"
                       target="_blank"
-                      >More</a
+                      >{{ $t("More") }}</a
                     >
                   </div>
                 </template>
@@ -70,15 +68,14 @@
           </div>
           <div class="options-default ecosystem-options-group">
             <div class="options-label">
-              <div class="option-title">Ecosystem Points</div>
+              <div class="option-title">{{ $t("Ecosystem Points")}}</div>
               <o-tooltip>
                 <template v-slot:titleDesc>
                   <div style="margin-left: -20px">
                     <span>
-                      Rewards for interacting with orbiter's ecosystem dapp
-                      based on orbiter cross-rollup protocols.
+                      {{ $t("Rewards for interacting with orbiter's ecosystem dapp based on orbiter cross-rollup protocols") }}
                     </span>
-                    <!-- <a class="points_more" href="https://docs.orbiter.finance/o-points#basic-points-and-exchange-standards" target="_blank">More</a> -->
+                    <!-- <a class="points_more" href="https://docs.orbiter.finance/o-points#basic-points-and-exchange-standards" target="_blank">{{ $t("More") }}</a> -->
                   </div>
                 </template>
                 <img
@@ -92,7 +89,7 @@
         </div>
       </div>
 
-      <div class="nft-label">Held Orbiter NFT</div>
+      <div class="nft-label">{{$t("Held Orbiter NFT")}}</div>
 
       <div class="nft-card">
         <div

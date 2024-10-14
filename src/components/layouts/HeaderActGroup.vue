@@ -2,7 +2,7 @@
   <div class="act-quests-container">
     <div class="act-quests-group">
       <div class="act-quests-title-group">
-        <div class="act-quests-title">Extra Rewards 🎁</div>
+        <div class="act-quests-title">{{ $t("Extra Rewards") }} 🎁</div>
         <div v-if="!!countTime" class="act-quests-count-down">
           <div class="text-wrapper_1_46">
             <span class="text_1_69">{{ countDownDate }}</span>
@@ -30,7 +30,7 @@
           >
             <div class="text-wrapper_1 flex-row">
               <span class="text_1">{{ item.points }}</span>
-              <span class="text_2">O-Points</span>
+              <span class="text_2">{{ $t("O-Points") }}</span>
             </div>
             <div class="border-dashed"></div>
             <div class="act_quests_group_right">
@@ -57,7 +57,7 @@
                         ? `${item.progress.current}/${item.progress.total}`
                         : '0/0'
                     }}</span>
-                    <span v-else class="text_28">Undone</span>
+                    <span v-else class="text_28">{{$t("Undone")}}</span>
                   </div>
                 </div>
                 <div class="box_go"></div>
@@ -67,7 +67,7 @@
           <div v-else class="box_2">
             <div class="text-wrapper_1 flex-row">
               <span class="text_1">{{ item.points }}</span>
-              <span class="text_2">O-Points</span>
+              <span class="text_2">{{ $t("O-Points") }}</span>
             </div>
             <div class="border-dashed"></div>
             <div class="act_quests_group_right">
@@ -90,7 +90,7 @@
                   </div>
                   <div class="text-wrapper_18">
                     <span v-if="!!item.progress" class="text_28">Done</span>
-                    <span v-else class="text_28">Undone</span>
+                    <span v-else class="text_28">{{$t("Undone")}}</span>
                   </div>
                 </div>
               </div>

@@ -33,7 +33,7 @@
                   <span class="current-amount">{{ current }}/</span
                   ><span class="total-amount">{{ total }}</span>
                 </div>
-                <div class="progress-label">Claim Progress</div>
+                <div class="progress-label">{{ $t("Claim Progress") }}</div>
               </div>
             </div> -->
             <img

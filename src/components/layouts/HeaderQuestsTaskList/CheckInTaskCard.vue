@@ -9,7 +9,7 @@
         <!-- MY Rewards: <svg-icon class="task-icon" iconName="ORBGUY"></svg-icon>
         <span class="reward-amount">{{ reward }} $ORBGUY</span> -->
         <!-- In the statistics... -->
-        Claim
+        {{ $t("Claim") }}
       </div>
       <!-- <div class="task-card-item">
         <div class="task-title">

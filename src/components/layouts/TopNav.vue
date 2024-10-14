@@ -22,8 +22,12 @@
         />
         <HeaderLinks
           v-if="$route.path !== '/prizes'"
-          style="margin-top: 24px; margin-left: 66px; min-width: 280px"
+          style="margin-top: 24px; margin-left: 66px; "
         />
+        <div class="bag-group">
+          <img @click="openBag" class="bag-tag" :src="require('../../assets/activity/points_task/bag.png')" />
+          <div class="bag-tips">Scroll Airdrop</div>
+        </div>
       </div>
       <HeaderOps :drawerVisible="drawerVisible" v-if="$route.path !== '/statistics'" />
     </template>
@@ -34,6 +38,10 @@
         :style="navIcons.style"
         :icon="navIcons.logo"
       />
+      <div class="bag-group">
+        <img @click="openBag" class="bag-tag" :src="require('../../assets/activity/points_task/bag.png')" />
+        <div class="bag-tips">Scroll Airdrop</div>
+      </div>
       <!-- <div
       v-if="$route.path !== '/prizes'"
         style="
@@ -77,7 +85,7 @@
           referrerpolicy="no-referrer"
           :src="require('../../assets/activity/add_flower.png')"
         />
-        <span class="text-group_1">{{ addPoint }} O-Points</span>
+        <span class="text-group_1">{{ addPoint }} {{ $t("O-Points") }}</span>
         <img
           class="thumbnail_1"
           referrerpolicy="no-referrer"
@@ -91,7 +99,7 @@
           @click="connectWallet"
           class="wallet-status connect-wallet-btn"
         >
-          Connect Wallet
+          {{ $t("Connect Wallet") }}
         </div>
         <div
           v-else-if="$route.path !== '/home' && $route.path !== '/statistics'"
@@ -147,6 +155,7 @@ import {
   claimCardModalDataInfo,
   transferDataState,
   setActConnectWalletInfo,
+  setLuckyModalShow
 } from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
@@ -355,6 +364,15 @@ export default {
     },
   },
   methods: {
+    openBag() {
+      const address = compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress
+      if(!address) {
+        const wallet = orbiterHelper.currentConnectChainInfo({chainId: "1"})
+        wallet.open()
+      } else {
+        setLuckyModalShow(true)
+      }
+    },
     openActDialog() {
       if (this.isLogin) {
         setActDialogVisible(true)
@@ -501,6 +519,25 @@ export default {
   }
 }
 
+@keyframes card-rotate {
+  0%,
+  84%,
+  88%,
+  92%,
+  96%,
+  100% {
+    transform: rotate(0);
+  }
+  86%,
+  94% {
+    transform: rotate(-15deg);
+  }
+  90%,
+  98% {
+    transform: rotate(15deg);
+  }
+}
+
 .top-nav {
   height: 72px;
   display: flex;
@@ -509,6 +546,37 @@ export default {
 
   .logo {
     cursor: pointer;
+  }
+
+  .bag-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 24px 48px 0;
+    position: relative;
+    top: 0;
+    left: 0;
+    .bag-tag {
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      animation: card-rotate 4s infinite;
+      -webkit-animation: card-rotate 4s infinite;
+    }
+    .bag-tips {
+      white-space: nowrap;
+      font-size: 12px;
+      padding: 0 8px;
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #FF4F4F;
+      color: #FFF;
+      border-radius: 999px;
+      font-size: 12px;
+      zoom: 0.87;
+    }
   }
 
   .lucky-bag-mobile {
@@ -623,4 +691,15 @@ export default {
 ::v-deep .el-drawer__header {
   display: none;
 }
+
+@media (max-width: 760px) {
+  .top-nav {
+    .bag-tag {
+      width: 36px;
+      height: 36px;
+      margin-top: 0;
+    }
+  }
+}
+
 </style>

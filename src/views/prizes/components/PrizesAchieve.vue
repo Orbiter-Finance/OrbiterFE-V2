@@ -39,7 +39,8 @@
 
 <script>
 import dayjs from 'dayjs'
-import { prizesTaskList, prizesTimeEnd, prizesAchieveList } from '../../../composition/hooks'
+import { prizesTaskList, prizesTimeEnd, prizesAchieveList, isMobile } from '../../../composition/hooks'
+import { decimalNum } from '../../../util/decimalNum'
 
 export default {
   name: 'PrizesAchieve',
@@ -53,18 +54,20 @@ export default {
     achieveList() {
       return prizesAchieveList.value
     },
+    isMobile() {
+      return isMobile.value
+    },
     dataList() {
       const taskList = this.taskList
       const achieveList = this.achieveList
-
       const taskId = taskList.filter((item)=>{
         const startTime =  +dayjs.utc(item.rule.startTime)
         const endTime =  +dayjs.utc(item.rule.endTime)
         const now = +dayjs()
-        return startTime <= now && 
+        const flag = startTime <= now && 
         endTime >= now
+        return flag 
       })?.[0]?.id  || taskList?.[taskList?.length-1 || 0]?.id 
-
       const group = achieveList.filter((item)=>{
         return item.taskId === taskId
       })?.[0]
@@ -76,8 +79,20 @@ export default {
   methods: {
     dayTime(option) {
       return dayjs(option.time).format("MM.DD HH:mm")
-    }
-  }
+    },
+    shortAddress(address, splitN = 6) {
+      if (address?.length >= splitN * 2) {
+        const first = address.slice(0, splitN)
+        const last = address.slice(address?.length - splitN)
+        return first + '...' + last
+      }
+      return ''
+    },
+    decimalNumC(num, decimal, delimiter, symbol) {
+      return decimalNum(num, decimal, delimiter, symbol)
+    },
+  },
+  
 }
 </script>
 

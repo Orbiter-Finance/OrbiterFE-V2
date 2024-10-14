@@ -7,7 +7,7 @@
       <div class="lottery-dialog-card-centent">
         <div class="lottery-dialog-top-group">
           <div class="lottery-dialog-top-count">
-            Your chances of flopping: {{ total }}
+            {{ $t("Your chances of flopping") }}: {{ total }}
           </div>
         </div>
 
@@ -28,8 +28,8 @@
               <div class="lottery-card-points">+{{ pointsNum }}</div>
               <div class="lottery-card-points-rule">
                 Revealing cards to unlock <br />
-                <span>O-Points(1-20)</span> is achievable by
-                <span>bridging 3 TXs.</span>
+                <span>{{ $t("O-Points") }}(1-20)</span> is achievable by
+                <span> {{ $t("bridging TXs", [3]) }}</span>
               </div>
             </div>
             <div class="lottery-dialog-card-back"></div>
@@ -42,7 +42,7 @@
             @click.self="handleConfirm"
             class="lottery-dialog-confirm-count"
           >
-            {{ !!total ? 'Continue' : 'Confirmed' }}
+            {{ !!total ? $t("Continue") : $t("Confirmed") }}
           </div>
         </div>
 
@@ -241,14 +241,14 @@ export default {
         }, 0)
       } else {
         this.$notify.error({
-          title: 'Failed to draw card O-Points',
+          title: this.$t('Failed to draw card O-Points'),
           duration: 3000,
         })
       }
       } catch (error) {
         this.handleHidden()
         this.$notify.error({
-          title: 'Failed to draw card O-Points',
+          title: this.$t('Failed to draw card O-Points'),
           duration: 3000,
         })
       }
