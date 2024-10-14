@@ -2,20 +2,26 @@
   <div>
     <div class="prizes-top-nav-empty"></div>
     <div class="prizes-top-nav" id="prizes-top-nav">
-      <div @click="toHome">
-        <svg-icon
-          class="logo"
-          :style="navIcons.style"
-          :icon="navIcons.logo"
-          :iconName="navIcons.logo"
-        ></svg-icon>
-      </div>
-      <div v-if="address" class="wallet">
-        <svg-icon class="wallet-icon" :iconName="connectWalletIcon"></svg-icon>
-        {{ address }}
-      </div>
-      <div v-else class="connect-wallet" @click="connetcWallet">
-        {{ $t("Connect Wallet") }}
+    <div class="prizes-top-tips" @click="openLucky">
+      Airdrop tips 🔔：Bridge from/to scroll, get 0 bridging fee & airdrop lucky $USDC bag.
+    </div>
+
+      <div class="prizes-top-content">
+        <div @click="toHome">
+          <svg-icon
+            class="logo"
+            :style="navIcons.style"
+            :icon="navIcons.logo"
+            :iconName="navIcons.logo"
+          ></svg-icon>
+        </div>
+        <div v-if="address" class="wallet">
+          <svg-icon class="wallet-icon" :iconName="connectWalletIcon"></svg-icon>
+          {{ address }}
+        </div>
+        <div v-else class="connect-wallet" @click="connetcWallet">
+          {{ $t("Connect Wallet") }}
+        </div>
       </div>
     </div>
   </div>
@@ -32,6 +38,7 @@ import {
   prizesUserRank,
   prizesUserList,
   prizesRankList,
+  setLuckyModalShow
 } from '../../../composition/hooks'
 
 import SvgIconThemed from '../../../components/SvgIconThemed.vue'
@@ -87,7 +94,7 @@ export default {
       return total
     },
     evmAddress() {
-      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     estiReward() {
       const list = this.rankList
@@ -110,6 +117,14 @@ export default {
       setConnectWalletGroupKey('EVM')
       setSelectWalletDialogVisible(true)
     },
+    openLucky() {
+      if(!this.evmAddress) {
+        setConnectWalletGroupKey('EVM')
+        setSelectWalletDialogVisible(true)
+      } else {
+        setLuckyModalShow(true)
+      }
+    }
   },
 }
 </script>
@@ -117,19 +132,38 @@ export default {
 <style lang="scss" scoped>
 .prizes-top-nav-empty {
   width: 100%;
-  height: 78px;
+  height: 90px;
 }
 
 .prizes-top-nav {
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 99;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 90px;
+
+  .prizes-top-tips {
+    width: 100%;
+    font-size: 12px;
+    margin-top: 12px;
+    padding: 0 24px;
+    cursor: pointer;
+    color: #f3ba2f;
+    font-family: GeneralSans-SemiBold;
+  }
+
+  .prizes-top-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px 16px;
+  }
 
   backdrop-filter: blur(156px);
   background: rgba(0, 0, 0, 0.1);
@@ -169,5 +203,24 @@ export default {
     font-family: 'Inter Bold';
     cursor: pointer;
   }
+}
+
+
+@media (max-width: 640px) {
+  .prizes-top-nav-empty {
+    width: 100%;
+    height: 120px;
+  }
+  .prizes-top-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 20px 16px;
+  }
+  .prizes-top-nav {
+    height: 120px;
+  }
+  
 }
 </style>

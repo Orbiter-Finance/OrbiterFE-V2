@@ -66,15 +66,11 @@ export default {
         const now = +dayjs()
         const flag = startTime <= now && 
         endTime >= now
-        console.log("flag", flag)
         return flag 
       })?.[0]?.id  || taskList?.[taskList?.length-1 || 0]?.id 
-      console.log("taskId", taskId)
       const group = achieveList.filter((item)=>{
         return item.taskId === taskId
       })?.[0]
-
-      console.log("group", group)
 
       return group?.result || []
 

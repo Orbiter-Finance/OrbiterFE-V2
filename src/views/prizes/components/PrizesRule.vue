@@ -30,6 +30,9 @@ export default {
             '- <span class="orbiter_global_prizes_rule_tag">Bridge from specific networks to Optimism Superchain.</span>',
             '- Optimism Superchain includes: Optimism, Base, Mode, Cyber, Bob, Mint, Kroma, Lisk',
             '- Specific Chains include: Ethereum, Arbitrum, linea,scroll,zkSync Lite, Polygon, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Manta, zkFair, Blast, zkLink Nova, Proof of Play Apex, BEVM, Core, Bitlayer, BounceBit, Optopia, AlienxChain, Fraxtal, Zircuit, Fuse',
+            '1.1 Which networks are added  in Extended Session?',
+            '- Bridge from specific networks to Scroll Chain or bridge from Scroll Chain to specific networks.',
+            '-Specific networks include: Ethereum, Arbitrum, linea,scroll,zkSync Lite, Polygon, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, zkFair, Blast, zkLink Nova, Proof of Play Apex, BEVM, Core, Bitlayer, BounceBit, Optopia, AlienxChain, Fraxtal, Zircuit, Fuse, Optimism, Base, Mode, Cyber, Bob, Mint, Kroma, Lisk, Zora',
             '- The minimum amount required: 0.03 ETH',
             '- Bridge token: ETH',
           ],
@@ -45,8 +48,12 @@ export default {
             '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Top 1-8 Traders (with ≥20 TX):</span> Share 25% of the prize pool.',
             '- The ranking is determined based on transactions. If users have the same number of transactions, ranking will be based on the transaction value. More transactions, greater chance to win!',
             '- <span class="orbiter_global_prizes_rule_tag">Extra bonus: </span>',
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Rank in the top 5 fastest traders daily (Bridge at least 3000 TXs daily): </span> earn a 200 $USDC daily bonus. An address can receive a maximum extra bonus of 3,000 $USDC.',
-            '- The ranking is determined based on transactions and daliy completed time. If users have the same number of transactions within the same time frame, ranking will be based on the transactions. More transactions, greater chance to win!'
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="orbiter_global_prizes_rule_tag">Rank in the top 5 fastest traders daily (Bridge at least 3000 TXs daily): </span> earn a 200 $USDC daily bonus.',
+            '- In Tier 1 - Tier 5: An address can receive a maximum extra bonus of <span class="orbiter_global_prizes_rule_tag">3,000  $USDC</span>.',
+            '- In Extended Session: An address can receive a maximum extra bonus of <span class="orbiter_global_prizes_rule_tag">1,600 $USDC</span>.',
+            '- The ranking is determined based on transactions and daliy completed time. If users have the same number of transactions within the same time frame, ranking will be based on the transactions. More transactions, greater chance to win!',
+            '- Note: ',
+            '- We have allocated $23,000 as a total extra bonus for the top 5 fastest traders daily. Only users who meet the requirement of bridging at least 3,000 transactions (TXs) daily will be eligible for the extra bonus. If the number of users who qualify for the reward does not reach 5 per day, the rewards will not be fully distributed.'
           ],
         },
         {
@@ -55,8 +62,13 @@ export default {
           image: 'rule.png',
           text: [
             '<span class="orbiter_global_prizes_rule_tag">Note:</span>',
+            'In Tiers 1~5:',
             '- The prize pool will be unlocked when the amount of transactions (TX) ≥ 4,000;',
             '- TOP 1 to 8 users, up to 96% bridging fees (except for gas fees) will be rebated.',
+            'In Extended session: ',
+            '- TOP 1 users, 98% bridging fees (except for gas fees) will be rebated.',
+            '- TOP 2 to 8 users, 96% bridging fees (except for gas fees) will be rebated.',
+            '- Top 100 shares extend the $7000 prize pool.',
           ],
         },
         {
