@@ -52,7 +52,35 @@
             </div>
             <div class="bridge-fee">Extra Bonus</div>
             <div class="emit-reward">Estimated Earnings</div>
-            <div class="extend-reward">Extended Earnings</div>
+            <div class="extend-reward">Extended Earnings
+              <o-tooltip>
+                <template v-slot:titleDesc>
+                  <span style="margin-left: -20px">
+                    <span>
+                      The reward of "extended earnings" for the extended session will only be displayed if the transaction amount meets the specified threshold for the extended session.
+                    </span>
+                  </span>
+                </template>
+                <span class="tips">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-circle-help"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                    <path d="M12 17h.01" />
+                  </svg>
+                </span>
+              </o-tooltip>
+            </div>
             
           </div>
           <div
@@ -198,14 +226,14 @@ export default {
           isPromotion: tx > 250000,
         },
         {
-          tx: '≥480,000 Tx',
+          tx: '≥500,000 Tx',
           reward: '$42,000',
-          range: [480000, 9999999],
+          range: [500000, 9999999],
           bridge50Fee: 50,
-          bridge100Fee: 95,
+          bridge100Fee: 96,
           bridgeTop3Fee: 98,
           isColor: true,
-          isLock: tx < 480000,
+          isLock: tx < 500000,
           isPromotion: false,
         },
       ]
@@ -365,7 +393,7 @@ export default {
       const rank = Number(group?.rank) || 0
       const fee = this.currentPool
       let bridgeFee = 0
-      if (rank <= 3) {
+      if (rank <= 1) {
         bridgeFee = fee?.bridgeTop3Fee
       } else if (rank <= 8) {
         bridgeFee = fee?.bridge100Fee
@@ -550,8 +578,19 @@ export default {
       }
 
       .extend-reward {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
         width: 15%;
         text-align: right;
+        .tips {
+          cursor: pointer;
+          margin-left: 2px;
+          svg {
+            width: 12px;
+            height: 12px;
+          }
+        }
       }
     }
 

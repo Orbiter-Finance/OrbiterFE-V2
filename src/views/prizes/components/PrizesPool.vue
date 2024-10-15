@@ -140,14 +140,14 @@ export default {
           isPromotion: tx > 250000,
         },
         {
-          tx: '≥480,000 Tx',
+          tx: '≥500,000 Tx',
           reward: '$42,000',
-          range: [480000, 9999999],
+          range: [500000, 9999999],
           bridge50Fee: 50,
-          bridge100Fee: 95,
+          bridge100Fee: 96,
           bridgeTop3Fee: 98,
           isColor: true,
-          isLock: tx<480000,
+          isLock: tx<500000,
           isPromotion: false,
         },
       ]

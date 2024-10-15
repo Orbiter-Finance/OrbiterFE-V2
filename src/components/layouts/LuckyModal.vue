@@ -64,6 +64,7 @@
                     <div class="reward-amount" v-else-if="item.reward">
                       +<span>{{ item.reward }}</span> $USDC
                     </div>
+                    <!-- <div v-else-if="isEnd">Depleted</div> -->
                     <div v-else>({{ item.current }}/{{ item.target }})</div>
                   </div>
                 </div>
@@ -135,6 +136,7 @@ export default {
       laodingList: [0, 1, 2, 3],
       currentReward: 0,
       totalReward: 10000,
+      isEnd: false
     }
   },
   components: {
@@ -224,8 +226,8 @@ export default {
       const res = await response.json()
 
       this.list = res?.result?.resultList || []
-      this.total = Number(res?.result?.txsCount)
-      this.currentReward = Number(res?.result?.totalReward)
+      this.total = Number(res?.result?.txsCount || 0)
+      this.currentReward = Number(res?.result?.totalReward || 0)
     },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
