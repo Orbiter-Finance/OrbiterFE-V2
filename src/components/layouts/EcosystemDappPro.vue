@@ -92,7 +92,7 @@
             :banner="'bitlayer-points.png'"
             :tag="'Cross-chain Game'"
             :tagStyle="'background: linear-gradient(to right, #ACCCFF ,#F590FF);'"
-            :description="'Earn 9 rewards per Tx. Also, grab 200 $BitlayerPoints at the Race Center.'"
+            :description="'Earn 9 rewards per Tx.'"
             :isProgress="false"
             :name="'BitlayerPoints'"
             :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
