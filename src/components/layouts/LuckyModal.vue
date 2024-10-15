@@ -12,7 +12,14 @@
                 <div class="card-title">
                   10,000 $USDC Giveaway to Boost Scroll Airdrop
                 </div>
-                <div class="task-group-title">Quest</div>
+                <div class="task-group-title">
+                  <label>Quest</label>
+                  <div class="reward-progress">
+                    <svg-icon class="symbol" iconName="USDC"></svg-icon>
+                    <span class="amount">${{ currentReward }}</span
+                    >/${{ totalReward }}
+                  </div>
+                </div>
                 <div v-if="!taskList.length">
                   <div
                     v-for="item in laodingList"
@@ -57,6 +64,7 @@
                     <div class="reward-amount" v-else-if="item.reward">
                       +<span>{{ item.reward }}</span> $USDC
                     </div>
+                    <!-- <div v-else-if="isEnd">Depleted</div> -->
                     <div v-else>({{ item.current }}/{{ item.target }})</div>
                   </div>
                 </div>
@@ -126,6 +134,9 @@ export default {
       list: [],
       total: 0,
       laodingList: [0, 1, 2, 3],
+      currentReward: 0,
+      totalReward: 10000,
+      isEnd: false
     }
   },
   components: {
@@ -158,9 +169,9 @@ export default {
       })
     },
   },
+
   watch: {
     currentEvmAddress: function (newAddress) {
-      console.log('111111', newAddress)
       if (!!newAddress) {
         this.getData()
       }
@@ -174,17 +185,28 @@ export default {
   methods: {
     async drawBag(item) {
       if (!this.currentEvmAddress) return
-      const response = await fetch(
-        `${process.env.VUE_APP_OPEN_URL}${
-          isDev() ? '/activity' : '/active-platform'
-        }/competition/lotteryTaskReward?taskId=${item.taskId}&address=${
-          this.currentEvmAddress
-        }`
-      )
-
-      const res = await response.json()
-
-      this.getData()
+      try {
+        const response = await fetch(
+          `${process.env.VUE_APP_OPEN_URL}${
+            isDev() ? '/activity' : '/active-platform'
+          }/competition/lotteryTaskReward?taskId=${item.taskId}&address=${
+            this.currentEvmAddress
+          }`
+        )
+        const res = await response.json()
+        this.getData()
+        if (!Number(res?.code)) {
+          this.$notify.error({
+            title: String(res?.messag),
+            duration: 3000,
+          })
+        }
+      } catch (error) {
+        this.$notify.error({
+            title: String(error?.data?.message || error?.message || error),
+            duration: 3000,
+        })
+      }
     },
     async getData() {
       if (!this.currentEvmAddress) return
@@ -196,7 +218,8 @@ export default {
       const res = await response.json()
 
       this.list = res?.result?.resultList || []
-      this.total = Number(res?.result?.txsCount) || 0
+      this.total = Number(res?.result?.txsCount || 0)
+      this.currentReward = Number(res?.result?.totalReward || 0)
     },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
@@ -347,22 +370,22 @@ export default {
 }
 
 @keyframes card-rotate {
-    0%,
-    84%,
-    88%,
-    92%,
-    96%,
-    100% {
-      transform: rotate(0);
-    }
-    86%,
-    94% {
-      transform: rotate(-15deg);
-    }
-    90%,
-    98% {
-      transform: rotate(15deg);
-    }
+  0%,
+  84%,
+  88%,
+  92%,
+  96%,
+  100% {
+    transform: rotate(0);
+  }
+  86%,
+  94% {
+    transform: rotate(-15deg);
+  }
+  90%,
+  98% {
+    transform: rotate(15deg);
+  }
 }
 
 .lottery-card-group-dialog {
@@ -431,6 +454,24 @@ export default {
                 margin-top: 16px;
                 font-size: 18px;
                 font-family: GeneralSans-SemiBold;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                .reward-progress {
+                  font-size: 14px;
+                  display: flex;
+                  justify-content: flex-end;
+                  align-items: center;
+                  flex: 1;
+                  .amount {
+                    color: #706c6c;
+                  }
+                  .symbol {
+                    width: 16px;
+                    height: 16px;
+                    margin-right: 2px;
+                  }
+                }
               }
 
               .loading-card {

@@ -2,15 +2,15 @@
   <div id="prizes-top-banner" class="prizes-top-banner">
     <div class="prizes-content">
       <div class="group">
-        <div class="badge">Optimism Superchain</div>
+        <div class="badge">Scroll Airdrop</div>
       </div>
       <div class="group">
-        <div class="title orbiter-linear-text">$50000 Prize Pool</div>
+        <div class="title orbiter-linear-text">$65,000 Prize Pool</div>
       </div>
       <div class="group">
         <div class="amount orbiter-linear-text">
-          <span class="chain orbiter-linear-text">Optimism</span>
-          superchain Voyage
+          <!-- <span class="chain orbiter-linear-text">Optimism</span> -->
+          Airdrop Carnival
         </div>
       </div>
       <div class="group">
@@ -201,9 +201,9 @@ export default {
       align-items: center;
       .badge {
         border-radius: 999px;
-        background: #ea3431;
+        background: rgb(255, 222, 181);
         padding: 12px 40px;
-        color: #ffffff;
+        color: #262626;
         font-family: GeneralSans-SemiBold;
         font-size: 24px;
         white-space: nowrap;
@@ -212,7 +212,7 @@ export default {
         margin-top: 16px;
         white-space: nowrap;
         color: #ffc47d;
-        background-image: linear-gradient(to right, #ffffff 80%, #ff8482 100%);
+        background-image: linear-gradient(to right, #ffffff 80%, #FF8482 100%);
         font-size: 72px;
         line-height: 1;
         font-family: GeneralSans-SemiBold;
@@ -223,7 +223,7 @@ export default {
       }
       .amount {
         margin-top: 16px;
-        background-image: linear-gradient(to right, #ffffff 80%, #ff8482 100%);
+        background-image: linear-gradient(to right, #ffffff 80%, #FF8482 100%);
         color: #ffc47d;
         font-size: 72px;
         line-height: 1.2;
@@ -322,7 +322,7 @@ export default {
         line-height: 1;
       }
       .amount {
-        font-size: 32px;
+        font-size: 28px;
         line-height: 1.5;
       }
       .bridge {
