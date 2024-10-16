@@ -76,7 +76,7 @@
           :banner="'astra2.png'"
           :tag="'Cross-chain Game'"
           :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
-          :description="'🎉 OKX Cryptopedia Event is Now Live! 🚀 Claim 0.3% of the total $STAR supply on OKX!  🚀Earn 2x O-Points'"
+          :description="'🎉 Manta Carnival #1 Event is Now Live! 🚀 Claim 10k $Manta Up to Infinite on 0xAstra'"
           :isProgress="false"
           :name="'0xastra'"
           :url="'https://www.okx.com/web3/discover/cryptopedia/event/45'"
