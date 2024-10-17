@@ -3560,5 +3560,32 @@
           }
       ],
       "vm": "EVM"
-  }
+  },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "FUEL",
+        "networkId": "FUEL",
+        "internalId": "94",
+        "name": "Fuel",
+        "service": {
+            "rpc": "FuelRpcScanningService"
+        },
+        "features": [],
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 9,
+            "address": "TODO !!!!!!!!!!!!!!!!"
+        },
+        "rpc": [
+            "https://mainnet.fuel.network/v1/graphql"
+        ],
+        "tokens": [],
+        "infoURL": "https://app.fuel.network",
+        "contracts": [],
+        "vm": "FUELVM"
+    }
 ]
