@@ -26,7 +26,7 @@
     "@dydxprotocol/starkex-lib": "^1.1.6",
     "@dydxprotocol/v3-client": "^1.8.2",
     "@eth-optimism/contracts": "^0.5.14",
-    "@fuels/connectors": "^0.9.0",
+    "@fuels/connectors": "^0.36.0",
     "@holdstation/paymaster-helper": "2.0.19",
     "@imtbl/imx-sdk": "^1.5.0",
     "@loopring-web/loopring-sdk": "3.5.12",
