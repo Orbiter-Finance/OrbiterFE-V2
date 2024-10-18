@@ -46,7 +46,7 @@ export const CHAIN_ID = {
   sonic_test: 'SONIC_DEV',
   ton: 'TON',
   ton_test: 'TON_TEST',
-  fuel: 'FUEL',
+  fuel: 'FUEL_MAIN',
   fuel_test: 'FUEL_TEST',
   tron: '728126428',
   tron_shasta_test: '2494104990',

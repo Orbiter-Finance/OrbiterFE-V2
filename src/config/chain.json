@@ -3566,7 +3566,7 @@
             "url": "",
             "key": ""
         },
-        "chainId": "FUEL",
+        "chainId": "FUEL_MAIN",
         "networkId": "FUEL",
         "internalId": "94",
         "name": "Fuel",
