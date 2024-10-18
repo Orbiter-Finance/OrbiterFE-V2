@@ -94,7 +94,7 @@ function getToAmountFromUserAmount(userAmount, selectMakerConfig, isWei) {
   let digit =
     decimals === 8 || toDecimals === 8
       ? 6
-      : decimals >= 9 && toDecimals > 9
+      : decimals >= 9 && toDecimals >= 9
       ? 5
       : 2
   let gasFee_fix = gasFeeAmount.decimalPlaces(digit, BigNumber.ROUND_UP)
