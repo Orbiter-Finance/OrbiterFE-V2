@@ -242,6 +242,7 @@ import orbiterHelper from '../../util/orbiter_helper.js';
 import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import fractalHelper from '../../util/fractal/fractal_helper.js';
+import fuelsHelper from "../../util/fuels/fuels_helper.js"
 import aptosHelper from '../../util/aptos/aptos_helper.js';
 import { CHAIN_ID } from "../../config";
 import { isBrowserApp, isProd } from "../../util";
@@ -1739,6 +1740,7 @@ export default {
           this.transferLoading = false
           return
         }
+        }
         const address = this.toCrossAddressReceipt()
         if (!address) {
           this.openConnectModal()
@@ -1782,7 +1784,6 @@ export default {
         } finally {
           this.transferLoading = false
         }
-      }
     },
     async fractalTransfer(value) {
       const {
