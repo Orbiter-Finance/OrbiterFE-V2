@@ -148,6 +148,9 @@ export default {
         decimals
       )
     }
+    if (orbiterHelper.isSolanaChain({ chainId: fromChainID })) {
+      return null
+    }
     if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
       return null
     }
