@@ -3638,5 +3638,43 @@
         "internalId": "95",
         "status": "incubating",
         "vm": "EVM"
+    },
+    {
+        "name": "Eclipse",
+        "rpc": [
+            "https://mainnetbeta-rpc.eclipse.xyz"
+        ],
+        "service": {
+            "api": "EclipseApiScanningService"
+        },
+        "tokens": [],
+        "internalId": "65",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 9,
+            "address": "So11111111111111111111111111111111111111112"
+        },
+        "infoURL": "https://explorer.eclipse.xyz",
+        "shortName": "Eclipse",
+        "chainId": "ECLIPSE_MAIN",
+        "networkId": "ECLIPSE_MAIN",
+        "explorers": [
+            {
+                "name": "Block Explorer",
+                "url": "https://explorer.eclipse.xyz",
+                "icon": "eclipse"
+            }
+        ],
+        "contract": {
+        },
+        "contracts": [
+            {
+                "name": "MemoProgram",
+                "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+                "methods": []
+            }
+        ],
+        "vm": "SOLANAVM"
     }
 ]
