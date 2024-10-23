@@ -81,7 +81,7 @@
                       Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, Kroma,
                       zkFair, Blast, ZetaChain, Mode, zkLink Nova, Proof of Play Apex,
                       Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint,
-                      AlienxChain, Fraxtal, Zircuit, Fuse
+                      AlienxChain, Fraxtal, Zircuit, Fuse, World Chain, Redstone
                   </div>
                   <div class="rule-item">
                     - Complete the first task and click on the lucky bag to
