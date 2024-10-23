@@ -10,7 +10,8 @@
             <div class="lottery-dialog-card-face">
               <div class="card-content">
                 <div class="card-title">
-                  10,000 $USDC Giveaway to Boost Scroll Airdrop
+                    Grab $10,000 USDC<br>
+                    Enjoy Bridging From Scroll
                 </div>
                 <div class="task-group-title">
                   <label>Quest</label>
@@ -49,7 +50,7 @@
                   <div class="reward">
                     <img
                       @click="drawBag(item)"
-                      v-if="item.finished && !item.reward"
+                      v-if="item.finished && !item.reward && item.reward !== 0"
                       class="bag"
                       :src="
                         require('../../assets/activity/points_task/bag.png')
@@ -72,27 +73,27 @@
 
                 <div class="rule">
                   <div class="rule-group">
-                    1、Bridge from specific networks to Scroll Chain or bridge
-                    from Scroll Chain to specific networks.
+                    - Bridge <span style="font-weight: 700">from Scroll Chain to specific networks.</span>
                   </div>
                   <div class="rule-item">
                     - Specific Chains include: Ethereum, Arbitrum, zkSync Lite,
-                    Linea, Base, Polygon, Optimism, Loopring, zkSyncEra, BNB
-                    Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta,
-                    Kroma, zkFair, Blast, ZetaChain, Mode, zkLink Nova, Proof of
-                    Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit,
-                    Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse
+                      Linea, Base, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain,
+                      Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, Kroma,
+                      zkFair, Blast, ZetaChain, Mode, zkLink Nova, Proof of Play Apex,
+                      Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint,
+                      AlienxChain, Fraxtal, Zircuit, Fuse
                   </div>
-                  <div class="rule-group">2、0 Bridging fee Eligibility</div>
                   <div class="rule-item">
                     - Complete the first task and click on the lucky bag to
-                    activate your rebate eligibility. Your next (xx)
-                    transactions will qualify for rebates, excluding gas fees.
-                    All rebates will be distributed after the event ends.
+                      gain rebate eligibility.When you complete the second task,
+                      your random rebate eligibility [0 bridging fee for (X) tx]
+                      will be activated (excluding gas fees).All rebates will be
+                      distributed after the event ends.The rebate eligibility is
+                      only applicable to transactions made in this event.
                   </div>
                   <div class="rule-group">
-                    3、After completing each quest, you need to click on the
-                    corresponding lucky bag to claim your rewards.
+                    - After completing each quest, you need to click on the corresponding
+                      lucky bag to claim your rewards.The event ends once all $USDC rewards are distributed.
                   </div>
                 </div>
               </div>
@@ -156,17 +157,17 @@ export default {
       const list = this.list
       let total = this.total
       return list.map((item) => {
-        let current = 0
-        if (total >= Number(item.target)) {
-          ;(current = Number(item.target) || 0),
-            (total -= Number(item.target) || 0)
-        } else {
-          ;(current = total || 0), (total = 0)
-        }
+        let current = Math.min(this.total, item.target)
+        // if (total >= Number(item.target)) {
+        //   ;(current = Number(item.target) || 0),
+        //     (total -= Number(item.target) || 0)
+        // } else {
+        //   ;(current = total || 0), (total = 0)
+        // }
 
         return {
           ...item,
-          label: `Bridge ≥ ${item.target} tx to/from scroll`,
+          label: `Bridge ≥ ${item.target} tx from scroll`,
           tag: !item?.number
             ? 'Get 0 Bridging fee Eligibility'
             : '100% get $USDC Reward',
@@ -203,7 +204,7 @@ export default {
         this.getData()
         if (!Number(res?.code)) {
           this.$notify.error({
-            title: String(res?.messag),
+            title: String(res?.message),
             duration: 3000,
           })
         }

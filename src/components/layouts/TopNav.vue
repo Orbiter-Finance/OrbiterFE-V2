@@ -26,7 +26,7 @@
         />
         <div class="bag-group">
           <img @click="openBag" class="bag-tag" :src="require('../../assets/activity/points_task/bag.png')" />
-          <div class="bag-tips">Scroll Airdrop</div>
+          <div class="bag-tips">Grab $10,000</div>
         </div>
       </div>
       <HeaderOps :drawerVisible="drawerVisible" v-if="$route.path !== '/statistics'" />
