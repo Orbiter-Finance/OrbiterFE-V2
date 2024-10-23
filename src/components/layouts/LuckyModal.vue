@@ -157,7 +157,7 @@ export default {
       const list = this.list
       let total = this.total
       return list.map((item) => {
-        let current = Math.min(this.total, item.target)
+        let current = Math.min(this.total || 0, item.target)
         // if (total >= Number(item.target)) {
         //   ;(current = Number(item.target) || 0),
         //     (total -= Number(item.target) || 0)
@@ -225,8 +225,8 @@ export default {
       const res = await response.json()
 
       this.list = res?.result?.resultList || []
-      this.total = Number(res?.result?.txsCount)
-      this.currentReward = Number(res?.result?.totalReward)
+      this.total = Number(res?.result?.txsCount || 0)
+      this.currentReward = Number(res?.result?.totalReward || 0)
     },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
