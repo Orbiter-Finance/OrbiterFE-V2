@@ -432,7 +432,8 @@ import {
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
   setActPointFetchStatus,
-  prizesTimeEnd
+  prizesTimeEnd,
+  setLuckyModalShow
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem, getNoticeData } from "../../common/openApiAx";
@@ -1025,11 +1026,18 @@ export default {
       const { selectMakerConfig } = transferDataState
     },
     goToPrizes(){
-      this.$gtag.event("TRANSFER_TO_PRIZESV3", {
-        event_category: "TRANSFER_TO_PRIZESV3",
-        event_label: "to prizes",
-      })
-      this.$router.push("/prizes")
+      // this.$gtag.event("TRANSFER_TO_PRIZESV3", {
+      //   event_category: "TRANSFER_TO_PRIZESV3",
+      //   event_label: "to prizes",
+      // })
+      // this.$router.push("/prizes")
+      const address = compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress
+      if(!address) {
+        const wallet = orbiterHelper.currentConnectChainInfo({chainId: "1"})
+        wallet.open()
+      } else {
+        setLuckyModalShow(true)
+      }
     },
     loopringFromFillAddress(value) {
       try {
