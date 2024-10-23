@@ -8,7 +8,7 @@
   "Install": "Install",
   "Wallet": "Wallet",
   "User denied account access": "User denied account access",
-  "not install metamask": "not install metamask",
+  "not install metamask": "Metamask not installed",
   "get netWorkID failed, refresh and try again":
     "get netWorkID failed, refresh and try again",
   "The current Solana account is not activated":
