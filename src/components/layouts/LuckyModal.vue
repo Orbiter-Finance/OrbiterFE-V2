@@ -60,7 +60,7 @@
                       class="reward-amount"
                       v-else-if="item.finished && !item.number"
                     >
-                      +4 txs 0 fee
+                      +3 txs 0 fee
                     </div>
                     <div class="reward-amount" v-else-if="item.reward">
                       +<span>{{ item.reward }}</span> $USDC
