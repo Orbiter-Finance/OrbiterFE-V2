@@ -49,7 +49,7 @@
                   <div class="reward">
                     <img
                       @click="drawBag(item)"
-                      v-if="item.finished && !item.reward && !!item.number"
+                      v-if="item.finished && !item.reward"
                       class="bag"
                       :src="
                         require('../../assets/activity/points_task/bag.png')
@@ -195,7 +195,7 @@ export default {
         const response = await fetch(
           `${process.env.VUE_APP_OPEN_URL}${
             isDev() ? '/activity' : '/active-platform'
-          }/competition/lotteryTaskReward?taskId=${item.taskId}&address=${
+          }/competition/luckyBagReward?taskId=${item.taskId}&address=${
             this.currentEvmAddress
           }`
         )
@@ -219,7 +219,7 @@ export default {
       const response = await fetch(
         `${process.env.VUE_APP_OPEN_URL}${
           isDev() ? '/activity' : '/active-platform'
-        }/competition/lotteryTaskStatus?address=${this.currentEvmAddress}`
+        }/competition/luckyBagStatus?address=${this.currentEvmAddress}`
       )
       const res = await response.json()
 
