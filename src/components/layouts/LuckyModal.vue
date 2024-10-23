@@ -202,12 +202,12 @@ export default {
         )
         const res = await response.json()
         this.getData()
-        if (!Number(res?.code)) {
-          this.$notify.error({
-            title: String(res?.message),
-            duration: 3000,
-          })
-        }
+        // if (!Number(res?.code)) {
+        //   this.$notify.error({
+        //     title: String(res?.message),
+        //     duration: 3000,
+        //   })
+        // }
       } catch (error) {
         this.$notify.error({
             title: String(error?.data?.message || error?.message || error),
