@@ -10,7 +10,8 @@
             <div class="lottery-dialog-card-face">
               <div class="card-content">
                 <div class="card-title">
-                  10,000 $USDC Giveaway to Boost Scroll Airdrop
+                    Grab $10,000 USDC<br>
+                    Enjoy Bridging From Scroll
                 </div>
                 <div class="task-group-title">
                   <label>Quest</label>
@@ -49,7 +50,7 @@
                   <div class="reward">
                     <img
                       @click="drawBag(item)"
-                      v-if="item.finished && !item.reward && !!item.number"
+                      v-if="item.finished && !item.reward && item.reward !== 0"
                       class="bag"
                       :src="
                         require('../../assets/activity/points_task/bag.png')
@@ -64,7 +65,6 @@
                     <div class="reward-amount" v-else-if="item.reward">
                       +<span>{{ item.reward }}</span> $USDC
                     </div>
-                    <!-- <div v-else-if="isEnd">Depleted</div> -->
                     <div v-else>({{ item.current }}/{{ item.target }})</div>
                   </div>
                 </div>
@@ -73,27 +73,27 @@
 
                 <div class="rule">
                   <div class="rule-group">
-                    1、Bridge from specific networks to Scroll Chain or bridge
-                    from Scroll Chain to specific networks.
+                    - Bridge <span style="font-weight: 700">from Scroll Chain to specific networks.</span>
                   </div>
                   <div class="rule-item">
                     - Specific Chains include: Ethereum, Arbitrum, zkSync Lite,
-                    Linea, Base, Polygon, Optimism, Loopring, zkSyncEra, BNB
-                    Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta,
-                    Kroma, zkFair, Blast, ZetaChain, Mode, zkLink Nova, Proof of
-                    Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit,
-                    Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse
+                      Linea, Base, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain,
+                      Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, Kroma,
+                      zkFair, Blast, ZetaChain, Mode, zkLink Nova, Proof of Play Apex,
+                      Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint,
+                      AlienxChain, Fraxtal, Zircuit, Fuse
                   </div>
-                  <div class="rule-group">2、0 Bridging fee Eligibility</div>
                   <div class="rule-item">
                     - Complete the first task and click on the lucky bag to
-                    activate your rebate eligibility. Your next (xx)
-                    transactions will qualify for rebates, excluding gas fees.
-                    All rebates will be distributed after the event ends.
+                      gain rebate eligibility.When you complete the second task,
+                      your random rebate eligibility [0 bridging fee for (X) tx]
+                      will be activated (excluding gas fees).All rebates will be
+                      distributed after the event ends.The rebate eligibility is
+                      only applicable to transactions made in this event.
                   </div>
                   <div class="rule-group">
-                    3、After completing each quest, you need to click on the
-                    corresponding lucky bag to claim your rewards.
+                    - After completing each quest, you need to click on the corresponding
+                      lucky bag to claim your rewards.The event ends once all $USDC rewards are distributed.
                   </div>
                 </div>
               </div>
@@ -136,7 +136,6 @@ export default {
       laodingList: [0, 1, 2, 3],
       currentReward: 0,
       totalReward: 10000,
-      isEnd: false
     }
   },
   components: {
@@ -156,15 +155,23 @@ export default {
     },
     taskList() {
       const list = this.list
+      let total = this.total
       return list.map((item) => {
-        const current = this.total >= Number(item.target) ? Number(item.target) : Number(this.total)
+        let current = Math.min(this.total, item.target)
+        // if (total >= Number(item.target)) {
+        //   ;(current = Number(item.target) || 0),
+        //     (total -= Number(item.target) || 0)
+        // } else {
+        //   ;(current = total || 0), (total = 0)
+        // }
+
         return {
           ...item,
-          label: `Bridge ≥ ${item.target} tx to/from scroll`,
+          label: `Bridge ≥ ${item.target} tx from scroll`,
           tag: !item?.number
             ? 'Get 0 Bridging fee Eligibility'
             : '100% get $USDC Reward',
-          current: current || 0,
+          current,
         }
       })
     },
@@ -189,18 +196,18 @@ export default {
         const response = await fetch(
           `${process.env.VUE_APP_OPEN_URL}${
             isDev() ? '/activity' : '/active-platform'
-          }/competition/lotteryTaskReward?taskId=${item.taskId}&address=${
+          }/competition/luckyBagReward?taskId=${item.taskId}&address=${
             this.currentEvmAddress
           }`
         )
         const res = await response.json()
         this.getData()
-        if (!Number(res?.code)) {
-          this.$notify.error({
-            title: String(res?.messag),
-            duration: 3000,
-          })
-        }
+        // if (!Number(res?.code)) {
+        //   this.$notify.error({
+        //     title: String(res?.message),
+        //     duration: 3000,
+        //   })
+        // }
       } catch (error) {
         this.$notify.error({
             title: String(error?.data?.message || error?.message || error),
@@ -213,13 +220,13 @@ export default {
       const response = await fetch(
         `${process.env.VUE_APP_OPEN_URL}${
           isDev() ? '/activity' : '/active-platform'
-        }/competition/lotteryTaskStatus?address=${this.currentEvmAddress}`
+        }/competition/luckyBagStatus?address=${this.currentEvmAddress}`
       )
       const res = await response.json()
 
       this.list = res?.result?.resultList || []
-      this.total = Number(res?.result?.txsCount || 0)
-      this.currentReward = Number(res?.result?.totalReward || 0)
+      this.total = Number(res?.result?.txsCount)
+      this.currentReward = Number(res?.result?.totalReward)
     },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
