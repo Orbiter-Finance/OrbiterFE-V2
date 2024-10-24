@@ -26,7 +26,7 @@
       >
         {{ nav.name }}
         <SvgIconThemed v-if="!verical && !isMobile && nav.children == 0" />
-        <HeaderPrizesTimeOut v-if="nav.name === 'Prizes'"></HeaderPrizesTimeOut>
+<!--        <HeaderPrizesTimeOut v-if="nav.href === '/prizes'"></HeaderPrizesTimeOut>-->
       </div>
       <template v-if="isMobile && nav.children && nav.children.length">
         <div

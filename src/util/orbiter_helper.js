@@ -93,7 +93,9 @@ const isSolanaChain = ({ chainId }) => {
     chainId === CHAIN_ID.solana ||
     chainId === CHAIN_ID.solana_test ||
     chainId === CHAIN_ID.eclipse_test ||
-    chainId === CHAIN_ID.sonic_test
+    chainId === CHAIN_ID.sonic_test ||
+    chainId === CHAIN_ID.eclipse ||
+    chainId === CHAIN_ID.sonic
   )
 }
 

@@ -60,7 +60,7 @@
                       class="reward-amount"
                       v-else-if="item.finished && !item.number"
                     >
-                      +4 txs 0 fee
+                      +3 txs 0 fee
                     </div>
                     <div class="reward-amount" v-else-if="item.reward">
                       +<span>{{ item.reward }}</span> $USDC
@@ -81,7 +81,7 @@
                       Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, Kroma,
                       zkFair, Blast, ZetaChain, Mode, zkLink Nova, Proof of Play Apex,
                       Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint,
-                      AlienxChain, Fraxtal, Zircuit, Fuse
+                      AlienxChain, Fraxtal, Zircuit, Fuse, World Chain, Redstone
                   </div>
                   <div class="rule-item">
                     - Complete the first task and click on the lucky bag to
@@ -157,7 +157,7 @@ export default {
       const list = this.list
       let total = this.total
       return list.map((item) => {
-        let current = Math.min(this.total, item.target)
+        let current = Math.min(this.total || 0, item.target)
         // if (total >= Number(item.target)) {
         //   ;(current = Number(item.target) || 0),
         //     (total -= Number(item.target) || 0)
@@ -225,8 +225,8 @@ export default {
       const res = await response.json()
 
       this.list = res?.result?.resultList || []
-      this.total = Number(res?.result?.txsCount)
-      this.currentReward = Number(res?.result?.totalReward)
+      this.total = Number(res?.result?.txsCount || 0)
+      this.currentReward = Number(res?.result?.totalReward || 0)
     },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)

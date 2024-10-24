@@ -131,58 +131,83 @@ const transfer = async ({
 
   const toPublicKey = new PublicKey(to)
 
-  const tokenPublicKey = new PublicKey(tokenAddress)
-  const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
-    connection,
-    fromPublicKey,
-    tokenPublicKey,
-    fromPublicKey
-  )
-
-  const toTokenAccount = await getOrCreateAssociatedTokenAccount(
-    connection,
-    fromPublicKey,
-    tokenPublicKey,
-    toPublicKey
-  )
-
+  let signTransactionTx;
   const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
     units: 1000000,
-  })
-
+  });
   const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
     microLamports: 100,
-  })
-
-  const recentBlockhash = await connection.getLatestBlockhash('confirmed')
-
-  const tokenTransaction = new Transaction({
-    recentBlockhash: recentBlockhash.blockhash,
-    feePayer: fromPublicKey,
-  })
-    .add(modifyComputeUnits)
-    .add(addPriorityFee)
-    .add(
-      createTransferInstruction(
-        fromTokenAccount.address,
-        toTokenAccount.address,
-        fromPublicKey,
-        amount,
-        [],
-        TOKEN_PROGRAM_ID
+  });
+  const chainInfo = util.getV3ChainInfoByChainId(chainId)
+  if (tokenAddress === chainInfo?.nativeCurrency?.address) {
+    const recentBlockhash = await connection.getLatestBlockhash('confirmed');
+    signTransactionTx = new Transaction({
+      recentBlockhash: recentBlockhash.blockhash,
+      feePayer: fromPublicKey,
+    })
+      .add(modifyComputeUnits)
+      .add(addPriorityFee)
+      .add(
+        SystemProgram.transfer({
+          fromPubkey: fromPublicKey,
+          toPubkey: toPublicKey,
+          lamports: amount,
+        })
       )
-    )
-    .add(
-      new TransactionInstruction({
-        keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
-        data: utils.toUtf8Bytes(
-          utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`))
-        ),
-        programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
-      })
-    )
+      .add(
+        new TransactionInstruction({
+          keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
+          data: utils.toUtf8Bytes(
+            utils.hexlify(utils.toUtf8Bytes(`c=${ safeCode }&t=${ targetAddress }`))
+          ),
+          programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
+        })
+      );
+  } else {
+    const tokenPublicKey = new PublicKey(tokenAddress);
+    const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
+      connection,
+      fromPublicKey,
+      tokenPublicKey,
+      fromPublicKey
+    );
 
-  const signedTx = await provider.signTransaction(tokenTransaction)
+    const toTokenAccount = await getOrCreateAssociatedTokenAccount(
+      connection,
+      fromPublicKey,
+      tokenPublicKey,
+      toPublicKey
+    );
+    const recentBlockhash = await connection.getLatestBlockhash('confirmed');
+
+    signTransactionTx = new Transaction({
+      recentBlockhash: recentBlockhash.blockhash,
+      feePayer: fromPublicKey,
+    })
+      .add(modifyComputeUnits)
+      .add(addPriorityFee)
+      .add(
+        createTransferInstruction(
+          fromTokenAccount.address,
+          toTokenAccount.address,
+          fromPublicKey,
+          amount,
+          [],
+          TOKEN_PROGRAM_ID
+        )
+      )
+      .add(
+        new TransactionInstruction({
+          keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
+          data: utils.toUtf8Bytes(
+            utils.hexlify(utils.toUtf8Bytes(`c=${ safeCode }&t=${ targetAddress }`))
+          ),
+          programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
+        })
+      );
+  }
+
+  const signedTx = await provider.signTransaction(signTransactionTx)
 
   const signature = await connection.sendRawTransaction(signedTx.serialize())
 

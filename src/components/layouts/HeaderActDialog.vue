@@ -16,7 +16,7 @@
         @mouseover="mouseoverCloseDrawer"
         @mouseout="mouseoutCloseDrawer"
         class="close-drawer"
-        :style="`opacity: ${closeDrawerOpacity};padding-left: ${closeDrawerPaddingLeft}px`"
+        :style="`padding-left: ${closeDrawerPaddingLeft}px`"
       >
         <img class="img" :src="require('../../assets/activity/right.png')" />
       </div>
@@ -349,7 +349,7 @@ export default {
         { img: '0xe20847F3C593296613Df763afE7eA039D8398E78.png' },
       ],
       showDetail: false,
-      closeDrawerOpacity: 0.5,
+      closeDrawerOpacity: 1,
       closeDrawerPaddingLeft: 0,
       page: 1,
       pageSize: 10,

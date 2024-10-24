@@ -148,6 +148,9 @@ export default {
         decimals
       )
     }
+    if (orbiterHelper.isSolanaChain({ chainId: fromChainID })) {
+      return null
+    }
     if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
       return null
     }
@@ -1279,7 +1282,8 @@ export default {
   async getGasPrice(fromChainId) {
     if (
       fromChainId === CHAIN_ID.zksync ||
-      fromChainId === CHAIN_ID.zksync_test
+      fromChainId === CHAIN_ID.zksync_test ||
+      orbiterHelper.isNotEVMChain({ chainId: fromChainId })
     ) {
       return null
     }

@@ -642,7 +642,7 @@
     "chainId": "FUEL_TEST",
     "networkId": "FUEL_TEST",
     "internalId": "567",
-    "icon": "FUEL",
+    "icon": "FUEL_MAIN",
     "name": "Fuel Sepolia",
     "batchLimit": 10,
     "targetConfirmation": 2,

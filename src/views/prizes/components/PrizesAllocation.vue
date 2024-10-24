@@ -129,12 +129,12 @@
                       <span>
                         <span>Optimism Superchain include: </span>
                         <br />
-                        Optimism, Base, Mode, Cyber, Bob, Mint, Kroma, Lisk, Zora
+                        Optimism, Base, Mode, Cyber, Bob, Mint, Kroma, Lisk, Zora, Scroll
                       </span>
                     </span>
                   </template>
                   <span class="orbiter_global_prizes_tips_underline tip-text">
-                    Optimism Superchain
+                    Scroll/Optimism Superchain
                   </span>
                 </o-tooltip>
                 <!-- <span v-if="item.specificChain">from/to Scroll</span> -->

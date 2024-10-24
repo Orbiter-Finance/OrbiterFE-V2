@@ -331,7 +331,7 @@ export default {
           lastText: '',
           isU: true,
           opoints: 420,
-          total: 15,
+          total: 23,
           current: achieveTotal,
         },
       ]

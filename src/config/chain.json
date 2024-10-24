@@ -1935,7 +1935,7 @@
    {
       "name": "Solana",
       "rpc": [
-         "https://solana-mainnet.g.alchemy.com/v2/J3tWMROCkv-w67cWYdz2AMYLjeOjjmkA"
+         "https://solana-mainnet.g.alchemy.com/v2/M29xk1nZbe4zGh3SjOlqtGQtSSsKlfTK"
       ],
       "tokens": [
          {
@@ -2558,10 +2558,10 @@
             "address": "EQB-MPwrd1G6WKNkLz_VnV6WqBDd142KMQv-g1O-8QUA3728"
          },
          {
-            "name": "JUSDT",
+            "name": "Tether USD",
             "symbol": "USDT",
             "decimals": 6,
-            "address": "EQBynBO23ywHy_CgarY9NK9FTz0yDsG82PtcbSTQgGoXwiuA"
+            "address": "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs"
          }
       ],
       "internalId": "56",
@@ -3560,5 +3560,121 @@
           }
       ],
       "vm": "EVM"
-  }
+  },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "FUEL_MAIN",
+        "networkId": "FUEL",
+        "internalId": "94",
+        "name": "Fuel",
+        "service": {
+            "rpc": "FuelRpcScanningService"
+        },
+        "features": [],
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 9,
+            "address": "0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07"
+        },
+        "rpc": [
+            "https://mainnet.fuel.network/v1/graphql"
+        ],
+        "tokens": [],
+        "infoURL": "https://app.fuel.network",
+        "contracts": [],
+        "vm": "FUELVM"
+    },
+
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "name": "World Chain",
+        "chain": "ETH",
+        "rpc": [
+            "https://worldchain-mainnet.g.alchemy.com/public"
+        ],
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        },
+        "faucets": [],
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "contracts": [
+         {
+             "name": "OBSource",
+             "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+             "methods": [
+                 "transfer(address,bytes)",
+                 "transferERC20(address,address,uint256,bytes)"
+             ]
+         },
+         {
+             "name": "OrbiterRouterV3",
+             "address": "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172",
+             "methods": [
+                 "transfer(address,bytes)",
+                 "transferToken(address,address,uint256,bytes)",
+                 "transfers(address[],uint256[])",
+                 "transferTokens(address,address[],uint256[])"
+             ]
+         }
+     ],
+        "tokens": [],
+        "infoURL": "https://worldchain-mainnet.explorer.alchemy.com",
+        "shortName": "wc",
+        "chainId": "480",
+        "networkId": "480",
+        "internalId": "95",
+        "status": "incubating",
+        "vm": "EVM"
+    },
+    {
+        "name": "Eclipse",
+        "rpc": [
+            "https://mainnetbeta-rpc.eclipse.xyz"
+        ],
+        "service": {
+            "api": "EclipseApiScanningService"
+        },
+        "tokens": [],
+        "internalId": "65",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 9,
+            "address": "So11111111111111111111111111111111111111112"
+        },
+        "infoURL": "https://explorer.eclipse.xyz",
+        "shortName": "Eclipse",
+        "chainId": "ECLIPSE_MAIN",
+        "networkId": "ECLIPSE_MAIN",
+        "explorers": [
+            {
+                "name": "Block Explorer",
+                "url": "https://explorer.eclipse.xyz",
+                "icon": "eclipse"
+            }
+        ],
+        "contract": {
+        },
+        "contracts": [
+            {
+                "name": "MemoProgram",
+                "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+                "methods": []
+            }
+        ],
+        "vm": "SOLANAVM"
+    }
 ]

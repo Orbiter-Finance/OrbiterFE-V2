@@ -14,7 +14,7 @@
     "19-1": {
         "USDT-USDT": {
             "gasFee": 0,
-            "tradingFee": 1.4,
+            "tradingFee": 30,
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 20000,
@@ -2044,7 +2044,7 @@
             "makerAddress": "TYyMhrXmiAcQcwZPQjPxLwkpaPXaYaJYw5",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "gasFee": 0,
-            "tradingFee": 13,
+            "tradingFee": 18,
             "maxPrice": 3500,
             "minPrice": 0.1,
             "startTime": 0,

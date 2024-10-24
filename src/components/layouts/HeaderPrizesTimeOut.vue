@@ -1,6 +1,6 @@
 <template>
   <div class="time-out">
-    <div class="time-content">optimism superchain</div>
+    <div class="time-content">$65,000</div>
   </div>
 </template>
 
@@ -13,7 +13,7 @@ export default {
 
 <style scoped lang="scss">
 .time-out {
-  display: none;
+  display: flex;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -25,7 +25,11 @@ export default {
     font-size: 12px;
     border-radius: 999px;
     padding: 0px 8px;
-    scale: 0.8;
+    zoom: 0.87;
+    height: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     //color: #0a1313;
     color: #FFFFFF;
   }
