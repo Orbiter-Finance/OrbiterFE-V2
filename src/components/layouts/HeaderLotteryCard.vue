@@ -8,9 +8,9 @@
       >
         <template v-slot:titleDesc>
           <div class="lottery-tooltip">
-            <div>Your chances of flopping: {{ total }}</div>
+            <div>{{ $t("Your chances of flopping") }}: {{ total }}</div>
             <div class="lottery-tooltip-bottom">
-              Bridging ({{ currentProgress }}/{{ max }}) TX Get Flip
+              {{ $t("Bridging TX Get Flip", [`${currentProgress}/${max}`]) }}
             </div>
           </div>
         </template>
@@ -180,13 +180,13 @@ export default {
           }, 0)
         } else {
           this.$notify.error({
-            title: 'Failed to draw card O-Points',
+            title: this.$t('Failed to draw card O-Points'),
             duration: 3000,
           })
         }
       } catch (error) {
         this.$notify.error({
-          title: 'Failed to draw card O-Points',
+          title: this.$t('Failed to draw card O-Points'),
           duration: 3000,
         })
       }

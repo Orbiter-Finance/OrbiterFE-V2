@@ -6,7 +6,7 @@
       :style="contentStyle"
     >
       <div class="title">
-        <span class="text">Ecosystem DApp </span>
+        <span class="text">{{$t("Ecosystem DApp") }}</span>
         <svg
           v-show="!isMobile"
           class="expand"
@@ -76,7 +76,7 @@
           :banner="'astra2.png'"
           :tag="'Cross-chain Game'"
           :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
-          :description="'🎉 OKX Cryptopedia Event is Now Live! 🚀 Claim 0.3% of the total $STAR supply on OKX!  🚀Earn 2x O-Points'"
+          :description="'🎉 Manta Carnival #1 Event is Now Live! 🚀 Claim 10k $Manta Up to Infinite on 0xAstra'"
           :isProgress="false"
           :name="'0xastra'"
           :url="'https://www.okx.com/web3/discover/cryptopedia/event/45'"
@@ -92,7 +92,7 @@
             :banner="'bitlayer-points.png'"
             :tag="'Cross-chain Game'"
             :tagStyle="'background: linear-gradient(to right, #ACCCFF ,#F590FF);'"
-            :description="'Earn 9 rewards per Tx. Also, grab 200 $BitlayerPoints at the Race Center.'"
+            :description="'300 $BitLayerPoint, 0.5 $NovaPoints, 400 $OPAI..... more OfficialPoints and Tokens Boost Event.'"
             :isProgress="false"
             :name="'BitlayerPoints'"
             :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
@@ -123,8 +123,6 @@
           :btnLabel="'Mint'"
         />
       </el-carousel-item> -->
-
-    
         <el-carousel-item>
           <EcosystemDapp
             :holders="holders"

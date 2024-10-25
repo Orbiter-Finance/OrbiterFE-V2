@@ -7,7 +7,7 @@
       <div class="close" @click.stop="closeSelectWalletDialog">
         <img :src="require('../../assets/data/close.png')" />
       </div>
-      <div class="title">Connect a Wallet</div>
+      <div class="title">{{$t("Connect a Wallet")}}</div>
       <div class="wallet-list">
         <div v-if="connectWalletGroupKey === 'EVM'" class="wallet-group">
           <div class="wallet-group-title">EVM Wallet</div>
@@ -57,23 +57,66 @@
             </div>
           </div>
         </div>
-        <div
-        v-else-if="connectWalletGroupKey === 'TRON'"
-        class="wallet-group"
-      >
-        <div class="wallet-group-title">Tron Wallet</div>
-        <div class="wallet-group-list">
-          <div
-            v-for="item in tronWallet"
-            :key="item.title"
-            class="wallet-item"
-            @click="connectTronWallet(item)"
-          >
-            <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
-            <span class="wallet-title">{{ item.title }}</span>
+        <div v-else-if="connectWalletGroupKey === 'FUEL'" class="wallet-group">
+          <div class="wallet-group-title">FUEL Wallet</div>
+          <div class="wallet-group-list">
+            <div
+              v-for="item in fuelsWallet"
+              :key="item.title"
+              class="wallet-item"
+              @click="connectFuelWallet(item)"
+            >
+              <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+              <span class="wallet-title">{{ item.title }}</span>
+            </div>
           </div>
         </div>
-      </div>
+        <div
+          v-else-if="connectWalletGroupKey === 'FRACTAL'"
+          class="wallet-group"
+        >
+          <div class="wallet-group-title">Fracta Wallet</div>
+          <div class="wallet-group-list">
+            <div
+              v-for="item in fractalWallet"
+              :key="item.title"
+              class="wallet-item"
+              @click="connectFractaWallet(item)"
+            >
+              <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+              <span class="wallet-title">{{ item.title }}</span>
+            </div>
+          </div>
+        </div>
+        <div v-else-if="connectWalletGroupKey === 'APTOS'" class="wallet-group">
+          <div class="wallet-group-title">Aptos Wallet</div>
+          <div class="wallet-group-list">
+            <div
+              v-for="item in aptosWallet"
+              :key="item.title"
+              class="wallet-item"
+              @click="connectAptosWallet(item)"
+            >
+              <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+              <span class="wallet-title">{{ item.title }}</span>
+            </div>
+          </div>
+        </div>
+          <div v-else-if="connectWalletGroupKey === 'TRON'" class="wallet-group" >
+            <div class="wallet-group-title">Tron Wallet</div>
+            <div class="wallet-group-list">
+              <div
+                v-for="item in tronWallet"
+                :key="item.title"
+                class="wallet-item"
+                @click="connectTronWallet(item)"
+              >
+                <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+                <span class="wallet-title">{{ item.title }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -100,7 +143,16 @@ import walletDispatchers, {
   BINANCEWALLET,
   PHANTOMWALLET,
   BACKPACKWALLET,
-  BYBITWALLET
+  BYBITWALLET,
+  METAMASK_APP,
+  COINBASE_APP,
+  BIT_KEEP_APP,
+  OKXWALLET,
+  IM_TOKEN_APP,
+  ZERION_APP,
+  BLOCKWALLET,
+  TALLYHO,
+  BRAVE_APP
 } from '../../util/walletsDispatchers'
 
 import util, { isMobileDevice, isBrowserApp } from '../../util'
@@ -119,7 +171,12 @@ import { walletConnectDispatcherOnInit } from '../../util/walletsDispatchers/pcB
 
 import { store } from '../../store'
 import solanaHelper from '../../util/solana/solana_helper'
-import tronHelper from '../../util/tron/tron_helper';
+import fuelsHelper from '../../util/fuels/fuels_helper'
+import fractalHelper from '../../util/fractal/fractal_helper'
+import aptosHelper from '../../util/aptos/aptos_helper'
+import tronHelper from '../../util/tron/tron_helper'
+
+let ton
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
   walletDispatchers
@@ -138,32 +195,32 @@ export default {
         {
           isConnect: false,
           icon: 'metamask',
-          title: 'MetaMask',
-        },
-        {
-          isConnect: false,
-          icon: 'walletconnect',
-          title: 'WalletConnect',
-        },
-        {
-          isConnect: false,
-          icon: 'coinbase',
-          title: 'Coinbase',
-        },
-        {
-          isConnect: false,
-          icon: 'bitkeep',
-          title: 'BitgetWallet',
-        },
-        {
-          isConnect: false,
-          icon: 'okxwallet',
-          title: 'OKXWallet',
+          title: METAMASK_APP,
         },
         {
           isConnect: false,
           icon: 'binance wallet',
           title: BINANCEWALLET,
+        },
+        // {
+        //   isConnect: false,
+        //   icon: 'walletconnect',
+        //   title: WALLETCONNECT,
+        // },
+        {
+          isConnect: false,
+          icon: 'coinbase',
+          title: COINBASE_APP,
+        },
+        {
+          isConnect: false,
+          icon: 'bitkeep',
+          title: BIT_KEEP_APP,
+        },
+        {
+          isConnect: false,
+          icon: 'okxwallet',
+          title: OKXWALLET,
         },
         {
           isConnect: false,
@@ -173,7 +230,7 @@ export default {
         {
           isConnect: false,
           icon: 'imtokenapp',
-          title: 'imTokenApp',
+          title: IM_TOKEN_APP,
         },
         {
           isConnect: false,
@@ -188,7 +245,7 @@ export default {
         {
           isConnect: false,
           icon: 'zerion',
-          title: 'Zerion',
+          title: ZERION_APP,
         },
         {
           isConnect: false,
@@ -198,17 +255,17 @@ export default {
         {
           isConnect: false,
           icon: 'blockwallet',
-          title: 'BlockWallet',
+          title: BLOCKWALLET,
         },
         {
           isConnect: false,
           icon: 'brave',
-          title: 'Brave',
+          title: BRAVE_APP,
         },
         {
           isConnect: false,
           icon: 'tallyho',
-          title: 'Taho',
+          title: TALLYHO,
         },
         {
           isConnect: false,
@@ -216,9 +273,9 @@ export default {
           title: COIN98_APP,
         },
         {
-            isConnect: false,
-            icon: 'foxwallet',
-            title: FOXWALLET_APP,
+          isConnect: false,
+          icon: 'foxwallet',
+          title: FOXWALLET_APP,
         },
         {
           isConnect: false,
@@ -292,6 +349,21 @@ export default {
       ]
       return wallets
     },
+    fuelsWallet() {
+      const wallets = [
+        {
+          isConnect: false,
+          icon: 'FUEL',
+          title: 'Fuel Wallet',
+        },
+        {
+          isConnect: false,
+          icon: 'fuelet',
+          title: 'Fuelet Wallet',
+        },
+      ]
+      return wallets
+    },
     tronWallet() {
       const wallets = [
         {
@@ -303,6 +375,26 @@ export default {
           isConnect: false,
           icon: 'tronLink',
           title: 'TronLink',
+        },
+      ]
+      return wallets
+    },
+    fractalWallet() {
+      const wallets = [
+        {
+          isConnect: false,
+          icon: 'unisat',
+          title: 'Unisat Wallet',
+        },
+      ]
+      return wallets
+    },
+    aptosWallet() {
+      const wallets = [
+        {
+          isConnect: false,
+          icon: 'nightly',
+          title: 'Nightly',
         },
         {
           isConnect: false,
@@ -323,6 +415,12 @@ export default {
     },
     checkIsMobileEnv() {
       return isMobileDevice()
+    },
+    async connectFuelWallet(item) {
+      console.log('item', item)
+      await fuelsHelper.connect(item.title)
+      this.closeSelectWalletDialog()
+      return
     },
     async connectTronWallet(item) {
       const status = await tronHelper.connect(item.icon)
@@ -397,6 +495,18 @@ export default {
           }
         })
       }
+    },
+
+    async connectFractaWallet(item) {
+      const status = await fractalHelper.connect(item.icon)
+      this.closeSelectWalletDialog()
+
+      return
+    },
+    async connectAptosWallet(item) {
+      const status = await aptosHelper.connect(item.icon)
+      this.closeSelectWalletDialog()
+      return
     },
   },
 }

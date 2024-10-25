@@ -4,10 +4,10 @@
       detailData
         ? isFailed
           ? 'Transcation Failed'
-          : 'Detail'
+          : $t('Details')
         : isCompleted
-        ? 'Completed'
-        : 'Processing'
+        ? $t('Completed')
+        : $t('Processing')
     }}</CommBoxHeader>
     <div class="ProceedContent">
       <div v-for="item in proceedData" :key="item.title" class="contentItem">
@@ -227,6 +227,7 @@ import { CHAIN_ID } from '../../config'
 import solanaHelper from '../../util/solana/solana_helper'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import tonHelper from '../../util/ton/ton_helper'
+import fuelsHelper from '../../util/fuels/fuels_helper'
 import { completeTx } from '../../util/proceeding/getProceeding'
 import { MQTT_HREF, MQTT_USER_NAME, MQTT_PASSWORD } from '../../const'
 import mqtt from 'mqtt'
@@ -355,11 +356,11 @@ export default {
       if (this.detailData) {
         return [
           {
-            title: 'Timestamp',
+            title: this.$t("Timestamp"),
             desc: this.detailData.fromTimeStamp,
           },
           {
-            title: 'Value',
+            title: this.$t("Value"),
             desc:
               this.detailData.userAmount.toString() +
               ' ' +
@@ -369,13 +370,13 @@ export default {
       }
       return [
         {
-          title: 'Timestamp',
+          title: this.$t("Timestamp"),
           desc: util.transferTimeStampToTime(
             this.$store.state.proceeding.userTransfer.timeStamp
           ),
         },
         {
-          title: 'Value',
+          title: this.$t("Value"),
           desc:
             (
               this.$store.state.proceeding.userTransfer.amount /
@@ -388,7 +389,7 @@ export default {
     },
   },
   methods: {
-    getMessageData() {
+    async getMessageData() {
       const { toChainID } = transferDataState
       const hash = this.$store?.state?.proceeding?.userTransfer?.txid || ''
 
@@ -444,7 +445,7 @@ export default {
      }
 
     },
-    openIconUrl(isFrom, explorerInfo) {
+   async openIconUrl(isFrom, explorerInfo) {
       // let params = explorerInfo?.icon?.toLocaleLowerCase() === "oklink" ? "?channelId=orbite" :""
       let params = "?channelId=orbite"
       let hash = ''
@@ -540,28 +541,7 @@ export default {
       const { fromChainID } = transferDataState
       if (this.$store.state.proceedState === 1) {
         // let userAddress = web3State.coinbase
-        let userAddress =
-          compatibleGlobalWalletConf.value.walletPayload.walletAddress
-        if (
-          fromChainID === CHAIN_ID.starknet ||
-          fromChainID === CHAIN_ID.starknet_test
-        ) {
-          userAddress = web3State.starkNet.starkNetAddress
-        }
-        if (
-          fromChainID === CHAIN_ID.solana ||
-          fromChainID === CHAIN_ID.solana_test
-        ) {
-          userAddress = web3State.solana.solanaAddress
-        }
-        if (
-          orbiterHelper.isTronChain({chainId: fromChainID}) 
-        ) {
-          userAddress = web3State.tron.tronAddress
-        }
-        if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
-          userAddress = tonHelper.account()
-        }
+        let userAddress = orbiterHelper.currentConnectChainInfo({chainId: fromChainID})?.address || ""
         url = util.getAccountExploreUrl(fromChainID) + userAddress
 
         // ImmutableX
@@ -591,30 +571,9 @@ export default {
       const { toChainID, state } = data
       let url = null
 
-      const commHandler = () => {
+      const commHandler = async () => {
         // let userAddress = web3State.coinbase
-        const userAddress =
-          compatibleGlobalWalletConf.value.walletPayload.walletAddress
-        if (
-          toChainID === CHAIN_ID.starknet ||
-          toChainID === CHAIN_ID.starknet_test
-        ) {
-          userAddress = web3State.starkNet.starkNetAddress
-        }
-        if (
-          toChainID === CHAIN_ID.solana ||
-          toChainID === CHAIN_ID.solana_test
-        ) {
-          userAddress = web3State.solana.solanaAddress
-        }
-        if (
-          orbiterHelper.isTronChain({chainId: toChainID}) 
-        ) {
-          userAddress = web3State.tron.tronAddress
-        }
-        if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-          userAddress = tonHelper.account()
-        }
+        const userAddress = orbiterHelper.currentConnectChainInfo({chainId: toChainID})?.address || ""
         url = util.getAccountExploreUrl(toChainID) + userAddress
 
         // ImmutableX
@@ -696,32 +655,11 @@ export default {
       }
     },
   },
-  beforeDestroy() {
+  async beforeDestroy() {
     if (client?.connected) {
 
       try {
-        let userAddress =
-          compatibleGlobalWalletConf.value.walletPayload.walletAddress
-        if (
-          fromChainID === CHAIN_ID.starknet ||
-          fromChainID === CHAIN_ID.starknet_test
-        ) {
-          userAddress = web3State.starkNet.starkNetAddress
-        }
-        if (
-          fromChainID === CHAIN_ID.solana ||
-          fromChainID === CHAIN_ID.solana_test
-        ) {
-          userAddress = web3State.solana.solanaAddress
-        }
-        if (
-          orbiterHelper.isTronChain({chainId: fromChainID})
-        ) {
-          userAddress = web3State.tron.tronAddress
-        }
-        if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
-          userAddress = tonHelper.account()
-        }
+        let userAddress = orbiterHelper.currentConnectChainInfo({chainId: fromChainID})?.address || ""
         client.unsubscribe(
           `bridge-success/pending-confirm/address/${userAddress}`,
           { qos: 0 },

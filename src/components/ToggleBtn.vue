@@ -3,12 +3,12 @@
         <span
             @click="toggleTab"
             :class="['tab-btn-item', { selected: isSenderTab }]"
-            >Sender</span
+            >{{ $t('Sender')}}</span
         >
         <span
             @click="toggleTab('Maker')"
             :class="['tab-btn-item', { selected: !isSenderTab }]"
-            >Maker</span
+            >{{ $t("Maker") }}</span
         >
     </div>
 </template>

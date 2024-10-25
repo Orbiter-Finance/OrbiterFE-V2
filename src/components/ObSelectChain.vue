@@ -2,7 +2,7 @@
   <div id="obSelectChainBody" class="obSelectChainBody">
     <div @click.stop="stopPenetrate" class="selectChainContent">
       <div class="topItem">
-        <span>Select a Chain</span>
+        <span>{{ $t("Select a Chain") }}</span>
         <div @click="closerButton" style="position: absolute; top: 0; right: 0">
           <SvgIconThemed
             style="width: 20px; height: 20px; cursor: pointer"
@@ -147,16 +147,17 @@ import {
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
   transferDataState,
+  isMobile
 } from '../composition/hooks'
 import config, { CHAIN_ID } from '../config'
 import solanaHelper from '../util/solana/solana_helper'
 import tonHelper from '../util/ton/ton_helper'
+import fuelsHelper from '../util/fuels/fuels_helper'
 import transferCalculate from '../util/transfer/transferCalculate'
 import { ethers } from 'ethers'
 import orbiterCryptoTool from '../util/orbiterCryptoTool'
 import { PASSPHRASE } from '../const'
 import { balanceList, updateBalanceList } from "../composition/hooks"
-import tronHelper from '../util/tron/tron_helper.js';
 import orbiterHelper from '../util/orbiter_helper.js';
 
 const chainConfig = config.chainConfig
@@ -197,6 +198,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return isMobile.value
+    },
     balanceGroup () {
       return balanceList.value || {}
     },
@@ -236,6 +240,10 @@ export default {
     },
     starknetAddress() {
       return web3State.starkNet.starkNetAddress
+    },
+    fuelAddress() {
+      const fuelAddress = web3State.fuel.fuelAddress
+      return fuelAddress
     },
     solanaAddress() {
       const solanaAddress =
@@ -337,6 +345,8 @@ export default {
         CHAIN_ID.tron,
         CHAIN_ID.ton,
         CHAIN_ID.ton_test,
+        CHAIN_ID.fuel,
+        CHAIN_ID.fuel_test,
       ]
       return this.orderChainIds(chainOrderIds, newArray)
     },
@@ -493,9 +503,12 @@ export default {
       // this.loading = true
       try {
         const tonAddress = tonHelper.account()
-        const solanaAddress = web3State.solana.solanaAddress
         const symbol = this.symbol
         const address = [
+          {
+            address: this.fuelAddress,
+            type: 'Fuel',
+          },
           {
             address: tonAddress,
             type: 'Ton',
@@ -505,7 +518,7 @@ export default {
             type: 'Tron',
           },
           {
-            address: solanaAddress,
+            address: this.solanaAddress,
             type: 'Solana',
           },
           {
@@ -620,7 +633,7 @@ export default {
     async getChainInfo(e, index) {
       // When chain use stark system
 
-      if (this.isStarkSystem(e.localID)) {
+      if (orbiterHelper.isNotEVMChain({chainId: e.localID}) && this.type === "from") {
         try {
           // starknet
           if (
@@ -631,26 +644,26 @@ export default {
             if (!starkIsConnected && !starkNetAddress) {
               setConnectWalletGroupKey('STARKNET')
               setSelectWalletDialogVisible(true)
-              return
-              // await connectStarkNetWallet()
-              // if (
-              //     !web3State.starkNet.starkIsConnected &&
-              //     !web3State.starkNet.starkNetAddress
-              // ) {
-              //     return
-              // }
             }
           }
 
           // solana
           if (
-            e.localID === CHAIN_ID.solana ||
-            e.localID === CHAIN_ID.solana_test
+            orbiterHelper.isSolanaChain({chainId: e.localID})
           ) {
-            const isConnected = await solanaHelper.isConnect()
+            const isConnected = web3State.solana.solanaIsConnected
             if (!isConnected) {
               setSelectWalletDialogVisible(true)
               setConnectWalletGroupKey('SOLANA')
+            }
+          }
+          // fuel
+          if ( orbiterHelper.isFuelChain({chainId: e.localID})) {
+            const account = this.fuelAddress
+            const isConnected = web3State.fuel.fuelIsConnected
+            if (!account || !isConnected) {
+              setSelectWalletDialogVisible(true)
+              setConnectWalletGroupKey('FUEL')
             }
           }
           if (
@@ -664,7 +677,7 @@ export default {
             }
           }
           // ton
-          if (e.localID === CHAIN_ID.ton || e.localID === CHAIN_ID.ton_test) {
+          if (orbiterHelper.isTonChain({chainId: e.localID}) ) {
             const account = await tonHelper.account()
             const isConnected = await tonHelper.isConnected()
             if (!account || !isConnected) {
@@ -717,25 +730,6 @@ export default {
     },
     search() {},
     checkKeyWord() {},
-    isStarkSystem(chainId) {
-      return (
-        [
-          CHAIN_ID.starknet,
-          CHAIN_ID.starknet_test,
-          CHAIN_ID.solana,
-          CHAIN_ID.solana_test,
-          CHAIN_ID.tron_nile_test,
-          CHAIN_ID.tron_shasta_test,
-          CHAIN_ID.tron,
-          CHAIN_ID.dydx,
-          CHAIN_ID.dydx_test,
-          CHAIN_ID.imx,
-          CHAIN_ID.imx_test,
-          CHAIN_ID.ton,
-          CHAIN_ID.ton_test,
-        ].indexOf(chainId) > -1
-      )
-    },
   },
 }
 </script>

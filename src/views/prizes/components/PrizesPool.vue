@@ -4,7 +4,7 @@
       <div class="pool">
         <div>Prize Pool (USDC)</div>
         <div class="pool-total-amount"
-        :style="`font-size: ${ !currentPool ? '32px' : '48px'};`"
+        :style="`font-size: ${ !currentPool ? '32px' : '32px'};`"
         >{{ totalPool }}</div>
       </div>
       <div class="participants">
@@ -72,86 +72,85 @@
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
 import { prizesTotaltx } from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
+import PrizesCard from './PrizesCard.vue'
 
 export default {
-  components: { SvgIcon },
+  components: { SvgIcon, PrizesCard },
   name: 'PrizesPool',
 
   data() {
-    return {
-    }
+    return {}
   },
   computed: {
     group() {
-      const tx =this.totalTx
-     return [
+      const tx = this.totalTx
+      return [
         {
-          tx: '0~2,499 Tx',
+          tx: '0~3,999 Tx',
           reward: '',
-          range: [0, 2499],
+          range: [0, 3999],
           bridge50Fee: 0,
           bridge100Fee: 0,
           isLock: tx < 0,
-          isPromotion: tx>0,
+          isPromotion: tx > 0,
         },
         {
-          tx: '2,500~11,499 Tx',
+          tx: '4,000~14,999 Tx',
           reward: '$1,750',
-          range: [2500, 11499],
+          range: [4000, 14999],
           bridge50Fee: 5,
           bridge100Fee: 15,
-          isLock: tx < 2500,
-          isPromotion: tx>2500,
+          isLock: tx < 4000,
+          isPromotion: tx > 4000,
         },
         {
-          tx: '11,500~25,999 Tx',
+          tx: '15,000~39,999 Tx',
           reward: '$5,250',
-          range: [11500, 25999],
+          range: [15000, 39999],
           bridge50Fee: 10,
           bridge100Fee: 30,
-          isLock: tx < 11500,
-          isPromotion: tx>11500,
+          isLock: tx < 15000,
+          isPromotion: tx > 15000,
         },
         {
-          tx: '26,000~45,999 Tx',
+          tx: '40,000~99,999 Tx',
           reward: '$15,750',
-          range: [26000, 45999],
+          range: [40000, 99999],
           bridge50Fee: 20,
           bridge100Fee: 45,
-          isLock: tx < 26000,
-          isPromotion: tx>26000,
+          isLock: tx < 40000,
+          isPromotion: tx > 40000,
         },
         {
-          tx: '46,000~99,999 Tx',
+          tx: '100,000~249,999 Tx',
           reward: '$28,000',
-          range: [46000, 99999],
-          bridge50Fee: 30,
+          range: [100000, 249999],
+          bridge50Fee: 20,
           bridge100Fee: 60,
-          isLock: tx < 46000,
-          isPromotion: tx>46000,
-        },
-        {
-          tx: '100,000~319,999 Tx',
-          reward: '$35,000',
-          range: [100000, 319999],
-          bridge50Fee: 50,
-          bridge100Fee: 95,
-          bridgeTop3Fee: 95,
           isLock: tx < 100000,
-          isPromotion: tx>100000,
+          isPromotion: tx > 100000,
         },
         {
-          tx: '≥320,000 Tx',
-          reward: '$40,000',
-          range: [320000, 999999],
+          tx: '≥250,000 Tx',
+          reward: '$35,000',
+          range: [250000, 479999],
           bridge50Fee: 50,
-          bridge100Fee: 95,
+          bridge100Fee: 96,
+          isLock: tx < 250000,
+          isPromotion: tx > 250000,
+        },
+        {
+          tx: '≥500,000 Tx',
+          reward: '$42,000',
+          range: [500000, 9999999],
+          bridge50Fee: 50,
+          bridge100Fee: 96,
           bridgeTop3Fee: 98,
           isColor: true,
-          isLock: tx<320000,
+          isLock: tx<500000,
           isPromotion: false,
         },
-      ]  
+      ]
     },
     totalTx() {
       const tx = Number(prizesTotaltx.value) || 0
@@ -163,16 +162,18 @@ export default {
     },
     currentPool() {
       const list = this.group
-      const group = list.filter((item) => {
-        return !item.isPromotion
-      })?.[0]
+      const group = list
+        .filter((item) => {
+          return !item.isLock
+        })
+        ?.reverse()?.[0]
       return group?.reward
     },
     totalPool() {
-      return this.currentPool || "To be unlocked"
+      return this.currentPool || 'To be unlocked'
     },
     isLast() {
-      const lastTx = this.group[this.group.length -1]?.range[0]
+      const lastTx = this.group[this.group.length - 1]?.range[0]
       const tx = this.totalTx
       return tx > lastTx
     },
@@ -180,7 +181,7 @@ export default {
       let ratioAmount = 0
       const list = this.group
       list.forEach((item) => {
-        if (item.isPromotion) {
+        if (!!item.isPromotion) {
           ratioAmount += 100 / this.group.length
         } else {
           ratioAmount += 0
@@ -215,14 +216,23 @@ export default {
       box-sizing: border-box;
       border-radius: 16px;
       border-radius: 16px;
-      background: linear-gradient(-0.77deg, rgba(15, 34, 37, 0.2) 60.809%,rgba(209, 112, 85, 0.2) 117.632%),rgb(15, 34, 37);
+      background: radial-gradient(
+          96% 96% at 50% 50%,
+          rgba(27, 21, 37, 0) 1.849%,
+          rgba(255, 70, 68, 0.5) 100%
+        ),
+        rgb(18, 4, 30);
       font-weight: 500;
       .pool-total-amount {
-        color: #3B7FFF;
+        color: #ffc47d;
         height: 72px;
         display: flex;
         justify-content: center;
         align-items: center;
+        font-size: 32px;
+      }
+      .current {
+        font-size: 48px;
       }
     }
     .participants {
@@ -230,12 +240,12 @@ export default {
       box-sizing: border-box;
       padding: 20px 0;
       border-radius: 16px;
-      background: linear-gradient(
-          -0.77deg,
-          rgba(15, 34, 37, 0.2) 60.809%,
-          rgba(209, 112, 85, 0.2) 117.632%
+      background: radial-gradient(
+          96% 96% at 50% 50%,
+          rgba(27, 21, 37, 0) 1.849%,
+          rgba(255, 70, 68, 0.5) 100%
         ),
-        rgb(15, 34, 37);
+        rgb(18, 4, 30);
       font-weight: 500;
       .participants-total-amount {
         color: #ff4f4f;
@@ -254,7 +264,7 @@ export default {
     text-align: left;
 
     .progress-pool-title {
-      color: #3B7FFF;
+      color: #ffc47d;
     }
 
     .progress-info-scroll {
@@ -283,7 +293,7 @@ export default {
             .pool-item-active {
               font-size: 20px;
               font-family: GeneralSans-SemiBold;
-              color: #3B7FFF;
+              color: #ff4f4f;
             }
           }
         }
@@ -299,7 +309,6 @@ export default {
             box-sizing: border-box;
             border: 1px solid rgb(65, 79, 81);
             border-radius: 999px;
-            background: linear-gradient(179.63deg, rgba(239, 47, 45, 0.04) 34.849%,rgba(255, 102, 101, 0.04) 57.408%);            
             backdrop-filter: blur(156px);
             // background-color: rgb(15, 34, 37);
             background-color: #f3ba2f;
@@ -326,12 +335,11 @@ export default {
                   rgba(#fff, 0.4),
                   rgba(#fff, 0)
                 );
-              background-size: 40px 100%; // width of the shine
-              background-repeat: no-repeat; // No need to repeat the shine effect
-              background-position: left -40px top 0; // Place shine on the left side, with offset on the left based on the width of the shine - see background-size
-              animation: shine 2.1s ease infinite;
-             }
-
+                background-size: 40px 100%; // width of the shine
+                background-repeat: no-repeat; // No need to repeat the shine effect
+                background-position: left -40px top 0; // Place shine on the left side, with offset on the left based on the width of the shine - see background-size
+                animation: shine 2.1s ease infinite;
+              }
             }
             .progress-box-item {
               width: 100%;
@@ -345,7 +353,6 @@ export default {
                 width: 20px;
                 height: 20px;
               }
-              
             }
 
             .progress {
@@ -438,12 +445,12 @@ export default {
 
 @media (max-width: 740px) {
   #prizes-pool {
-    padding: 0 16px;
+    padding: 0;
     margin-top: 24px;
     .pool-total {
       font-size: 14px;
       .pool-total-amount {
-        font-size: 24px;
+        font-size: 20px;
         height: 36px;
       }
       .participants-total-amount {

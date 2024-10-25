@@ -5,8 +5,7 @@ import {
 } from './walletsResponsiveData'
 import { RequestMethod, requestOpenApi } from '../common/openApiAx'
 import util from '../util/util'
-import { web3State } from './useCoinbase'
-import tonHelper from '../util/ton/ton_helper'
+import orbiterHelper from '../util/orbiter_helper'
 // import { getTransactionsHistoryApi } from '../core/routes/transactions'
 
 export const historyPanelState = reactive({
@@ -57,21 +56,13 @@ export function setHistoryInfo(info = {}, isShowHistory = true) {
 
 export async function getTransactionsHistory(params = {}) {
   historyPanelState.isLoading = true
-  const evmAddress =
-    compatibleGlobalWalletConf.value.walletPayload.walletAddress
-  const starknetAddress = web3State.starkNet.starkNetAddress
-  const tronAddress = web3State.tron.tronAddress
-  const solanaAddress = web3State.solana.solanaAddress
-  const tonAddress = web3State.ton.tonAddress || tonHelper.account()
+  const addressList = orbiterHelper.currentConnectChainInfo({ isList: true })
 
-  const walletAddress = [
-    tonAddress,
-    evmAddress?.toLocaleLowerCase(),
-    tronAddress,
-    starknetAddress?.toLocaleLowerCase(),
-    solanaAddress,
-  ]
-    .filter((item) => !!item)
+  console.log('addressList', addressList)
+
+  const walletAddress = addressList
+    .filter((item) => !!item.address && !!item.isConnected)
+    .map((item) => item.address)
     .join(',')
 
   if (!walletAddress) {

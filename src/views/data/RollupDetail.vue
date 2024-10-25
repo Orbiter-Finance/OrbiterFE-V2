@@ -92,7 +92,7 @@
                 Active Users & Corresponding percentage of total users. <br />
                 New Users & Corresponding percentage of total users.
                 <a href="https://docs.orbiter.finance/l2data" target="_blank">
-                  Read More
+                  {{ $t("Read More") }}
                 </a>
               </div>
               <span class="title-help" slot="reference"> </span>
@@ -129,7 +129,7 @@
                 Bridge Interactions percentage of total Interactions. <br />
                 Other Interactions percentage of total Interactions.
                 <a href="https://docs.orbiter.finance/l2data" target="_blank">
-                  Read More
+                  {{ $t("Read More") }}
                 </a>
               </div>
               <span class="title-help" slot="reference"> </span>

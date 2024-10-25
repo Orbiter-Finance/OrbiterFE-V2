@@ -38,7 +38,7 @@
             <div v-for="tag in option.tags">
               <div v-if="tag.type === 'opoint'" class="group-reward">
                 <svg-icon iconName="O-Points"></svg-icon>
-                + {{ tag.amount }} OPoints
+                + {{ tag.amount }} {{ $t("OPoints") }}
               </div>
               <div v-else-if="tag.token" class="token-tag">
                 <img
@@ -64,7 +64,7 @@
                   ? `${option.progress.current}/${option.progress.total}`
                   : '0/0'
               }}</span>
-              <span v-else class="text_28">Undone</span>
+              <span v-else class="text_28">{{$t("Undone")}}</span>
             </div>
           </div>
         </div>

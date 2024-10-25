@@ -21,6 +21,7 @@
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive" class="router" />
       </div>
+
       <keep-alive>
         <BottomNav
           v-if="isBottomNav"
@@ -41,6 +42,7 @@
     <GlobalTgCard v-if="isHeaderActDialog"></GlobalTgCard>
     <UserInfoDetailsCardModal v-if="isTopNav"></UserInfoDetailsCardModal>
     <OPointsRankingCard v-if="isTopNav"></OPointsRankingCard>
+    <LuckyModal></LuckyModal>
   </div>
 </template>
 
@@ -91,6 +93,7 @@ import HeaderWalletGroup from './components/layouts/HeaderWalletGroup.vue'
 import UserInfoDetailsCardModal from './components/layouts/UserInfoDetailsCardModal.vue'
 import ClaimRewardModal from './components/layouts/ClaimRewardModal.vue'
 import OPointsRankingCard from './components/layouts/OPointsRankingCard.vue'
+import LuckyModal from './components/layouts/LuckyModal.vue'
 
 import {
   setIsBraveWallet,
@@ -230,7 +233,8 @@ export default {
     GlobalTgCard,
     UserInfoDetailsCardModal,
     ClaimRewardModal,
-    OPointsRankingCard
+    OPointsRankingCard,
+    LuckyModal
   },
   updated() {
     if(!this.isInit) {
@@ -272,6 +276,9 @@ export default {
               orbiterHelper.currentConnectChainInfo({chainId: "1"})
             )
             setActDialogVisible(true)
+            setActConnectWalletInfo(
+              orbiterHelper.currentConnectChainInfo({chainId: "1"})
+            )
           }
         } else {
           setActDialogVisible(false)
@@ -445,6 +452,7 @@ export default {
   },
   created() {
     this.$store.commit('getPrizesProjectInfo')
+    
   }
 }
 </script>

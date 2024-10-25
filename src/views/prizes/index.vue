@@ -6,6 +6,7 @@
       <div class="content">
         <PrizesPool></PrizesPool>
         <PrizesAllocation></PrizesAllocation>
+        <PrizesAchieve></PrizesAchieve>
         <PrizesRank></PrizesRank>
         <PrizesRule></PrizesRule>
       </div>
@@ -22,6 +23,7 @@ import PrizesRank from './components/PrizesRank.vue'
 import PrizesRule from './components/PrizesRule.vue'
 import PrizesPool from './components/PrizesPool.vue'
 import PrizesAllocation from './components/PrizesAllocation.vue'
+import PrizesAchieve from './components/PrizesAchieve.vue'
 
 
 export default {
@@ -32,7 +34,8 @@ export default {
     PrizesPool,
     PrizesRank,
     PrizesRule,
-    PrizesAllocation
+    PrizesAllocation,
+    PrizesAchieve
   },
   computed: {
     evmAddress() {
@@ -40,8 +43,8 @@ export default {
     },
   },
   created() {
-    this.$store.commit('getPrizesProjectDetail')
     this.$store.commit('getPrizesProjectInfo')
+    this.$store.commit('getPrizesUserRankTopAchieve')
     this.$store.commit('getPrizesProjectRank')
     this.getUserReward()
   },

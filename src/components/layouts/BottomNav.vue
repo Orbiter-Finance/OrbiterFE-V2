@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="terms">
-            <span @click="openTerms">Terms of Use</span>
+            <span @click="openTerms">{{ $t("Terms of Use") }}</span>
         </div>
     </div>
 </template>

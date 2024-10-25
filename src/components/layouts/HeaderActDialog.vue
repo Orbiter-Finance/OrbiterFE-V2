@@ -16,7 +16,7 @@
         @mouseover="mouseoverCloseDrawer"
         @mouseout="mouseoutCloseDrawer"
         class="close-drawer"
-        :style="`opacity: ${closeDrawerOpacity};padding-left: ${closeDrawerPaddingLeft}px`"
+        :style="`padding-left: ${closeDrawerPaddingLeft}px`"
       >
         <img class="img" :src="require('../../assets/activity/right.png')" />
       </div>
@@ -55,7 +55,7 @@
                 viewBox="0 0 24 24"
                 version="1.1"
               >
-                <title>Copy Address</title>
+                <title>{{ $t("Copy Address") }}</title>
   
                 <g
                   id="page-1"
@@ -110,7 +110,7 @@
               <div class="text_98"
               @click="openUserInfoDetailsCardModal"
               >
-                Total O-Points
+                {{ $t("Total O-Points") }}
                 <img :src="require('../../assets/activity/extends.svg')" alt="">
               </div>
               <div class="text_99">
@@ -131,7 +131,7 @@
                   @click="openClaimRewardModal"
                   class="reward">
                     <svg-icon iconName="ORBGUY"></svg-icon>
-                    Reward
+                    {{ $t("Reward") }}
                   </div>
                   
                 </div>
@@ -151,7 +151,7 @@
         <div ref="block_top_group">
         </div>
         <div style="width: 100%; display: flex;">
-          <span class="text_21">🛸 Quests </span>
+          <span class="text_21">🛸 {{ $t("Quests") }} </span>
         </div>
         <div class="ativity-list"  id="ativity-list"
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
@@ -161,7 +161,7 @@
         <div>
           <div v-if="!actDataList || actDataList.length<=0" id="no-quests">
             <img :src="require('../../assets/NoQuests.png')" alt="">
-            <p class="no-quests-text">No Active Quests Available</p>
+            <p class="no-quests-text">{{ $t("No Active Quests Available") }}</p>
           </div>
           <div :key="index" v-for="(item, index) in actDataList">
             <div class="activity-card">
@@ -232,7 +232,7 @@
 
                     <div class="group-reward">
                       <svg-icon iconName="O-Points"></svg-icon>
-                      + {{ option.points }} OPoints
+                      + {{ option.points }} {{ $t("OPoints") }}
                     </div>
                     
 
@@ -242,7 +242,7 @@
                           ? `${option.progress.current}/${option.progress.total}`
                           : '0/0'
                       }}</span>
-                      <span v-else class="text_28">Undone</span>
+                      <span v-else class="text_28">{{$t("Undone")}}</span>
                     </div>
                     
                   </div>
@@ -314,8 +314,6 @@ import HeaderQuestsTaskList  from "./HeaderQuestsTaskList"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
-import ScrollNftConfig from "../../const/scroll-NFT.json"
-import tronHelper from '../../util/tron/tron_helper';
 import { shortenAddress } from '../../util/shortenAddress'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
@@ -351,7 +349,7 @@ export default {
         { img: '0xe20847F3C593296613Df763afE7eA039D8398E78.png' },
       ],
       showDetail: false,
-      closeDrawerOpacity: 0.5,
+      closeDrawerOpacity: 1,
       closeDrawerPaddingLeft: 0,
       page: 1,
       pageSize: 10,
@@ -484,7 +482,6 @@ export default {
   },
   watch: {
     selectWalletDialogVisible(item1, item2) {
-
       if (item1) {
         this.getUserTask()
         this.showPointsCall()
@@ -542,7 +539,7 @@ export default {
     },
     checkScrollConfig(group){
       const id = group?.id 
-      return (Number(id) === 184 || Number(id) === 187)
+      return (Number(id) === 208 || Number(id) === 205)
     },
     mintScrollNFT(group){
       if(!this.showScrollNFT(group)) return
@@ -574,7 +571,7 @@ export default {
       clearTimeout(time2)
       time2 = setTimeout(async () => {
 
-        const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        const address = this.currentWalletAddress
         if(address) {
           const response = await fetch(
             `${process.env.VUE_APP_OPEN_URL}/points_platform/rank/address/${address}`
@@ -618,18 +615,19 @@ export default {
         this.getTaskHeight()
         }, 200)
     },
-    showPointsCall() {
+    async showPointsCall() {
       const group = JSON.parse(
         localStorage.getItem(PONITS_EXPAND_COUNT) || JSON.stringify({})
       )
-      if (this.currentWalletAddress) {
-        let count = group[this.currentWalletAddress.toLocaleLowerCase()]
+      const address = await this.currentWalletAddress
+      if (address) {
+        let count = group[address.toLocaleLowerCase()]
         count = count ?? 2
         if (count !== undefined && count > 0) {
           this.showDetail = true
           const newGroup = {
             ...group,
-            [this.currentWalletAddress.toLocaleLowerCase()]: --count,
+            [address.toLocaleLowerCase()]: --count,
           }
           localStorage.setItem(PONITS_EXPAND_COUNT, JSON.stringify(newGroup))
         } else {
@@ -733,8 +731,9 @@ export default {
       }
     },
     async getActDataList(pageSize, page) {
+      const address = await this.currentWalletAddress
       const res = await requestPointSystem('v2/activity/list', {
-        address: this.currentWalletAddress,
+        address: address,
         pageSize,
         page,
       })

@@ -9,8 +9,8 @@ export const ZERION = 'Zerion' // zerion wallet constant
 export const BIT_KEEP = 'BitgetWallet' // bitKeep app name
 export const IM_TOKEN_APP = 'imTokenApp' // imToken app name
 export const BIT_KEEP_APP = 'BitgetWallet' // bitKeep app name
-export const COINBASE_APP = 'coinbaseApp' // coinbase app name
-export const METAMASK_APP = 'metamaskApp' // metamask app name
+export const COINBASE_APP = 'Coinbase' // coinbase app name
+export const METAMASK_APP = 'MetaMask' // metamask app name
 export const TOKEN_POCKET_APP = 'TokenPocket' // token pocket app name
 export const LOCALLOGINDATA = 'localLoginData' // mainly used in localStorage for store the information if any wallets have been logged in
 export const BRAVE_APP = 'braveApp' // brave wallet constant
@@ -44,5 +44,5 @@ export const CURRENT_SUPPORT_WALLET = [
   BINANCEWALLET,
   PHANTOMWALLET,
   BACKPACKWALLET,
-  BYBITWALLET
+  BYBITWALLET,
 ].map((item) => item.toLocaleLowerCase())

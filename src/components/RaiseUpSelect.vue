@@ -21,7 +21,7 @@
                     <span class="item-label">{{ item.label }}</span>
                 </div>
             </div>
-            <div ref="cancel" @click="cancel" class="cancel">cancel</div>
+            <div ref="cancel" @click="cancel" class="cancel">{{ $t("cancel") }}</div>
         </div>
     </div>
 </template>

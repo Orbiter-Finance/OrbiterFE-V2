@@ -27,6 +27,27 @@ export const web3State = reactive({
   ton: {
     tonAddress: '',
   },
+  fuel: {
+    fuelAddress: '',
+    fuelWalletName: '',
+    fuelWalletIcon: '',
+    fuelIsConnected: false,
+    fuelChain: '',
+  },
+  fractal: {
+    fractalAddress: '',
+    fractalWalletName: '',
+    fractalWalletIcon: '',
+    fractalIsConnect: false,
+    fractalChain: '',
+  },
+  aptos: {
+    aptosAddress: '',
+    aptosWalletName: '',
+    aptosWalletIcon: '',
+    aptosIsConnect: false,
+    aptosChain: '',
+  },
   tron: {
     tronAddress: '',
     tronWalletName: '',

@@ -642,7 +642,7 @@
     "chainId": "FUEL_TEST",
     "networkId": "FUEL_TEST",
     "internalId": "567",
-    "icon": "FUEL",
+    "icon": "FUEL_MAIN",
     "name": "Fuel Sepolia",
     "batchLimit": 10,
     "targetConfirmation": 2,
@@ -1095,7 +1095,7 @@
         "name": "USDC",
         "symbol": "USDC",
         "decimals": 18,
-        "address": "TF17BgPaZYbz8oxbjhriubPDsA7ArKoLX3"
+        "address": "TXpWqLLHVHZDnHCo6j182xn8d7ui9kxGPL"
       }
     ],
     "infoURL": "https://tron.network",

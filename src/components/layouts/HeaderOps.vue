@@ -14,7 +14,7 @@
       @click="connectAWallet"
       class="ops-item not-mode"
       style="margin-right: 10px"
-      >Connect a Wallet</CommBtn
+      >{{$t("Connect a Wallet")}}</CommBtn
     >
     <template
       v-if="isLogin && $route.path !== '/home' && $route.path !== '/statistics'"
@@ -32,7 +32,7 @@
           referrerpolicy="no-referrer"
           :src="require('../../assets/activity/point.png')"
         />
-        {{ totalPoint }} O-Points
+        {{ totalPoint }} {{ $t("O-Points") }}
         <div
           v-if="!isMobile"
           :class="addPointVisible ? 'shake-top' : ''"
@@ -45,7 +45,7 @@
             referrerpolicy="no-referrer"
             :src="require('../../assets/activity/add_flower.png')"
           />
-          <span class="text_2"> {{ addPoint }} O-Points </span>
+          <span class="text_2"> {{ addPoint }} {{ $t("O-Points") }} </span>
           <img
             class="thumbnail_1"
             referrerpolicy="no-referrer"
@@ -78,6 +78,10 @@
           :iconName="connectFirstWalletIcon"
         ></svg-icon>
         <span class="address">{{ connectFirstAddress }}</span>
+      </div>
+
+      <div>
+        <LangCard />
       </div>
     </template>
     <!-- <div @click="toggleThemeMode" class="ops-mode">
@@ -114,7 +118,6 @@ import {
   compatibleGlobalWalletConf,
   walletIsLogin,
 } from '../../composition/walletsResponsiveData'
-import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
 import { CHAIN_ID } from '../../config'
 import { requestPointSystem, requestLotteryCard } from '../../common/openApiAx'
 import util from '../../util/util'
@@ -122,22 +125,29 @@ import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { decimalNum } from '../../util/decimalNum'
 import { ethers } from 'ethers'
-import { ChainId } from '@loopring-web/loopring-sdk';
-import orbiterHelper from '../../util/orbiter_helper.js';
+import orbiterHelper from '../../util/orbiter_helper.js'
 import { shortenAddress } from '../../util/shortenAddress'
+import SvgIcon from '../SvgIcon/SvgIcon.vue'
+import LangCard from './LangCard.vue'
+
 
 let timer1
 
 const addressPointMap = {}
 export default {
   name: 'HeaderOps',
-  components: { CommBtn, SvgIconThemed },
+  components: { CommBtn, SvgIconThemed, SvgIcon, LangCard },
   props: {
     verical: {
       type: Boolean,
       required: false,
       default: false,
     },
+    drawerVisible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    }
   },
   computed: {
     claimCardModalAmountInfoData() {
@@ -204,11 +214,23 @@ export default {
       const address = this.fromGroup?.address || ''
       return !!address && address !== '0x'
         ? shortenAddress(address)
-        : 'Connect wallet'
+        : this.$t('Connect wallet')
     },
     connectAddress() {
       const address = this.toGroup?.address || ''
-      return !!address ? shortenAddress(address) : 'Connect wallet'
+      return !!address ? shortenAddress(address) : this.$t('Connect wallet')
+    },
+    currentWalletAddress() {
+      return [
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase(),
+        web3State.starkNet.starkNetAddress?.toLocaleLowerCase(),
+        web3State.tron.tronAddress,
+        solanaHelper.solanaAddress(),
+        tonHelper.account(),
+        web3State.fractal.fractalAddress,
+        web3State.aptos.aptosAddress,
+        ...[],
+      ]
     },
     fromChainId() {
       const { fromChainID } = transferDataState
@@ -218,20 +240,9 @@ export default {
       const { toChainID } = transferDataState
       return toChainID
     },
-    currentWalletAddress() {
-      return [
-        compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase(),
-        web3State.starkNet.starkNetAddress?.toLocaleLowerCase(),
-        web3State.tron.tronAddress,
-        web3State.solana.solanaAddress,
-        tonHelper.account(),
-        ...[],
-      ]
-    },
     currentConenctInfoList() {
       return orbiterHelper.currentConnectChainInfo({ isList: true })
     },
-    
   },
   data() {
     const selectedWallet = JSON.parse(
@@ -262,6 +273,12 @@ export default {
       }
     },
     currentConenctInfoList: function () {
+      this.initGetAddressBatch()
+    },
+    isMobile: function () {
+      this.initGetAddressBatch()
+    },
+    drawerVisible: function () {
       this.initGetAddressBatch()
     },
   },
@@ -337,17 +354,17 @@ export default {
       }
     },
     async connectAWallet() {
-      const firstGroup = this.fromGroup
-      if (!firstGroup) return
+      const fromGroup = this.fromGroup
+      if (!fromGroup) return
       const isConnect =
-        firstGroup?.address &&
-        firstGroup?.address !== "0x" &&
-        firstGroup?.address !== 'Connect Wallet' &&
-        firstGroup?.address !== 'not connected'
+        fromGroup?.address &&
+        fromGroup?.address !== "0x" &&
+        fromGroup?.address !== 'Connect Wallet' &&
+        fromGroup?.address !== 'not connected'
       if (!isConnect) {
-        await firstGroup.open()
+        await fromGroup.open()
       } else {
-        setActConnectWalletInfo(firstGroup)
+        setActConnectWalletInfo(fromGroup)
         setActDialogVisible(true)
       }
     },
@@ -373,8 +390,9 @@ export default {
         })
     },
     getAddress() {
-      const isAddress = !!this.fromGroup?.isConnect
-      const address = this.fromGroup?.address
+
+      const isAddress = this.fromGroup.isConnected
+      const address = this.fromGroup.address
       let addressGroup = {
         isAddress,
         address,
@@ -385,7 +403,7 @@ export default {
     async getWalletAddressPoint() {
       const { isAddress, address, group } = this.getAddress()
 
-      if (isAddress) {
+      if (isAddress && address) {
         setActPointFetchStatus()
         const pointRes = await requestPointSystem('v2/user/points', {
           address,

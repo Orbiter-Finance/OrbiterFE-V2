@@ -11,14 +11,15 @@ import {
   setClaimCardModalOtherDataInfo,
   setPrizesRankList,
   setPrizesRankRefreshTime,
-  setPrizesProjectTaskDetailsList,
   setPrizesUserList,
   setPrizesProjectTime,
   setQuestsInfoList,
   setQuestsUserInfoList,
-  setPrizesTotaltx,
   setPrizesUserRank,
+  setPrizesAchieveList,
   updateCoinbase,
+  setPrizesTotaltx,
+  setPrizesTaskList,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -32,7 +33,7 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import util from '../../util/util'
 import { ethers } from 'ethers'
 
-const activityProjectId = '123104d2-4a00-4242-bce6-461faf1267ef'
+const activityProjectId = '3da5b717-b342-4ee3-bea3-ac659f08a44b'
 
 let timer
 let timer1
@@ -359,22 +360,6 @@ export default {
     }, 500)
   },
 
-  async getPrizesProjectDetail(state) {
-    clearTimeout(timer2)
-    timer2 = setTimeout(async () => {
-      const response = await fetch(
-        `${process.env.VUE_APP_OPEN_URL}${
-          isDev() ? '/activity' : '/active-platform'
-        }/projectStatus/detail?projectId=${activityProjectId}`
-      )
-      const res = await response.json()
-      setPrizesTotaltx(res?.result?.projectDetail?.totalTxsCount)
-      setPrizesProjectTaskDetailsList(
-        res?.result?.projectDetail.taskDetails || []
-      )
-    }, 500)
-  },
-
   async getPrizesProjectInfo(state) {
     clearTimeout(timer3)
     timer3 = setTimeout(async () => {
@@ -384,6 +369,7 @@ export default {
         }/project/info?projectId=${activityProjectId}`
       )
       const res = await response.json()
+      setPrizesTaskList(res?.result?.tasks || [])
       setPrizesProjectTime(res?.result?.end_time || '')
     }, 500)
   },
@@ -396,6 +382,7 @@ export default {
         }/competition/rankReward?projectId=${activityProjectId}`
       )
       const res = await response.json()
+      setPrizesTotaltx(res?.result?.totalTransactions)
       setPrizesRankList(res?.result?.rankRewards || [])
       setPrizesRankRefreshTime(res?.result?.updateInfo?.lastRefreshTime || '')
     }, 500)
@@ -430,6 +417,19 @@ export default {
     }, 500)
   },
 
+  async getPrizesUserRankTopAchieve(state) {
+    clearTimeout(timer1)
+    timer1 = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}/${
+          isDev() ? 'activity' : 'active-platform'
+        }/competition/topAchieve?projectId=${activityProjectId}`
+      )
+      const res = await response.json()
+      setPrizesAchieveList(res?.result || [])
+    }, 500)
+  },
+
   async getTaskInfoList(state) {
     clearTimeout(timer7)
     timer7 = setTimeout(async () => {
@@ -449,6 +449,7 @@ export default {
       } catch (error) {}
     }, 500)
   },
+
   async getUserTaskInfoList(state, { projectList, address }) {
     clearTimeout(timer8)
     const list = projectList.filter((item) => !!item)

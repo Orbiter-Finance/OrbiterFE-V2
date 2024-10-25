@@ -21,11 +21,12 @@ import util from '../util'
 import { BN, Program } from '@project-serum/anchor'
 import { SOLANA_OPOOL_ABI } from '../constants/contract/contract'
 
-import { Buffer } from 'buffer'
 import {
   updateSolanaAddress,
   updateSolanaConnectStatus,
-} from '../../composition/useCoinbase'
+  web3State,
+} from '../../composition/hooks'
+import { Buffer } from 'buffer'
 
 const SOLNA_WALLET_NAME = 'SOLNA_WALLET_NAME'
 
@@ -109,8 +110,8 @@ const isConnect = () => {
 }
 
 const solanaAddress = () => {
-  const publickey = getWallet()?.publicKey
-  return publickey?.toString()
+  if (!isConnect) return ''
+  return web3State.solana.solanaAddress
 }
 
 const transfer = async ({
@@ -130,58 +131,83 @@ const transfer = async ({
 
   const toPublicKey = new PublicKey(to)
 
-  const tokenPublicKey = new PublicKey(tokenAddress)
-  const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
-    connection,
-    fromPublicKey,
-    tokenPublicKey,
-    fromPublicKey
-  )
-
-  const toTokenAccount = await getOrCreateAssociatedTokenAccount(
-    connection,
-    fromPublicKey,
-    tokenPublicKey,
-    toPublicKey
-  )
-
+  let signTransactionTx;
   const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
     units: 1000000,
-  })
-
+  });
   const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
     microLamports: 100,
-  })
-
-  const recentBlockhash = await connection.getLatestBlockhash('confirmed')
-
-  const tokenTransaction = new Transaction({
-    recentBlockhash: recentBlockhash.blockhash,
-    feePayer: fromPublicKey,
-  })
-    .add(modifyComputeUnits)
-    .add(addPriorityFee)
-    .add(
-      createTransferInstruction(
-        fromTokenAccount.address,
-        toTokenAccount.address,
-        fromPublicKey,
-        amount,
-        [],
-        TOKEN_PROGRAM_ID
+  });
+  const chainInfo = util.getV3ChainInfoByChainId(chainId)
+  if (tokenAddress === chainInfo?.nativeCurrency?.address) {
+    const recentBlockhash = await connection.getLatestBlockhash('confirmed');
+    signTransactionTx = new Transaction({
+      recentBlockhash: recentBlockhash.blockhash,
+      feePayer: fromPublicKey,
+    })
+      .add(modifyComputeUnits)
+      .add(addPriorityFee)
+      .add(
+        SystemProgram.transfer({
+          fromPubkey: fromPublicKey,
+          toPubkey: toPublicKey,
+          lamports: amount,
+        })
       )
-    )
-    .add(
-      new TransactionInstruction({
-        keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
-        data: utils.toUtf8Bytes(
-          utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`))
-        ),
-        programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
-      })
-    )
+      .add(
+        new TransactionInstruction({
+          keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
+          data: utils.toUtf8Bytes(
+            utils.hexlify(utils.toUtf8Bytes(`c=${ safeCode }&t=${ targetAddress }`))
+          ),
+          programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
+        })
+      );
+  } else {
+    const tokenPublicKey = new PublicKey(tokenAddress);
+    const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
+      connection,
+      fromPublicKey,
+      tokenPublicKey,
+      fromPublicKey
+    );
 
-  const signedTx = await provider.signTransaction(tokenTransaction)
+    const toTokenAccount = await getOrCreateAssociatedTokenAccount(
+      connection,
+      fromPublicKey,
+      tokenPublicKey,
+      toPublicKey
+    );
+    const recentBlockhash = await connection.getLatestBlockhash('confirmed');
+
+    signTransactionTx = new Transaction({
+      recentBlockhash: recentBlockhash.blockhash,
+      feePayer: fromPublicKey,
+    })
+      .add(modifyComputeUnits)
+      .add(addPriorityFee)
+      .add(
+        createTransferInstruction(
+          fromTokenAccount.address,
+          toTokenAccount.address,
+          fromPublicKey,
+          amount,
+          [],
+          TOKEN_PROGRAM_ID
+        )
+      )
+      .add(
+        new TransactionInstruction({
+          keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
+          data: utils.toUtf8Bytes(
+            utils.hexlify(utils.toUtf8Bytes(`c=${ safeCode }&t=${ targetAddress }`))
+          ),
+          programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
+        })
+      );
+  }
+
+  const signedTx = await provider.signTransaction(signTransactionTx)
 
   const signature = await connection.sendRawTransaction(signedTx.serialize())
 
@@ -221,14 +247,15 @@ const bridgeType1transfer = async ({
   const decimals = tokens
     .concat([chainInfo?.nativeCurrency || {}])
     ?.filter((item) => item.address === feeToken)?.[0]?.decimals
-
+  const tokenToReceiver = tokens
+    .concat([chainInfo?.nativeCurrency || {}])
+    ?.filter((item) => item.address === tokenAddress)?.[0]?.tokenToReceiver
   const provider = getProvider()
 
   const programId = getPublicKey(contractAddress)
   const program = new Program(SOLANA_OPOOL_ABI, programId, provider)
   const state = group.state
   const feeReceiver = group.feeReceiver
-  const tokenToReceiver = group.tokenToReceiver
 
   const memo = Buffer.from(
     utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`)),
@@ -336,6 +363,17 @@ const activationTokenAccount = async ({ toChainID, fromCurrency, chainId }) => {
   return 'register'
 }
 
+const checkAddress = (address) => {
+  try {
+    const publicKey = new PublicKey(address)
+    console.log('Valid Solana address:', publicKey.toString())
+    return true
+  } catch (error) {
+    console.error('Invalid Solana address:', error)
+    return false
+  }
+}
+
 const solanaHelper = {
   getConnection,
   getPublicKey,
@@ -348,6 +386,7 @@ const solanaHelper = {
   activationTokenAccount,
   readWalletName,
   updateWalletName,
+  checkAddress,
   bridgeType1transfer,
 }
 

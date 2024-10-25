@@ -7,22 +7,22 @@
     <div class="card-content">
       <div class="top">
         <div class="title">
-          <div class="label">O-Points Leaderboard</div>
+          <div class="label">{{ $t("O-Points Leaderboard") }}</div>
           <div @click="close" class="close">
             <svg-icon iconName="close" class="close-icon"></svg-icon>
           </div>
         </div>
         <div class="info">
           <div class="info-label">
-            Total O-Points
+            {{ $t("Total O-Points") }}
             <div class="time-refresh-mobile">
-              <svg-icon class="clock" iconName="clock"></svg-icon> {{ timeMin() }}m ago
+              <svg-icon class="clock" iconName="clock"></svg-icon> {{ $t("m ago", [timeMin()]) }}
             </div>
           </div>
           <div class="total-options-amount">
             {{ decimalNumC(totalPoint, 2, ",") }}
             <div class="time-refresh" >
-              <svg-icon class="clock" iconName="clock"></svg-icon> {{ timeMin() }}m ago
+              <svg-icon class="clock" iconName="clock"></svg-icon> {{ $t("m ago", [timeMin()]) }}
             </div>
           </div>
           <div class="total-amount">
@@ -31,8 +31,8 @@
               <div class="total-user-amount">{{ decimalNumC(addressCount, 2, ",") }}</div>
             </div>
             <div class="total-user-opoints">
-              Top 1% Address:
-              <div class="total-user-opoints-amount">≥{{ decimalNumC(ratePoint, 2, ",") }} Points</div>
+              {{ $t("Top 1% Address") }}:
+              <div class="total-user-opoints-amount">≥{{ decimalNumC(ratePoint, 2, ",") }} {{ $t("O-Points") }}</div>
             </div>
           </div>
         </div>
@@ -41,12 +41,12 @@
       </div>
       <div class="table">
         <div class="rank-list-card-item rank-list-header">
-          <div class="ranking">Rank</div>
-          <div class="user-address">User</div>
-          <div class="basic-points">Basic Points</div>
-          <div class="activity-points">Activity Points</div>
-          <div class="ecosystem-points">Ecosystem Points</div>
-          <div class="total-points">Total Points</div>
+          <div class="ranking">{{ $t("Rank") }}</div>
+          <div class="user-address">{{ $t("User")}}</div>
+          <div class="basic-points">{{ $t("Basic Points")}}</div>
+          <div class="activity-points">{{ $t("Activity Points")}}</div>
+          <div class="ecosystem-points">{{ $t("Ecosystem Points")}}</div>
+          <div class="total-points">{{ $t("Total Points")}}</div>
         </div>
         <div class="rank-list-card-item my-rank-card">
           <div class="ranking">{{ pointRank }}</div>

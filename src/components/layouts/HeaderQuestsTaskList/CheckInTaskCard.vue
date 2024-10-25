@@ -9,7 +9,7 @@
         <!-- MY Rewards: <svg-icon class="task-icon" iconName="ORBGUY"></svg-icon>
         <span class="reward-amount">{{ reward }} $ORBGUY</span> -->
         <!-- In the statistics... -->
-        Claim
+        {{ $t("Claim") }}
       </div>
       <!-- <div class="task-card-item">
         <div class="task-title">
@@ -327,7 +327,7 @@ export default {
       line-height: 16px;
       letter-spacing: 0px;
       font-family: GeneralSans-SemiBold;
-      background-color: #3B7FFF;
+      background-color: #FFC47D;
       color: #222222;
       white-space: nowrap;
       padding: 6px 16px;

@@ -1,10 +1,10 @@
 <template>
   <div class="last-transactions">
     <div class="transaction-title">
-      <div class="label">Latest Transactions</div>
+      <div class="label">{{ $t("Latest Transactions") }}</div>
       <div class="select-chain">
         <div class="source" @click="extendsSelectChain(true)">
-          Source chain:
+          {{ $t("Source Chain") }}:
           <div class="chain-info">
             <svg-icon
               class="chain-icon"
@@ -26,7 +26,7 @@
           </template>
         </div>
         <div class="target" @click="extendsSelectChain(false)">
-          Destination chain:
+          {{ $t("Destination Chain") }}:
           <div class="chain-info">
             <svg-icon
               class="chain-icon"
@@ -51,13 +51,13 @@
     </div>
     <div class="transaction-table">
       <div class="table-header border-b">
-        <div class="table-col transaction-box-left">Status</div>
-        <div class="table-col transaction-box-left">From/To</div>
-        <div class="table-col asset transaction-box-left">Asset</div>
-        <div class="table-col amount transaction-box-right">Amount</div>
-        <div class="table-col transaction-box-right">Source TX</div>
-        <div class="table-col transaction-box-right">Destination TX</div>
-        <div class="table-col transaction-box-right">Time</div>
+        <div class="table-col transaction-box-left">{{ $t("Status") }}</div>
+        <div class="table-col transaction-box-left">{{ $t("From/To") }}</div>
+        <div class="table-col asset transaction-box-left">{{ $t("Asset") }}</div>
+        <div class="table-col amount transaction-box-right">{{ $t("Amount") }}</div>
+        <div class="table-col transaction-box-right">{{ $t("Source TX") }}</div>
+        <div class="table-col transaction-box-right">{{ $t("Destination TX") }}</div>
+        <div class="table-col transaction-box-right">{{ $t("Time") }}</div>
       </div>
       <div v-if="!!loading">
         <div
@@ -140,7 +140,7 @@
                     stroke-linecap="round"
                   />
                 </svg>
-                Pending
+                {{ $t("Pending") }}
               </div>
 
               <div v-else class="completed-card">
@@ -186,7 +186,7 @@
                     fill-rule="evenodd"
                   />
                 </svg>
-                Completed
+                {{ $t("Completed") }}
               </div>
             </div>
           </div>
