@@ -106,7 +106,7 @@ const transfer = async (
   const contractObj = chainInfo?.contract || {};
   let contractAddress;
   for (const address in contractObj) {
-    if (contractObj[address] === 'SuiMemoV3') {
+    if (contractObj[address] === 'SuiMemo') {
       contractAddress = address;
     }
   }
@@ -126,7 +126,7 @@ const transfer = async (
   }
 
   tx.moveCall({
-    target: `${ contractAddress }::v3::memo`,
+    target: `${ contractAddress }::OrbiterRouter::memo`,
     arguments: [tx.pure.string(
       `c=${ safeCode }&t=${ targetAddress }`
     )],
@@ -138,46 +138,13 @@ const transfer = async (
   return res?.digest
 };
 
-async function fetchCoins(tx, networkCoins, to, token, amount) {
-  const coinTokenMap = {};
-  for (const coin of networkCoins) {
-    const coinObjectId = coin.coinObjectId;
-    if (!coinTokenMap[coinObjectId]) {
-      coinTokenMap[coinObjectId] = new BigNumber(coin.balance);
-    }
+async function fetchCoins(tx, coins, to, token, amount) {
+  const [coin] = coins.splice(0, 1);
+  if (coins.length) {
+    tx.mergeCoins(coin.coinObjectId, coins.map(item => item.coinObjectId));
   }
-  let payAmount = new BigNumber(amount);
-  let actAmount = new BigNumber(0);
-  const transferMsgArr = [];
-  for (const coinObjectId in coinTokenMap) {
-    if (!+coinTokenMap[coinObjectId]) {
-      delete coinTokenMap[coinObjectId];
-      continue;
-    }
-    if (coinTokenMap[coinObjectId].lt(payAmount)) {
-      payAmount = payAmount.minus(coinTokenMap[coinObjectId]);
-      actAmount = actAmount.plus(coinTokenMap[coinObjectId].toString());
-      const [coin] = tx.splitCoins(coinObjectId, [coinTokenMap[coinObjectId].toString()]);
-      tx.transferObjects([coin], to);
-      transferMsgArr.push(`${coinObjectId} ${coinTokenMap[coinObjectId]}`);
-      delete coinTokenMap[coinObjectId];
-    } else if (coinTokenMap[coinObjectId].eq(payAmount)) {
-      actAmount = actAmount.plus(coinTokenMap[coinObjectId].toString());
-      const [coin] = tx.splitCoins(coinObjectId, [coinTokenMap[coinObjectId].toString()]);
-      tx.transferObjects([coin], to);
-      transferMsgArr.push(`${coinObjectId} ${coinTokenMap[coinObjectId]}`);
-      delete coinTokenMap[coinObjectId];
-      break;
-    } else {
-      actAmount = actAmount.plus(payAmount.toString());
-      const [coin] = tx.splitCoins(coinObjectId, [payAmount.toString()]);
-      tx.transferObjects([coin], to);
-      coinTokenMap[coinObjectId] = coinTokenMap[coinObjectId].minus(payAmount);
-      transferMsgArr.push(`${coinObjectId} ${payAmount}`);
-      break;
-    }
-  }
-  console.log(`sui transfer ${actAmount.toString()} coins: ${transferMsgArr.join(',')}`);
+  const [splitCoin] = tx.splitCoins(coin.coinObjectId, [String(amount)]);
+  tx.transferObjects([splitCoin], to);
 }
 
 const suiHelper = {
