@@ -30,6 +30,8 @@
     "@holdstation/paymaster-helper": "2.0.19",
     "@imtbl/imx-sdk": "^1.5.0",
     "@loopring-web/loopring-sdk": "3.5.12",
+    "@mysten/sui": "^1.13.0",
+    "@mysten/wallet-standard": "^0.13.8",
     "@project-serum/anchor": "^0.26.0",
     "@sentry/vue": "^7.80.0",
     "@solana/spl-token": "^0.4.2",

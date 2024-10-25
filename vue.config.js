@@ -104,6 +104,19 @@ module.exports = {
       })
       .end()
     config.module
+      .rule('sui')
+      .test(/\.js$/)
+      .include.add(path.resolve(__dirname, 'node_modules/@mysten'))
+      .add(path.resolve(__dirname, 'node_modules/valibot'))
+      .add(path.resolve(__dirname, 'node_modules/@wallet-standard'))
+      .end()
+      .use('babel-loader')
+      .loader('babel-loader')
+      .options({
+        plugins: [LogicalAssignmentOperators],
+      })
+      .end()
+    config.module
       .rule('starknet')
       .test(/(\.mjs$)|(\.js$)/)
       .include.add(resolve('node_modules/starknet'))

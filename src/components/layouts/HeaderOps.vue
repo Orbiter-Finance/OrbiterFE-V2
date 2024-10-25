@@ -229,6 +229,7 @@ export default {
         tonHelper.account(),
         web3State.fractal.fractalAddress,
         web3State.aptos.aptosAddress,
+        web3State.sui.suiAddress,
         ...[],
       ]
     },
@@ -296,16 +297,7 @@ export default {
         orbiterHelper.currentConnectChainInfo({ chainId: toChainID }),
       ]
 
-      const chainListType = [
-        'EVM',
-        'Starknet',
-        'Solana',
-        'Ton',
-        "Tron",
-        'Fuel',
-        'Fractal',
-        'Aptos'
-      ]
+      const chainListType = orbiterHelper.currentConnectChainInfo({ isList: true }).map((item) => item.type)
 
       const list = chainListType
         .map((item) => {
