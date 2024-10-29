@@ -189,7 +189,7 @@
           />
         </div>
       </div>
-      <img v-if="!isPrizesEnd" :src="require('../../assets/prizes/prizes-transfer-image.png')" class="prizes-card" @click="goToPrizes" />
+      <img src="https://cdn.orbiter.finance/bridge-web/oldOrbiterBanner.jpg" class="prizes-card" @click="clickGoWeb" />
       <CommBtn
               @click="sendTransfer"
               :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
@@ -1024,6 +1024,13 @@ export default {
     },
     tipsGasFee() {
       const { selectMakerConfig } = transferDataState
+    },
+    clickGoWeb() {
+        this.$gtag.event("CLICK_NEW_WEB", {
+          event_category: "CLICK_NEW_WEB",
+          event_label: "Banner",
+        })
+        window.open('https://bridge.orbiter.finance/?utm_source=orbiter-finance&utm_medium=banner&utm_content=oldVersion')
     },
     goToPrizes(){
       // this.$gtag.event("TRANSFER_TO_PRIZESV3", {
