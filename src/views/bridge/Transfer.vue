@@ -1030,7 +1030,7 @@ export default {
           event_category: "CLICK_NEW_WEB",
           event_label: "Banner",
         })
-        window.open('https://bridge.orbiter.finance/?utm_source=orbiter-finance&utm_medium=banner&utm_content=oldVersion')
+        window.open('https://bridge.orbiter.finance/?utm_source=orbiter-finance&utm_medium=banner&utm_campaign=oldVersionn')
     },
     goToPrizes(){
       // this.$gtag.event("TRANSFER_TO_PRIZESV3", {
