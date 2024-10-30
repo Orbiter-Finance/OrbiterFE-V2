@@ -25,8 +25,11 @@
         ]"
       >
         {{ nav.name }}
+      
         <SvgIconThemed v-if="!verical && !isMobile && nav.children == 0" />
-<!--        <HeaderPrizesTimeOut v-if="nav.href === '/prizes'"></HeaderPrizesTimeOut>-->
+        <img class="halloween-icon" v-if="nav.id === 'Prizes'"
+                  :src="require('../../assets/activity/ng-icon.jpg')"
+                />
       </div>
       <template v-if="isMobile && nav.children && nav.children.length">
         <div
@@ -50,6 +53,7 @@
 </template>
 
 <script>
+import { i } from '@aptos-labs/ts-sdk/dist/common/accountAddress-C7mFGxlX';
 import { SvgIconThemed } from '../'
 import {
   isMobile,
@@ -102,7 +106,8 @@ export default {
         },
         {
           name: this.$t('Prizes'),
-          href: '/prizes',
+          id:"Prizes",
+          href: '',
         },
         // {
         //   name: 'About us',
@@ -130,6 +135,7 @@ export default {
           event_label: 'to prizes',
         })
         setActDialogVisible(false)
+        window.open("https://bridge.orbiter.finance/prizes")
       }
       const dealerId = transferDataState.dealerId
       const path = tar.href
@@ -194,6 +200,9 @@ export default {
     left: calc(50% - 20px);
     border-radius: 11px;
   }
+}
+.halloween-icon{
+  width:25px;margin-left: 4px;
 }
 .app {
   .header-links-box {
