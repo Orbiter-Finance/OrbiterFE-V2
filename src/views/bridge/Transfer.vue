@@ -189,7 +189,14 @@
           />
         </div>
       </div>
-      <img src="https://cdn.orbiter.finance/bridge-web/oldOrbiterBanner.jpg" class="prizes-card" @click="clickGoWeb" />
+      <el-carousel :interval="4000" trigger="click" height="96px">
+        <el-carousel-item>
+          <img src="https://cdn.orbiter.finance/bridge-web/oldOrbiterBanner.jpg" class="prizes-card" @click="clickGoWeb" />
+        </el-carousel-item>
+        <el-carousel-item>
+          <img :src="require('../../assets/prizes/prizes-transfer-image.png')" class="prizes-card" @click="clickGoPrizes" />
+        </el-carousel-item>
+      </el-carousel>
       <CommBtn
               @click="sendTransfer"
               :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
@@ -1031,6 +1038,13 @@ export default {
           event_label: "Banner",
         })
         window.open('https://bridge.orbiter.finance/?utm_source=orbiter-finance&utm_medium=banner&utm_content=oldVersion')
+    },
+    clickGoPrizes() {
+        this.$gtag.event("CLICK_PRIZES_V8", {
+          event_category: "CLICK_PRIZES_V8",
+          event_label: "Prizes",
+        })
+        window.open('https://bridge.orbiter.finance/prizes')
     },
     goToPrizes(){
       // this.$gtag.event("TRANSFER_TO_PRIZESV3", {
@@ -2758,6 +2772,7 @@ export default {
   width: 100%;
   margin-top: 16px;
   cursor: pointer;
+  height: 80px;
 }
 
 .dark-theme {
