@@ -27,7 +27,7 @@
         {{ nav.name }}
       
         <SvgIconThemed v-if="!verical && !isMobile && nav.children == 0" />
-        <img class="halloween-icon" v-if="nav.id === 'Prizes'"
+        <img class="halloween-icon bounce" v-if="nav.id === 'Prizes'"
                   :src="require('../../assets/activity/ng-icon.jpg')"
                 />
       </div>
@@ -53,7 +53,6 @@
 </template>
 
 <script>
-import { i } from '@aptos-labs/ts-sdk/dist/common/accountAddress-C7mFGxlX';
 import { SvgIconThemed } from '../'
 import {
   isMobile,
@@ -202,8 +201,47 @@ export default {
   }
 }
 .halloween-icon{
-  width:25px;margin-left: 4px;
+  width:35px;margin-left: 1px;
+  animation: shine 2s ease infinite;
+  opacity: 0.8;
 }
+
+@keyframes bounce {
+  from,
+  20%,
+  53%,
+  to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0);
+  }
+
+  40%,
+  43% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -20px, 0) scaleY(1.1);
+  }
+
+  70% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -10px, 0) scaleY(1.05);
+  }
+
+  80% {
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0) scaleY(0.95);
+  }
+
+  90% {
+    transform: translate3d(0, -4px, 0) scaleY(1.02);
+  }
+}
+
+.bounce {
+  animation-name: bounce;
+  transform-origin: center bottom;
+}
+
+
 .app {
   .header-links-box {
     height: 40px;
