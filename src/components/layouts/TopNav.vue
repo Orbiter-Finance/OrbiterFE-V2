@@ -24,10 +24,10 @@
           v-if="$route.path !== '/prizes'"
           style="margin-top: 24px; margin-left: 66px; "
         />
-        <div class="bag-group">
+        <!-- <div class="bag-group">
           <img @click="openBag" class="bag-tag" :src="require('../../assets/activity/points_task/bag.png')" />
           <div class="bag-tips">Grab $10,000</div>
-        </div>
+        </div> -->
       </div>
       <HeaderOps :drawerVisible="drawerVisible" v-if="$route.path !== '/statistics'" />
     </template>
@@ -38,10 +38,10 @@
         :style="navIcons.style"
         :icon="navIcons.logo"
       />
-      <div class="bag-group">
+      <!-- <div class="bag-group">
         <img @click="openBag" class="bag-tag" :src="require('../../assets/activity/points_task/bag.png')" />
         <div class="bag-tips">Scroll Airdrop</div>
-      </div>
+      </div> -->
       <!-- <div
       v-if="$route.path !== '/prizes'"
         style="
