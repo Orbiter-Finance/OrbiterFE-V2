@@ -3709,5 +3709,50 @@
             "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
         },
         "vm": "EVM"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "4689",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        },
+        "features": [
+            {
+                "name": "evm-account6"
+            },
+            {
+                "name": "evm-rpc"
+            }
+        ],
+        "internalId": 96,
+        "name": "IoTeX",
+        "nativeCurrency": {
+            "coinKey": "IOTX",
+            "address": "0x0000000000000000000000000000000000000000",
+            "name": "IoTeX",
+            "symbol": "IOTX",
+            "decimals": 18
+        },
+        "networkId": "4689",
+        "rpc": [
+            "https://babel-api.mainnet.iotex.io"
+        ],
+        "service": {
+            "rpc": "EVMRpcScanningV6Service"
+        },
+        "tokens": [
+            {
+                "coinKey": "ETH",
+                "address": "0x0258866edaf84d6081df17660357ab20a07d0c80",
+                "name": "Wrapped Ether",
+                "symbol": "ETH",
+                "decimals": 18
+            }
+        ],
+        "vm": "EVM"
     }
 ]
