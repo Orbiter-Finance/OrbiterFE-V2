@@ -25,8 +25,11 @@
         ]"
       >
         {{ nav.name }}
+      
         <SvgIconThemed v-if="!verical && !isMobile && nav.children == 0" />
-<!--        <HeaderPrizesTimeOut v-if="nav.href === '/prizes'"></HeaderPrizesTimeOut>-->
+        <img class="halloween-icon bounce" v-if="nav.id === 'Prizes'"
+                  :src="require('../../assets/activity/ng-icon.jpg')"
+                />
       </div>
       <template v-if="isMobile && nav.children && nav.children.length">
         <div
@@ -102,7 +105,8 @@ export default {
         },
         {
           name: this.$t('Prizes'),
-          href: '/prizes',
+          id:"Prizes",
+          href: '',
         },
         // {
         //   name: 'About us',
@@ -130,6 +134,7 @@ export default {
           event_label: 'to prizes',
         })
         setActDialogVisible(false)
+        window.open("https://bridge.orbiter.finance/prizes")
       }
       const dealerId = transferDataState.dealerId
       const path = tar.href
@@ -195,6 +200,48 @@ export default {
     border-radius: 11px;
   }
 }
+.halloween-icon{
+  width:35px;margin-left: 1px;
+  animation: shine 2s ease infinite;
+  opacity: 0.8;
+}
+
+@keyframes bounce {
+  from,
+  20%,
+  53%,
+  to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0);
+  }
+
+  40%,
+  43% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -20px, 0) scaleY(1.1);
+  }
+
+  70% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -10px, 0) scaleY(1.05);
+  }
+
+  80% {
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0) scaleY(0.95);
+  }
+
+  90% {
+    transform: translate3d(0, -4px, 0) scaleY(1.02);
+  }
+}
+
+.bounce {
+  animation-name: bounce;
+  transform-origin: center bottom;
+}
+
+
 .app {
   .header-links-box {
     height: 40px;
