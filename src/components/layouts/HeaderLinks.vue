@@ -27,9 +27,10 @@
         {{ nav.name }}
       
         <SvgIconThemed v-if="!verical && !isMobile && nav.children == 0" />
-        <img class="halloween-icon bounce" v-if="nav.id === 'Prizes'"
+        <span v-if="nav.id === 'Prizes'">🔥</span>
+        <!-- <img class="halloween-icon bounce" v-if="nav.id === 'Prizes'"
                   :src="require('../../assets/activity/ng-icon.jpg')"
-                />
+                /> -->
       </div>
       <template v-if="isMobile && nav.children && nav.children.length">
         <div
