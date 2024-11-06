@@ -194,7 +194,7 @@
           <img src="https://cdn.orbiter.finance/bridge-web/oldOrbiterBanner.jpg" class="prizes-card" @click="clickGoWeb" />
         </el-carousel-item>
         <el-carousel-item>
-          <img :src="require('../../assets/prizes/prizes-transfer-image.png')" class="prizes-card" @click="clickGoPrizes" />
+          <img :src="require('../../assets/prizes/prizes-transfer-image.jpg')" class="prizes-card" @click="clickGoPrizes" />
         </el-carousel-item>
       </el-carousel>
       <CommBtn
