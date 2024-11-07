@@ -194,7 +194,7 @@
           <img src="https://cdn.orbiter.finance/bridge-web/oldOrbiterBanner.jpg" class="prizes-card" @click="clickGoWeb" />
         </el-carousel-item>
         <el-carousel-item>
-          <img :src="require('../../assets/prizes/prizes-transfer-image.png')" class="prizes-card" @click="clickGoPrizes" />
+          <img :src="require('../../assets/prizes/prizes-transfer-image.jpg')" class="prizes-card" @click="clickGoPrizes" />
         </el-carousel-item>
       </el-carousel>
       <CommBtn
@@ -1037,7 +1037,7 @@ export default {
           event_category: "CLICK_NEW_WEB",
           event_label: "Banner",
         })
-        window.open('https://bridge.orbiter.finance/?utm_source=orbiter-finance&utm_medium=banner&utm_content=oldVersion')
+        window.open('https://bridge.orbiter.finance/?utm_source=orbiter-finance&utm_medium=banner&utm_campaign=oldVersionn')
     },
     clickGoPrizes() {
         this.$gtag.event("CLICK_PRIZES_V8", {
