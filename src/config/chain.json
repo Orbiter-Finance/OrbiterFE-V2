@@ -3754,5 +3754,42 @@
             }
         ],
         "vm": "EVM"
+    },
+    {
+        "api": {
+            "url": "https://fullnode.mainnet.sui.io:443",
+            "key": ""
+        },
+        "chainId": "SUI_MAIN",
+        "networkId": "SUI_MAIN",
+        "internalId": "90",
+        "name": "Sui",
+        "debug": false,
+        "service": {
+            "api": "SuiApiScanningService"
+        },
+        "features": [],
+        "nativeCurrency": {
+            "name": "SUI",
+            "symbol": "SUI",
+            "decimals": 9,
+            "address": "0x2::sui::SUI"
+        },
+        "rpc": [
+            "https://fullnode.mainnet.sui.io:443"
+        ],
+        "tokens": [
+            {
+                "name": "USDC",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": ""
+            }
+        ],
+        "contract": {
+            "": "SuiMemo"
+        },
+        "infoURL": "https://suivision.xyz",
+        "vm": "SUIVM"
     }
 ]

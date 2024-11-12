@@ -4800,5 +4800,341 @@
             "startTime": 0,
             "endTime": 99999999999999
         }
+    },
+    "1-90": {
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "SUIMAKER",
+            "gasFee": 0,
+            "tradingFee": 2,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-1": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "gasFee": 0,
+            "tradingFee": 30,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "56-90": {
+        "USDC-USDC": {
+            "makerAddress": "UQBN1z9drcrBbuKgJMYBQdV4c58XymfTooTZ3aZJzdc2IHHN",
+            "sender": "SUIMAKER",
+            "gasFee": 1,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-56": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "UQBN1z9drcrBbuKgJMYBQdV4c58XymfTooTZ3aZJzdc2IHHN",
+            "gasFee": 1,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "51-90": {
+        "USDC-USDC": {
+            "makerAddress": "DowTWse9Sjzj1kN1V6zevfGtQ6wWpigug7TPCdTr6UNP",
+            "sender": "SUIMAKER",
+            "gasFee": 0,
+            "tradingFee": 2,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-51": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "DowTWse9Sjzj1kN1V6zevfGtQ6wWpigug7TPCdTr6UNP",
+            "gasFee": 1,
+            "tradingFee": 2,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "2-90": {
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "SUIMAKER",
+            "gasFee": 0,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-2": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "gasFee": 1,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "7-90": {
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "SUIMAKER",
+            "gasFee": 0,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-7": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "gasFee": 1,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "23-90": {
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "SUIMAKER",
+            "gasFee": 0,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-23": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "gasFee": 1,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "21-90": {
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "SUIMAKER",
+            "gasFee": 0,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-21": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "gasFee": 1,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "20-90": {
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "SUIMAKER",
+            "gasFee": 0,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-20": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "gasFee": 2.5,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "19-90": {
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "SUIMAKER",
+            "gasFee": 0,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-19": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "gasFee": 1,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "14-90": {
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "SUIMAKER",
+            "gasFee": 0,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-14": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "gasFee": 1,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "4-90": {
+        "USDC-USDC": {
+            "makerAddress": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
+            "sender": "SUIMAKER",
+            "gasFee": 0,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-4": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
+            "gasFee": 1,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "57-90": {
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "SUIMAKER",
+            "gasFee": 2.5,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-57": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "gasFee": 1,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "15-90": {
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "SUIMAKER",
+            "gasFee": 0,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-15": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "gasFee": 1,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "6-90": {
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "SUIMAKER",
+            "gasFee": 0,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "90-6": {
+        "USDC-USDC": {
+            "makerAddress": "SUIMAKER",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "gasFee": 1,
+            "tradingFee": 2.5,
+            "maxPrice": 5000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
     }
 }
