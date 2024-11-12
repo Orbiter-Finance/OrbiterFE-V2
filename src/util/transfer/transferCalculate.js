@@ -36,6 +36,7 @@ import orbiterHelper from '../orbiter_helper'
 import { TieredFeeKey } from '../../const'
 import fractalHelper from '../fractal/fractal_helper'
 import aptosHelper from '../aptos/aptos_helper'
+import suiHelper from '../sui/sui_helper'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -161,6 +162,9 @@ export default {
       return null
     }
     if (orbiterHelper.isTronChain({ chainId: fromChainID })) {
+      return null
+    }
+    if (orbiterHelper.isSuiChain({ chainId: fromChainID })) {
       return null
     }
     if (
@@ -1200,6 +1204,21 @@ export default {
       } catch (error) {
         return '0'
       }
+    }  else if (orbiterHelper.isSuiChain({ chainId: localChainID })) {
+      console.log(
+        'NAME',
+        localChainID,
+        tokenAddress,
+        tokenName,
+        userAddress,
+        isMaker
+      )
+      const res = await suiHelper.getBalance(
+        userAddress,
+        tokenAddress,
+        localChainID
+      )
+      return res || '0'
     } else if (
       localChainID === CHAIN_ID.imx ||
       localChainID === CHAIN_ID.imx_test

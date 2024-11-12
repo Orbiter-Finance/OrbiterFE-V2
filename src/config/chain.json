@@ -3728,7 +3728,7 @@
                 "name": "evm-rpc"
             }
         ],
-        "internalId": 96,
+        "internalId": "96",
         "name": "IoTeX",
         "nativeCurrency": {
             "coinKey": "IOTX",
@@ -3762,7 +3762,7 @@
         },
         "chainId": "130",
         "networkId": "130",
-        "internalId": 91,
+        "internalId": "91",
         "name": "Unichain",
         "features": [],
         "nativeCurrency": {
@@ -3778,5 +3778,42 @@
         "infoURL": "https://mainnet.uniscan.xyz",
         "contracts": [],
         "vm": "EVM"
+    },
+    {
+        "api": {
+            "url": "https://fullnode.mainnet.sui.io:443",
+            "key": ""
+        },
+        "chainId": "SUI_MAIN",
+        "networkId": "SUI_MAIN",
+        "internalId": "90",
+        "name": "Sui",
+        "debug": false,
+        "service": {
+            "api": "SuiApiScanningService"
+        },
+        "features": [],
+        "nativeCurrency": {
+            "name": "SUI",
+            "symbol": "SUI",
+            "decimals": 9,
+            "address": "0x2::sui::SUI"
+        },
+        "rpc": [
+            "https://fullnode.mainnet.sui.io:443"
+        ],
+        "tokens": [
+            {
+                "name": "USDC",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC"
+            }
+        ],
+        "contract": {
+            "0x7f058e6f93bfbd5166ff6b36aa81532ed3bc616e157719d0bfcde4ac83b648d3": "SuiMemo"
+        },
+        "infoURL": "https://suivision.xyz",
+        "vm": "SUIVM"
     }
 ]

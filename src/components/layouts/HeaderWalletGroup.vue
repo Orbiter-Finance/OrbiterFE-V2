@@ -116,6 +116,20 @@
               </div>
             </div>
           </div>
+          <div v-else-if="connectWalletGroupKey === 'SUI'" class="wallet-group" >
+              <div class="wallet-group-title">Sui Wallet</div>
+              <div class="wallet-group-list">
+                  <div
+                      v-for="item in suiWallet"
+                      :key="item.title"
+                      class="wallet-item"
+                      @click="connectSuiWallet(item)"
+                  >
+                      <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+                      <span class="wallet-title">{{ item.title }}</span>
+                  </div>
+              </div>
+          </div>
         </div>
       </div>
     </div>
@@ -175,6 +189,7 @@ import fuelsHelper from '../../util/fuels/fuels_helper'
 import fractalHelper from '../../util/fractal/fractal_helper'
 import aptosHelper from '../../util/aptos/aptos_helper'
 import tronHelper from '../../util/tron/tron_helper'
+import suiHelper from '../../util/sui/sui_helper'
 
 let ton
 
@@ -404,6 +419,21 @@ export default {
       ]
       return wallets
     },
+    suiWallet() {
+      const wallets = [
+        {
+          isConnect: false,
+          icon: 'nightly',
+          title: 'Nightly',
+        },
+        {
+          isConnect: false,
+          icon: 'sui',
+          title: 'Sui',
+        }
+      ];
+      return wallets
+    },
     isLogin() {
       return walletIsLogin.value
     },
@@ -505,6 +535,11 @@ export default {
     },
     async connectAptosWallet(item) {
       const status = await aptosHelper.connect(item.icon)
+      this.closeSelectWalletDialog()
+      return
+    },
+    async connectSuiWallet(item) {
+      const status = await suiHelper.connect(item.icon)
       this.closeSelectWalletDialog()
       return
     },

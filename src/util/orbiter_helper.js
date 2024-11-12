@@ -16,6 +16,7 @@ import { store } from '../store/index.js'
 import { disConnectStarkNetWallet } from './constants/starknet/helper.js'
 import fractalHelper from './fractal/fractal_helper.js'
 import aptosHelper from './aptos/aptos_helper.js'
+import suiHelper from './sui/sui_helper.js'
 import walletsDispatchers from './walletsDispatchers'
 import tronHelper from './tron/tron_helper.js'
 
@@ -79,6 +80,11 @@ const openAptosConnectModal = () => {
   setConnectWalletGroupKey('APTOS')
 }
 
+const openSuiConnectModal = () => {
+  setSelectWalletDialogVisible(true)
+  setConnectWalletGroupKey('SUI')
+}
+
 const evmChain = [
   CHAIN_ID.zksync,
   CHAIN_ID.zksync_test,
@@ -119,6 +125,10 @@ const isAptosChain = ({ chainId }) => {
   return chainId === CHAIN_ID.movement_test
 }
 
+const isSuiChain = ({ chainId }) => {
+  return [CHAIN_ID.sui, CHAIN_ID.sui_test].includes(chainId);
+}
+
 const isTronChain = ({ chainId }) => {
   return (
     chainId === CHAIN_ID.tron_nile_test ||
@@ -142,7 +152,8 @@ const isNotEVMChain = ({ chainId }) => {
     isFuelChain({ chainId }) ||
     isFractalChain({ chainId }) ||
     isAptosChain({ chainId }) ||
-    isTronChain({ chainId })
+    isTronChain({ chainId }) ||
+    isSuiChain({ chainId })
   )
 }
 
@@ -282,6 +293,21 @@ const currentConnectChainInfo = ({ chainId, isList }) => {
       web3State.tron.tronWalletIcon = ''
     },
   }
+  const suiInfo = {
+    address: web3State.sui.suiAddress,
+    open: openSuiConnectModal,
+    isConnected: !!web3State.sui.suiIsConnect,
+    checkAddress: () => {
+      return true
+    },
+    walletIcon: web3State.sui.suiWalletIcon || CHAIN_ID.sui,
+    type: 'Sui',
+    disconnect: async () => {
+      await suiHelper.disConnect()
+      web3State.sui.suiAddress = ''
+      web3State.sui.suiIsConnect = false
+    },
+  }
 
   if (isList) {
     return [
@@ -293,6 +319,7 @@ const currentConnectChainInfo = ({ chainId, isList }) => {
       fractalInfo,
       aptosInfo,
       tronInfo,
+      suiInfo
     ]
   }
 
@@ -312,6 +339,8 @@ const currentConnectChainInfo = ({ chainId, isList }) => {
     current = aptosInfo
   } else if (isTronChain({ chainId })) {
     current = tronInfo
+  } else if (isSuiChain({ chainId })) {
+    current = suiInfo
   } else if (isEVMChain({ chainId }) && !isNotEVMChain({ chainId })) {
     current = evmInfo
   } else {
@@ -348,6 +377,7 @@ const orbiterHelper = {
   isStarknetChain,
   isTronChain,
   isFuelChain,
+  isSuiChain,
   isNotEVMChain,
   isEVMChain,
   isMiddleDecimals,

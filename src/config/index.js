@@ -59,6 +59,8 @@ export const CHAIN_ID = {
   imx_test: 'immutableX_test',
   fractal_test: 'FRACTAL_TEST',
   movement_test: 'MOVEMENT_TEST',
+  sui: 'SUI_MAIN',
+  sui_test: 'SUI_TEST',
   goerli: '5',
   ar_test: '421613',
   po_test: '80001',

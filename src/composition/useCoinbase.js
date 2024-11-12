@@ -55,6 +55,13 @@ export const web3State = reactive({
     tronIsConnected: false,
     tronChain: '',
   },
+  sui: {
+    suiAddress: '',
+    suiWalletName: '',
+    suiWalletIcon: '',
+    suiIsConnect: false,
+    suiChain: '',
+  },
 })
 
 export function updateCoinbase(coinbase) {
