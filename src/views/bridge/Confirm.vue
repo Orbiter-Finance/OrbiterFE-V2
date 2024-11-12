@@ -238,6 +238,7 @@ import {
   zksyncEraGasTokenContract,
 } from '../../util/zksyncEraGasToken'
 import tronHelper from '../../util/tron/tron_helper.js';
+import suiHelper from '../../util/sui/sui_helper.js';
 import orbiterHelper from '../../util/orbiter_helper.js';
 import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
@@ -1944,7 +1945,7 @@ export default {
       targetAddress = this.toCrossAddressReceipt()
       if(!targetAddress) {
         this.transferLoading = false
-        return 
+        return
       }
       try {
         const tokenAddress = selectMakerConfig.fromChain.tokenAddress
@@ -1958,6 +1959,99 @@ export default {
           safeCode,
           chainId: fromChainID
         })
+        try {
+          this.$gtag.event('click', {
+            event_category: 'Transfer',
+            event_label: selectMakerConfig.recipient,
+            userAddress: from,
+            hash: hash,
+          })
+        } catch (error) {
+          console.error('click error', error)
+        }
+
+        if (hash) {
+          this.onTransferSucceed(from, value, fromChainID, hash)
+        }
+      } catch (error) {
+        console.error('transfer error', error)
+        this.$notify.error({
+          title: error.message || String(error),
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+
+    },
+    async suiTransfer(value) {
+      const { selectMakerConfig, fromChainID, toChainID, transferValue } =
+        transferDataState
+
+      const isConnected = web3State.sui.suiIsConnect;
+      let from = web3State.sui.suiAddress;
+      console.log('isConnected',isConnected,'from',from,'fromChainID',fromChainID)
+
+      if (!isConnected || !from) {
+        setSelectWalletDialogVisible(true)
+        setConnectWalletGroupKey('SUI')
+        this.transferLoading = false
+        return
+      }
+
+      const safeCode = transferCalculate.safeCode()
+
+      const { starkNetAddress, starkChain } = web3State.starkNet
+
+      const rAmount = new BigNumber(transferValue)
+        .plus(new BigNumber(selectMakerConfig.tradingFee))
+        .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+      const rAmountValue = rAmount.toFixed()
+
+      console.log("rAmountValue", rAmountValue)
+
+      const evmAddress =
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress
+
+      let targetAddress = evmAddress
+
+      if (
+        toChainID === CHAIN_ID.starknet ||
+        toChainID === CHAIN_ID.starknet_test
+      ) {
+        targetAddress = starkNetAddress
+
+        if (!starkChain || (isProd() && starkChain === 'unlogin')) {
+          util.showMessage(this.$t('please connect Starknet Wallet'), 'error')
+          this.transferLoading = false
+          return
+        }
+
+        if (!starkNetAddress) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('STARKNET')
+          this.transferLoading = false
+          return
+        }
+      }
+
+      targetAddress = this.toCrossAddressReceipt()
+      if(!targetAddress) {
+        this.transferLoading = false
+        return
+      }
+      try {
+        const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+
+        const hash = await suiHelper.transfer(
+          from,
+          selectMakerConfig.recipient,
+          targetAddress,
+          tokenAddress,
+          rAmountValue,
+          safeCode,
+          fromChainID
+        );
         try {
           this.$gtag.event('click', {
             event_category: 'Transfer',
@@ -2468,6 +2562,11 @@ export default {
 
         if (orbiterHelper.isAptosChain({chainId: fromChainID})) {
           this.aptosTransfer(tValue.tAmount)
+          return
+        }
+
+        if (orbiterHelper.isSuiChain({ chainId: fromChainID })) {
+          this.suiTransfer(tValue.tAmount);
           return
         }
 
