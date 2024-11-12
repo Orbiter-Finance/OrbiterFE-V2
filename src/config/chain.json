@@ -3754,5 +3754,29 @@
             }
         ],
         "vm": "EVM"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "130",
+        "networkId": "130",
+        "internalId": 91,
+        "name": "Unichain",
+        "features": [],
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://mainnet.unichain.org"
+        ],
+        "tokens": [],
+        "infoURL": "https://mainnet.uniscan.xyz",
+        "contracts": [],
+        "vm": "EVM"
     }
 ]
