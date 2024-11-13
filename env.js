@@ -39,6 +39,8 @@ export default {
     [CHAIN_ID.solana_test]: 'https://solscan.io/tx/',
     [CHAIN_ID.tron_nile_test]: 'https://nile.tronscan.org/#/transaction/',
     [CHAIN_ID.tron]: 'https://tronscan.org/#/transaction/',
+    [CHAIN_ID.sui_test]: 'https://testnet.suivision.xyz/txblock/',
+    [CHAIN_ID.sui]: 'https://suivision.xyz/txblock/',
   },
   accountExploreUrl: {
     [CHAIN_ID.zksync]: 'https://zkscan.io/explorer/accounts/',
@@ -59,6 +61,8 @@ export default {
     [CHAIN_ID.solana_test]: 'https://solscan.io/account/',
     [CHAIN_ID.tron_nile_test]: 'https://nile.tronscan.org/#/address/',
     [CHAIN_ID.tron]: 'https://tronscan.org/#/address/',
+    [CHAIN_ID.sui_test]: 'https://testnet.suivision.xyz/account/',
+    [CHAIN_ID.sui]: 'https://suivision.xyz/account/',
   },
   gasPriceMap: {
     [CHAIN_ID.mainnet]: 100,
