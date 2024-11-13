@@ -194,7 +194,7 @@
           <img src="https://cdn.orbiter.finance/bridge-web/oldOrbiterBanner.jpg" class="prizes-card" @click="clickGoWeb" />
         </el-carousel-item>
         <el-carousel-item>
-          <img :src="require('../../assets/prizes/prizes-transfer-image.jpg')" class="prizes-card" @click="clickGoPrizes" />
+          <img :src="require('../../assets/prizes/prizes-transfer-image.png')" class="prizes-card" @click="clickGoPrizes" />
         </el-carousel-item>
       </el-carousel>
       <CommBtn
@@ -2477,6 +2477,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+::v-deep .el-carousel__indicators {
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+::v-deep .el-carousel__indicators .el-carousel__indicator {
+  padding: 4px;
+}
+
 .app {
   .transfer-box {
     .btn {

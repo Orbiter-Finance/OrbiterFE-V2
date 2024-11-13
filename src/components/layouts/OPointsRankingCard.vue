@@ -167,7 +167,7 @@ export default {
       const current = +new Date()
       const timer = current - lastRefreshTime
       
-      return Math.ceil(timer / 60 / 1000) | "0"
+      return Math.ceil(timer / 60 / 1000) || "0"
     },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
