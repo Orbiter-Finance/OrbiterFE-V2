@@ -3745,13 +3745,27 @@
             "rpc": "EVMRpcScanningV6Service"
         },
         "tokens": [
-            {
-                "coinKey": "ETH",
-                "address": "0x0258866edaf84d6081df17660357ab20a07d0c80",
-                "name": "Wrapped Ether",
-                "symbol": "ETH",
-                "decimals": 18
-            }
+         {
+            "coinKey": "ETH",
+            "address": "0x0258866edaf84d6081df17660357ab20a07d0c80",
+            "name": "Wrapped Ether",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        {
+            "coinKey": "USDT",
+            "address": "0x6fbcdc1169b5130c59e72e51ed68a84841c98cd1",
+            "name": "Tether USD",
+            "symbol": "USDT",
+            "decimals": 6
+        },
+        {
+            "coinKey": "USDC",
+            "address": "0xcdf79194c6c285077a58da47641d4dbe51f63542",
+            "name": "USDC.e",
+            "symbol": "USDC",
+            "decimals": 6
+        }
         ],
         "vm": "EVM"
     },
