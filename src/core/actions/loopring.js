@@ -26,12 +26,12 @@ let configNet = config.loopring.Mainnet
 
 export default {
   getUserAPI: function (localChainID) {
-    const netWorkID = localChainID === CHAIN_ID.loopring ? 1 : 5
+    const netWorkID = localChainID === CHAIN_ID.loopring ? 1 : 11155111
     return new UserAPI({ chainId: netWorkID })
   },
 
   getExchangeAPI: function (localChainID) {
-    const netWorkID = localChainID === CHAIN_ID.loopring ? 1 : 5
+    const netWorkID = localChainID === CHAIN_ID.loopring ? 1 : 11155111
     return new ExchangeAPI({ chainId: netWorkID })
   },
   getLpTokenInfoOnce(fromChainID, tokenAddress) {
@@ -215,7 +215,7 @@ export default {
       walletType: ConnectorNames.MetaMask,
       chainId:
         localChainID === CHAIN_ID.loopring_test
-          ? ChainId.GOERLI
+          ? "11155111"
           : ChainId.MAINNET,
     }
     if (isCounterFactual) {
@@ -275,7 +275,7 @@ export default {
             web3,
             chainId:
               localChainID === CHAIN_ID.loopring_test
-                ? ChainId.GOERLI
+                ? "11155111"
                 : ChainId.MAINNET,
             walletType: ConnectorNames.MetaMask,
             eddsaKey: eddsaKey.sk,
@@ -289,7 +289,7 @@ export default {
           web3,
           chainId:
             localChainID === CHAIN_ID.loopring_test
-              ? ChainId.GOERLI
+              ? "11155111"
               : ChainId.MAINNET,
           walletType: ConnectorNames.MetaMask,
           eddsaKey: eddsaKey.sk,
