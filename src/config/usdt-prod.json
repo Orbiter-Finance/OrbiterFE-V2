@@ -2340,7 +2340,7 @@
         }
     },
     "1-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2352,7 +2352,7 @@
         }
     },
     "96-1": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2364,7 +2364,7 @@
         }
     },
     "2-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2376,7 +2376,7 @@
         }
     },
     "96-2": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2388,7 +2388,7 @@
         }
     },
     "7-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2400,7 +2400,7 @@
         }
     },
     "96-7": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2412,7 +2412,7 @@
         }
     },
     "23-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2424,7 +2424,7 @@
         }
     },
     "96-23": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2436,7 +2436,7 @@
         }
     },
     "21-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2448,7 +2448,7 @@
         }
     },
     "96-21": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2460,7 +2460,7 @@
         }
     },
     "20-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2472,7 +2472,7 @@
         }
     },
     "96-20": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2484,7 +2484,7 @@
         }
     },
     "19-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2496,7 +2496,7 @@
         }
     },
     "96-19": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2508,7 +2508,7 @@
         }
     },
     "14-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2520,7 +2520,7 @@
         }
     },
     "96-14": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2532,7 +2532,7 @@
         }
     },
     "4-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2544,7 +2544,7 @@
         }
     },
     "96-4": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
             "maxPrice": 3000,
@@ -2556,7 +2556,7 @@
         }
     },
     "6-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2568,7 +2568,7 @@
         }
     },
     "96-6": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2580,7 +2580,7 @@
         }
     },
     "57-96": {
-        "USDC-USDC": {
+        "USDT-USDC": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2592,7 +2592,7 @@
         }
     },
     "96-57": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2604,7 +2604,7 @@
         }
     },
     "15-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2616,7 +2616,7 @@
         }
     },
     "96-15": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2628,7 +2628,7 @@
         }
     },
     "56-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "UQBN1z9drcrBbuKgJMYBQdV4c58XymfTooTZ3aZJzdc2IHHN",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2640,7 +2640,7 @@
         }
     },
     "96-56": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "UQBN1z9drcrBbuKgJMYBQdV4c58XymfTooTZ3aZJzdc2IHHN",
             "maxPrice": 3000,
@@ -2652,7 +2652,7 @@
         }
     },
     "51-96": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "DowTWse9Sjzj1kN1V6zevfGtQ6wWpigug7TPCdTr6UNP",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
@@ -2664,7 +2664,7 @@
         }
     },
     "96-51": {
-        "USDC-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "DowTWse9Sjzj1kN1V6zevfGtQ6wWpigug7TPCdTr6UNP",
             "maxPrice": 3000,
