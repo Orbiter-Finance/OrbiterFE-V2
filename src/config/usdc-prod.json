@@ -5137,6 +5137,18 @@
             "endTime": 99999999999999
         }
     },
+    "1-96": {
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "maxPrice": 3000,
+            "minPrice": 0.1,
+            "tradingFee": 2.5,
+            "gasFee": 0,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
     "96-1": {
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
