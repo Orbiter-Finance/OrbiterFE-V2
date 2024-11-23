@@ -2634,7 +2634,7 @@
             "maxPrice": 3000,
             "minPrice": 0.1,
             "tradingFee": 2.5,
-            "gasFee": 0.01,
+            "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         }
