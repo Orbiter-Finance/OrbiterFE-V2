@@ -1,12 +1,39 @@
-FROM node:lts-alpine
-WORKDIR /app
-COPY package.json yarn.lock ./
-RUN yarn install--ignore-engines
-RUN yarn
-COPY ./ /app
+FROM node:20-alpine3.18
 
-RUN npm run build
-FROM nginx:alpine
-RUN mkdir /app
-COPY --from=0 /app/dist /app
-COPY docker.nginx.conf /etc/nginx/nginx.conf
+ARG NEXT_PUBLIC_BASE_URL
+ARG NEXT_PUBLIC_CDN_URL
+ARG NEXT_PUBLIC_GOOGLE_ANALYTICS_ID
+ARG NEXT_PUBLIC_INIT_BRIDGE
+ARG NEXT_PUBLIC_INIT_BRIDGE_CHAIN_GROUP
+ARG NEXT_PUBLIC_NODE_ENV
+ARG NEXT_PUBLIC_PRIZES_URL
+
+ENV NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
+ENV NEXT_PUBLIC_CDN_URL=${NEXT_PUBLIC_CDN_URL}
+ENV NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=${NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}
+ENV NEXT_PUBLIC_INIT_BRIDGE=${NEXT_PUBLIC_INIT_BRIDGE}
+ENV NEXT_PUBLIC_INIT_BRIDGE_CHAIN_GROUP=${NEXT_PUBLIC_INIT_BRIDGE_CHAIN_GROUP}
+ENV NEXT_PUBLIC_NODE_ENV=${NEXT_PUBLIC_NODE_ENV}
+ENV NEXT_PUBLIC_PRIZES_URL=${NEXT_PUBLIC_PRIZES_URL}
+
+RUN apk add --no-cache python3 py3-pip make g++ libusb-dev linux-headers eudev-dev
+
+RUN ln -sf python3 /usr/bin/python
+
+WORKDIR /app
+
+RUN npm install -g pnpm
+
+COPY . .
+
+RUN pnpm install 
+
+WORKDIR /app/apps/web
+
+RUN pnpm install --no-frozen-lockfile
+
+RUN npx turbo run build --filter=web
+
+EXPOSE 3000
+
+CMD ["npx", "next", "start"]

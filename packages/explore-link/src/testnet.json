@@ -1,0 +1,905 @@
+[
+    {
+        "chainId": "immutableX_test",
+        "name": "ImmutableX Sepolia",
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [],
+        "explorers": [],
+        "vm": "IMXVM"
+    },
+    {
+        "chainId": "97",
+        "name": "BSC TestNet",
+        "nativeCurrency": {
+            "name": "BNB",
+            "symbol": "BNB",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://bsc-testnet.publicnode.com",
+            "https://api.zan.top/node/v1/bsc/testnet/public",
+            "https://endpoints.omniatech.io/v1/bsc/testnet/public",
+            "https://data-seed-prebsc-2-s2.bnbchain.org:8545"
+        ],
+        "explorers": [
+            {
+                "name": "bscscan-testnet",
+                "url": "https://testnet.bscscan.com"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "59141",
+        "name": "Linea Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://rpc.sepolia.linea.build",
+            "https://linea-sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+            "https://linea-sepolia.blockpi.network/v1/rpc/public",
+            "https://linea-sepolia.infura.io/v3"
+        ],
+        "explorers": [
+            {
+                "name": "Etherscan",
+                "url": "https://sepolia.lineascan.build"
+            },
+            {
+                "name": "Blockscout",
+                "url": "https://explorer.sepolia.linea.build"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "5611",
+        "name": "OpBSC TestNet",
+        "nativeCurrency": {
+            "name": "tBNB",
+            "symbol": "BNB",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://opbnb-testnet-rpc.bnbchain.org"
+        ],
+        "explorers": [
+            {
+                "name": "bscscan-opbnb-testnet",
+                "url": "https://opbnb-testnet.bscscan.com"
+            },
+            {
+                "name": "opbnbscan",
+                "url": "https://opbnbscan.com"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "11155111",
+        "name": "Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://eth-sepolia.g.alchemy.com/v2/mf7LavWgl6idryZtb9IJadAr0jf8KETr",
+            "https://ethereum-sepolia-rpc.publicnode.com",
+            "https://ethereum-sepolia.publicnode.com",
+            "https://rpc.notadegen.com/eth/sepolia",
+            "https://ethereum-sepolia.blockpi.network/v1/rpc/public",
+            "https://rpc.notadegen.com/sepolia",
+            "https://sepolia.gateway.tenderly.co",
+            "https://api.zan.top/node/v1/eth/sepolia/public",
+            "https://rpc.sepolia.org"
+        ],
+        "explorers": [
+            {
+                "name": "etherscan-sepolia",
+                "url": "https://sepolia.etherscan.io"
+            },
+            {
+                "name": "otterscan-sepolia",
+                "url": "https://sepolia.otterscan.io"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "195",
+        "name": "X1 Sepolia",
+        "nativeCurrency": {
+            "name": "OKB",
+            "symbol": "OKB",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://testrpc.xlayer.tech/unlimited/6d9369d80cf0fe66c04a062bd6b522ab",
+            "https://x1testrpc.okx.com",
+            "https://testrpc.x1.tech",
+            "https://x1-testnet.blockpi.network/v1/rpc/public"
+        ],
+        "explorers": [
+            {
+                "name": "OKLink",
+                "url": "https://www.oklink.com/xlayer-test"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "534351",
+        "name": "Scroll Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://rpc.ankr.com/scroll_sepolia_testnet",
+            "https://scroll-sepolia.drpc.org",
+            "https://scroll-testnet.rpc.grove.city/v1/a7a7c8e2",
+            "https://sepolia-rpc.scroll.io",
+            "http://scroll-testnet-public.unifra.io",
+            "https://rpc.ankr.com/scroll_sepolia_testnet",
+            "https://1rpc.io/scroll/sepolia",
+            "https://scroll-sepolia.blockpi.network/v1/rpc/public",
+            "https://rpc.ankr.com/scroll_sepolia_testnet"
+        ],
+        "explorers": [
+            {
+                "name": "Scroll Sepolia Etherscan",
+                "url": "https://sepolia.scrollscan.com"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "1715",
+        "name": "Combo TestNet",
+        "nativeCurrency": {
+            "name": "BNB",
+            "symbol": "BNB",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://test-rpc.combonetwork.io"
+        ],
+        "explorers": [],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "999999999",
+        "name": "Zora Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://sepolia.rpc.zora.energy"
+        ],
+        "explorers": [
+            {
+                "name": "Zora Sepolia Testnet Network Explorer",
+                "url": "https://sepolia.explorer.zora.energy"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "23011913",
+        "name": "Stylus Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://stylus-testnet.arbitrum.io/rpc",
+            "https://stylus-testnet-sequencer.arbitrum.io/rpc"
+        ],
+        "explorers": [],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "421614",
+        "name": "Arbitrum Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://endpoints.omniatech.io/v1/arbitrum/sepolia/public",
+            "https://sepolia-rollup.arbitrum.io/rpc",
+            "https://sepolia-rollup-sequencer.arbitrum.io/rpc"
+        ],
+        "explorers": [
+            {
+                "name": "Arbitrum Sepolia Rollup Testnet Explorer",
+                "url": "https://sepolia-explorer.arbitrum.io"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "2358",
+        "name": "Kroma Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://api.sepolia.kroma.network"
+        ],
+        "explorers": [
+            {
+                "name": "blockscout",
+                "url": "https://blockscout.sepolia.kroma.network"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "2442",
+        "name": "Polygon Cardona Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://rpc.cardona.zkevm-rpc.com"
+        ],
+        "explorers": [
+            {
+                "name": "polygonscan",
+                "url": "https://cardona-zkevm.polygonscan.com"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "167009",
+        "name": "Katla",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://rpc.ankr.com/taiko_hekla",
+            "https://hekla.taiko.tools"
+        ],
+        "explorers": [
+            {
+                "name": "blockscout",
+                "url": "https://blockscoutapi.hekla.taiko.xyz"
+            },
+            {
+                "name": "routescan",
+                "url": "https://hekla.taikoscan.network"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "300",
+        "name": "zkera Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://sepolia.era.zksync.dev"
+        ],
+        "explorers": [
+            {
+                "name": "zkSync Block Explorer",
+                "url": "https://sepolia.explorer.zksync.io"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "168587773",
+        "name": "Blast Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://sepolia.blast.io"
+        ],
+        "explorers": [
+            {
+                "name": "Blast Sepolia Explorer",
+                "url": "https://testnet.blastscan.io"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "1502",
+        "name": "BEVM Sepolia",
+        "nativeCurrency": {
+            "name": "BTC",
+            "symbol": "BTC",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://canary-testnet.bevm.io"
+        ],
+        "explorers": [],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "68840142",
+        "name": "Frame Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://rpc.testnet.frame.xyz/http"
+        ],
+        "explorers": [
+            {
+                "name": "Frame Testnet Explorer",
+                "url": "https://explorer.testnet.frame.xyz"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "1123",
+        "name": "B² Haven Testnet",
+        "nativeCurrency": {
+            "name": "BTC",
+            "symbol": "BTC",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://b2-testnet.alt.technology"
+        ],
+        "explorers": [
+            {
+                "name": "blockscout",
+                "url": "https://testnet-explorer.bsquared.network"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "11155420",
+        "name": "Optimism Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://public.stackup.sh/api/v1/node/optimism-sepolia",
+            "https://sepolia.optimism.io",
+            "https://optimism-sepolia.blockpi.network/v1/rpc/public"
+        ],
+        "explorers": [
+            {
+                "name": "opscout",
+                "url": "https://optimism-sepolia.blockscout.com"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "SN_SEPOLIA",
+        "name": "Starknet Sepolia",
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://starknet-sepolia.public.blastapi.io"
+        ],
+        "explorers": [],
+        "vm": "CAIROVM"
+    },
+    {
+        "chainId": "84532",
+        "name": "Base Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://sepolia.base.org"
+        ],
+        "explorers": [
+            {
+                "name": "basescout",
+                "url": "https://base-sepolia.blockscout.com"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "48899",
+        "name": "Zircuit Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://zircuit1.p2pify.com"
+        ],
+        "explorers": [
+            {
+                "name": "Zircuit",
+                "url": "https://explorer.testnet.zircuit.com"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "17000",
+        "name": "Holesky",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://ethereum-holesky-rpc.publicnode.com",
+            "https://l1rpc.katla.taiko.xyz"
+        ],
+        "explorers": [
+            {
+                "name": "Holesky Explorer",
+                "url": "https://holesky.beaconcha.in"
+            },
+            {
+                "name": "otterscan-holesky",
+                "url": "https://holesky.otterscan.io"
+            },
+            {
+                "name": "Holesky Etherscan",
+                "url": "https://holesky.etherscan.io"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "2810",
+        "name": "Morph Holesky",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://rpc-holesky.morphl2.io"
+        ],
+        "explorers": [
+            {
+                "name": "Morph Holesky Testnet Explorer",
+                "url": "https://explorer-holesky.morphl2.io"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "1687",
+        "name": "Mint Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://sepolia-testnet-rpc.mintchain.io"
+        ],
+        "explorers": [
+            {
+                "name": "blockscout",
+                "url": "https://sepolia-testnet-explorer.mintchain.io"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "TON_TEST",
+        "name": "TON Testnet",
+        "nativeCurrency": {
+            "name": "TON",
+            "symbol": "TON",
+            "decimals": 9
+        },
+        "rpc": [
+            "https://testnet.toncenter.com/api/v2/jsonRPC?token=c8c973cb13c9f29762ca3cb3700be798ec9758bcf0163d46ea8fc2af1b923519"
+        ],
+        "explorers": [],
+        "vm": "TVM"
+    },
+    {
+        "chainId": "111",
+        "name": "Bob Testnet",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://testnet.rpc.gobob.xyz/"
+        ],
+        "explorers": [],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "28516",
+        "name": "vizing Testnet",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://rpc-sepolia.vizing.com"
+        ],
+        "explorers": [
+            {
+                "name": "blockscout",
+                "url": "https://explorer-sepolia.vizing.com"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "20240110",
+        "name": "Zulu Testnet",
+        "nativeCurrency": {
+            "name": "BTC",
+            "symbol": "BTC",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://rpc-testnet.zulunetwork.io"
+        ],
+        "explorers": [],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "810181",
+        "name": "zkLink Nova Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://sepolia.rpc.zklink.io"
+        ],
+        "explorers": [
+            {
+                "name": "zkLink Nova Block Explorer",
+                "url": "https://sepolia.explorer.zklink.io"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "8054",
+        "name": "Karak Testnet",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://rpc.sepolia.karak.network"
+        ],
+        "explorers": [
+            {
+                "name": "Karak Sepolia Explorer",
+                "url": "https://explorer.sepolia.karak.network"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "6000",
+        "name": "BounceBit Testnet",
+        "nativeCurrency": {
+            "name": "BB",
+            "symbol": "BB",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://fullnode-testnet.bouncebitapi.com"
+        ],
+        "explorers": [
+            {
+                "name": "BBScan Testnet Explorer",
+                "url": "https://bbscan.io"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "ECLIPSE_DEV",
+        "name": "Eclipse",
+        "nativeCurrency": {
+            "name": "SOL",
+            "symbol": "SOL",
+            "decimals": 9
+        },
+        "rpc": [
+            "https://staging-rpc.dev2.eclipsenetwork.xyz"
+        ],
+        "explorers": [],
+        "vm": "SOLANAVM"
+    },
+    {
+        "chainId": "FUEL_TEST",
+        "name": "Fuel Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 9
+        },
+        "rpc": [
+            "https://testnet.fuel.network/v1/graphql"
+        ],
+        "explorers": [],
+        "vm": "FUELVM"
+    },
+    {
+        "chainId": "161221135",
+        "name": "Plume Sepolia",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://testnet-rpc.plumenetwork.xyz/http"
+        ],
+        "explorers": [
+            {
+                "name": "Blockscout",
+                "url": "https://testnet-explorer.plumenetwork.xyz"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "SONIC_DEV",
+        "name": "Sonic",
+        "nativeCurrency": {
+            "name": "SOL",
+            "symbol": "SOL",
+            "decimals": 9
+        },
+        "rpc": [
+            "https://devnet.sonic.game"
+        ],
+        "explorers": [],
+        "vm": "SOLANAVM"
+    },
+    {
+        "chainId": "9738",
+        "name": "Bomechain",
+        "nativeCurrency": {
+            "name": "BOME",
+            "symbol": "BOME",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://testrpc.bomechain.org"
+        ],
+        "explorers": [],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "FRACTAL_TEST",
+        "name": "Fractal",
+        "nativeCurrency": {
+            "name": "BTC",
+            "symbol": "BTC",
+            "decimals": 8
+        },
+        "rpc": [
+            "https://mempool.fractalbitcoin.io"
+        ],
+        "explorers": [],
+        "vm": "BTCVM"
+    },
+    {
+        "chainId": "MOVEMENT_DEV",
+        "name": "Movement Dev",
+        "nativeCurrency": {
+            "name": "MOVE",
+            "symbol": "MOVE",
+            "decimals": 8
+        },
+        "rpc": [
+            "https://fullnode.devnet.aptoslabs.com"
+        ],
+        "explorers": [],
+        "vm": "APTOSVM"
+    },
+    {
+        "chainId": "MOVEMENT_TEST",
+        "name": "Movement",
+        "nativeCurrency": {
+            "name": "MOVE",
+            "symbol": "MOVE",
+            "decimals": 8
+        },
+        "rpc": [
+            "https://aptos.testnet.suzuka.movementlabs.xyz/v1"
+        ],
+        "explorers": [],
+        "vm": "APTOSVM"
+    },
+    {
+        "chainId": "202105",
+        "name": "Duckchain Testnet",
+        "nativeCurrency": {
+            "name": "TON",
+            "symbol": "TON",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://testnet-internal-rpc-hk.duckchain.io"
+        ],
+        "explorers": [
+            {
+                "name": "DuckChain Scan",
+                "url": "https://www.okx.com/web3/explorer/duckchain-testnet"
+            },
+            {
+                "name": "DuckChain Scan",
+                "url": "https://www.oklink.com/duckchain-testnet"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "SOLANA_DEV",
+        "name": "Solana",
+        "nativeCurrency": {
+            "name": "SOL",
+            "symbol": "SOL",
+            "decimals": 9
+        },
+        "rpc": [
+            "https://solana-devnet.g.alchemy.com/v2/azgtbx3M3JRazx0tzsZ-2XLX3-nHc9fH"
+        ],
+        "explorers": [],
+        "vm": "SOLANAVM"
+    },
+    {
+        "chainId": "1946",
+        "name": "Minato",
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://rpc.minato.soneium.org"
+        ],
+        "explorers": [
+            {
+                "name": "Blockscout Minato explorer",
+                "url": "https://explorer-testnet.soneium.org"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "1513",
+        "name": "Story Public Testnet",
+        "nativeCurrency": {
+            "name": "IP",
+            "symbol": "IP",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://testnet.storyrpc.io"
+        ],
+        "explorers": [
+            {
+                "name": "Story Iliad Network explorer",
+                "url": "https://testnet.storyscan.xyz"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "3448148188",
+        "name": "Tron NILE Testnet",
+        "nativeCurrency": {
+            "name": "TRX",
+            "symbol": "TRX",
+            "decimals": 6
+        },
+        "rpc": [
+            "https://nile.trongrid.io"
+        ],
+        "explorers": [],
+        "vm": "TRONVM"
+    },
+    {
+        "chainId": "133",
+        "name": "HashKey Sepolia",
+        "nativeCurrency": {
+            "name": "HSK",
+            "symbol": "HSK",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://hashkeychain-testnet.alt.technology"
+        ],
+        "explorers": [
+            {
+                "name": "blockscout",
+                "url": "https://hashkeychain-testnet-explorer.alt.technology"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "11822",
+        "name": "Artela Sepolia",
+        "nativeCurrency": {
+            "name": "ART",
+            "symbol": "ART",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://betanet-rpc1.artela.network"
+        ],
+        "explorers": [
+            {
+                "name": "ArtelaScan",
+                "url": "https://betanet-scan.artela.network"
+            }
+        ],
+        "vm": "EVM"
+    },
+    {
+        "chainId": "80084",
+        "name": "Berachain Sepolia",
+        "nativeCurrency": {
+            "name": "BERA",
+            "symbol": "BERA",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://bartio.rpc.berachain.com/"
+        ],
+        "explorers": [
+            {
+                "name": "Beratrail",
+                "url": "https://bartio.beratrail.io"
+            }
+        ]
+    }
+]

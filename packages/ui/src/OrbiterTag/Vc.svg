@@ -1,0 +1,11 @@
+<svg width="20.000000" height="20.000000" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<linearGradient x1="2.500003" y1="1.249999" x2="9.999998" y2="18.750000" id="paint_linear_4612_891_0" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#C4C4C4"/>
+			<stop offset="1.000000" stop-color="#1A1A1A"/>
+		</linearGradient>
+	</defs>
+	<rect id="vuesax/linear/shield-tick" width="20.000000" height="20.000000" fill="#FFFFFF" fill-opacity="0"/>
+	<path id="Vector" d="M8.67 1.45L4.32 3.09C3.31 3.47 2.5 4.66 2.5 5.73L2.5 12.23C2.5 15.55 10 18.75 10 18.75C10 18.75 17.5 15.55 17.5 12.23L17.5 5.73C17.5 4.65 16.68 3.46 15.67 3.08L11.32 1.45C10.58 1.18 9.39 1.18 8.67 1.45Z" fill="url(#paint_linear_4612_891_0)" fill-opacity="1.000000" fill-rule="nonzero"/>
+	<path d="M6.8 9.42L7.24 9.86L9.01 11.63L13.43 7.21" stroke="#F9F9F9" stroke-opacity="1.000000" stroke-width="1.000000" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

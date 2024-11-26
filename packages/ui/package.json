@@ -1,0 +1,39 @@
+{
+  "name": "@orbiter-finance/ui",
+  "version": "0.0.2",
+  "private": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "generate:component": "turbo gen react-component",
+    "build:css": "npx tailwindcss -i ./src/index.css -o ./dist/index.css",
+    "build": "tsup src/index.ts --format cjs,esm && tsc --emitDeclarationOnly --outDir dist && npm run build:css && npm run postbuild",
+    "postbuild": "cp package.json dist/"
+  },
+  "devDependencies": {
+    "@orbiter-finance/eslint-config": "workspace:*",
+    "@orbiter-finance/typescript-config": "workspace:*",
+    "@swc/core": "^1.7.26",
+    "@turbo/gen": "^1.12.4",
+    "@types/eslint": "^8.56.5",
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.2.61",
+    "eslint": "^8.57.0",
+    "tailwindcss": "^3.4.10",
+    "tsup": "^8.2.4",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.20",
+    "clsx": "^2.1.1",
+    "copyfiles": "^2.4.1",
+    "esbuild-plugin-inline-image": "^0.0.9",
+    "lucide-react": "^0.439.0",
+    "postcss": "^8.4.47",
+    "react": "^18.2.0",
+    "tailwind-merge": "^2.5.2",
+    "tslib": "^2.7.0"
+  }
+}

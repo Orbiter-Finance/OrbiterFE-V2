@@ -1,0 +1,38 @@
+{
+  "extends": ["//"],
+  "ui": "tui",
+  "cacheDir": ".turbo/cache",
+  "tasks": {
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ]
+    },
+    "build": {
+      "inputs": [
+        "$TURBO_DEFAULT$"
+      ],
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "test": {
+      "dependsOn": [
+        "lint",
+        "^test"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env*"
+      ],
+      "env": [
+        "*PrivateKey",
+        "*Address"
+      ]
+    }
+  },
+  "globalEnv": [
+    "*PrivateKey",
+    "*Address"
+  ]
+}

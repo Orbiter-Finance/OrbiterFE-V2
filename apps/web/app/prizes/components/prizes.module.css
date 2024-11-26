@@ -1,0 +1,11 @@
+.prizesPool {
+}
+
+.prizesPoolCard {
+    background: radial-gradient(
+            96% 96% at 50% 50%,
+            rgba(27, 21, 37, 0) 1.849%,
+            rgba(255, 70, 68, 0.5) 100%
+        ),
+        rgb(18, 4, 30);
+}

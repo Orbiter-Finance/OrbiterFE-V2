@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20.000000" height="20.000000" viewBox="0 0 20 20" fill="none">
-	<g opacity="0.400000">
-		<path d="M20 0L0 0L0 20L20 20L20 0Z" fill="#666666" fill-opacity="0" fill-rule="evenodd"/>
-		<circle cx="10.000000" cy="10.000000" r="7.500000" fill="#666666" fill-opacity="0"/>
-		<circle cx="10.000000" cy="10.000000" r="6.875000" stroke="#666666" stroke-opacity="1.000000" stroke-width="1.250000"/>
-		<path d="M10 15C10.51 15 10.93 14.58 10.93 14.06C10.93 13.54 10.51 13.12 10 13.12C9.48 13.12 9.06 13.54 9.06 14.06C9.06 14.58 9.48 15 10 15Z" fill="#666666" fill-opacity="1.000000" fill-rule="evenodd"/>
-		<path d="M10 11.25L10 10.62C10.43 10.62 10.85 10.49 11.21 10.25C11.57 10.01 11.85 9.67 12.02 9.27C12.18 8.87 12.22 8.43 12.14 8.01C12.06 7.58 11.85 7.19 11.54 6.89C11.24 6.58 10.85 6.37 10.42 6.29C10 6.2 9.56 6.25 9.16 6.41C8.76 6.58 8.42 6.86 8.18 7.22C7.94 7.58 7.81 8 7.81 8.43" stroke="#666666" stroke-opacity="1.000000" stroke-width="1.428571" stroke-linejoin="round" stroke-linecap="round"/>
-	</g>
-</svg>

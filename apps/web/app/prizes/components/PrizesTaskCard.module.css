@@ -1,0 +1,13 @@
+.prizeCardTag {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-flex;
+    height: 1.25rem;
+    line-height: 1.25rem;
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 0 0 0.75rem 0;
+    background: linear-gradient(17.47deg, rgb(168, 50, 144) -4.86%, rgb(255, 79, 79) 63.98%);
+}

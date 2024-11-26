@@ -1,0 +1,16 @@
+{
+  "name": "@orbiter-finance/explore-link",
+  "description": "JavaScript library for Orbiter Finance Explore Link",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "version": "0.0.9",
+  "scripts": {
+    "test": "vitest",
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "devDependencies": {
+    "@orbiter-finance/eslint-config": "workspace:*",
+    "@orbiter-finance/typescript-config": "workspace:*"
+  }
+}
