@@ -2580,7 +2580,7 @@
         }
     },
     "57-96": {
-        "USDT-USDC": {
+        "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 3000,
