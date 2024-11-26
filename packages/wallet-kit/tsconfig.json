@@ -1,0 +1,14 @@
+{
+  "extends": "@orbiter-finance/typescript-config/react-library.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+		"jsx": "react-jsx",
+    "module": "ES2015",
+    "moduleResolution": "Bundler",
+    "types": ["node"]
+
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

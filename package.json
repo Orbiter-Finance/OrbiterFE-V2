@@ -1,0 +1,40 @@
+{
+  "name": "@orbiter-finance/bridge-frontend",
+  "private": true,
+  "scripts": {
+    "build": "npx turbo build",
+    "dev": "npx turbo dev",
+    "lint": "npx turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "build:sdk": "pnpm -F bridge-sdk build",
+    "build:web": "pnpm -F web build",
+    "build:vm-core": "pnpm -F vm-core build",
+    "build:balance": "pnpm -F wallet-balance build",
+    "test:sdk": "pnpm -F bridge-sdk test",
+    "test:balance": "pnpm -F wallet-balance test",
+    "publish-packages": "turbo run build lint test && changeset version && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.9",
+    "@types/eslint": "^8.56.12",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3",
+    "tsup": "^8.2.4",
+    "turbo": "^2.1.0",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
+  },
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@solana/spl-token": "^0.4.8",
+    "@solana/web3.js": "^1.95.3",
+    "bignumber.js": "^9.1.2",
+    "bitcoinjs-lib": "^6.1.6",
+    "esbuild-plugin-polyfill-node": "^0.3.0",
+    "ethers": "^6.13.2",
+    "starknet": "^6.11.0"
+  }
+}

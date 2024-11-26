@@ -1,0 +1,56 @@
+name: Push Docker image to AWS ECR
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+env:
+  AWS_REGION: ap-northeast-1
+  ECR_REPOSITORY: orbiter-bridge-frontend
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.ref_name }}
+          build-args: |
+            NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}
+            NEXT_PUBLIC_CDN_URL=${{ secrets.NEXT_PUBLIC_CDN_URL }}
+            NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID }}
+            NEXT_PUBLIC_INIT_BRIDGE=${{ secrets.NEXT_PUBLIC_INIT_BRIDGE }}
+            NEXT_PUBLIC_INIT_BRIDGE_CHAIN_GROUP=${{ secrets.NEXT_PUBLIC_INIT_BRIDGE_CHAIN_GROUP }}
+            NEXT_PUBLIC_NODE_ENV=${{ secrets.NEXT_PUBLIC_NODE_ENV }}
+            NEXT_PUBLIC_PRIZES_URL=${{ secrets.NEXT_PUBLIC_PRIZES_URL }}
+
+      - name: Send action result
+        if: always()
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: ${{ secrets.ROBOT_URL }}
+          method: "POST"
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"msg_type":"interactive","card":{"config":{"wide_screen_mode":true,"enable_forward":true},"elements":[{"tag":"div","text":{"content":"触发用户: ${{ github.actor }}\n构建结果: ${{ job.status }}\n项目名称: ${{ github.repository }}\n构建镜像: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.ref_name }}","tag":"lark_md"}},{"actions":[{"tag":"button","text":{"content":"前往查看","tag":"lark_md"},"url":"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}","type":"default","value":{}}],"tag":"action"}],"header":{"title":{"content":"Github自动构建结果","tag":"plain_text"}}}}'

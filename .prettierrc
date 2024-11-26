@@ -1,0 +1,15 @@
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "arrowParens": "always",
+  "printWidth": 100,
+  "tabWidth": 4,
+  "semi": false,
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": ["*.md", "*.yaml"],
+      "parser": "prettier-eslint"
+    }
+  ]
+}

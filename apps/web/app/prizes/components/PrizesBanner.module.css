@@ -1,0 +1,4 @@
+.bannerBg {
+    background: url('../../../public/assets/image/prizes/bg.png') center center no-repeat;
+    background-size: contain;
+}

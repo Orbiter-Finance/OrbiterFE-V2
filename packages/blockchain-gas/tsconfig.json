@@ -1,0 +1,8 @@
+{
+  "extends": "@orbiter-finance/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "include": ["src", "test", "tsup.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}

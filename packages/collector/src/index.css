@@ -1,0 +1,334 @@
+@import '@orbiter-finance/ui/dist/index.css';
+@import '@orbiter-finance/wallet-management/dist/index.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --o-color-gray-50: #f9f9f9;
+    --o-color-gray-100: #ebebeb;
+    --o-color-gray-200: #dbdbdb;
+    --o-color-gray-300: #bdbdbd;
+    --o-color-gray-400: #929292;
+    --o-color-gray-500: #6e6e6e;
+    --o-color-gray-600: #545454;
+    --o-color-gray-700: #313131;
+    --o-color-gray-800: #232323;
+    --o-color-gray-900: #111;
+
+    --o-color-brand-50: #fff7f5;
+    --o-color-brand-100: #ffe5e1;
+    --o-color-brand-200: #ffc9c3;
+    --o-color-brand-300: #ffaba5;
+    --o-color-brand-400: #ff8b87;
+    --o-color-brand-500: #ff5c5c;
+    --o-color-brand-600: #d55156;
+    --o-color-brand-700: #aa3c43;
+    --o-color-brand-800: #802932;
+    --o-color-brand-900: #551921;
+
+    --o-color-green-50: #eef8ed;
+    --o-color-green-100: #d5f0d3;
+    --o-color-green-200: #ade2aa;
+    --o-color-green-300: #87d385;
+    --o-color-green-400: #65c564;
+    --o-color-green-500: #46b647;
+    --o-color-green-600: #39983b;
+    --o-color-green-700: #2c792f;
+    --o-color-green-800: #205b24;
+    --o-color-green-900: #153d18;
+
+    --o-color-blue-50: #ecf7ff;
+    --o-color-blue-100: #d0eaff;
+    --o-color-blue-200: #a1d3fe;
+    --o-color-blue-300: #72bbfe;
+    --o-color-blue-400: #43a2fd;
+    --o-color-blue-500: #1487fd;
+    --o-color-blue-600: #0b6dd9;
+    --o-color-blue-700: #0355b6;
+    --o-color-blue-800: #004192;
+    --o-color-blue-900: #002f6e;
+
+    --o-color-yellow-50: #fffeec;
+    --o-color-yellow-100: #fffbd0;
+    --o-color-yellow-200: #fef3a1;
+    --o-color-yellow-300: #fee972;
+    --o-color-yellow-400: #fddc43;
+    --o-color-yellow-500: #fdcb14;
+    --o-color-yellow-600: #d39f0f;
+    --o-color-yellow-700: #a9770a;
+    --o-color-yellow-800: #7f5306;
+    --o-color-yellow-900: #543303;
+
+    --o-color-no-data-999: #999999;
+
+    --o-color-ecosystem-tag: #ff5ca5;
+
+    --color-progrss-bg: linear-gradient(90deg, rgb(255, 92, 92) 50%, rgb(255, 201, 195) 99.99%);
+
+    --radius: 8px;
+
+    --modal-bg-z-index: 1201;
+    --modal-z-index: 1202;
+
+    --o-color-select-border: rgba(255, 255, 255, 0.12);
+
+    --modal-toaster-z-index: 1299;
+
+    --o-color-black: #000000;
+    --o-color-white: #ffffff;
+
+    /* --o-color-text-t1: #1A1A1A;
+  --o-color-text-t2: #545454;
+  --o-color-text-t3: #929292;
+  --o-color-text-t4: #DBDBDB; */
+
+    --o-color-text-t1: #f9f9f9;
+    --o-color-text-t2: #dbdbdb;
+    --o-color-text-t3: #929292;
+    --o-color-text-t4: #545454;
+
+    --o-prizes-reward-amount: #ffd166;
+    --o-prizes-pool-amount: #ffc47d;
+    --o-prizes-pool-tx-amount: #ff4f4f;
+    --o-prizes-card-border: #452330;
+    --o-prizes-card-border: #452330;
+    --o-prizes-module-card-border: rgba(69, 35, 48, 0.6);
+    --o-prizes-task-bg: #201338;
+
+    --o-prizes-color-progress-bg: linear-gradient(90deg, rgb(239, 47, 45), rgb(255, 102, 101) 100%);
+
+    --o-color-desction: rgba(255, 255, 255, 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --o-color-green-50: #f4f8ee;
+        --o-color-green-100: #e5f1d3;
+        --o-color-green-200: #cce3ab;
+        --o-color-green-300: #b3d586;
+        --o-color-green-400: #9bc765;
+        --o-color-green-500: #84b947;
+        --o-color-green-600: #6c9a3a;
+        --o-color-green-700: #547b2d;
+        --o-color-green-800: #3e5d21;
+        --o-color-green-900: #283e15;
+
+        --o-color-blue-50: #ebf9fe;
+        --o-color-blue-100: #ceeffc;
+        --o-color-blue-200: #9edff9;
+        --o-color-blue-300: #6eccf7;
+        --o-color-blue-400: #40b9f4;
+        --o-color-blue-500: #13a5f1;
+        --o-color-blue-600: #0a87cd;
+        --o-color-blue-700: #036baa;
+        --o-color-blue-800: #005186;
+        --o-color-blue-900: #003a62;
+
+        /* --o-color-text-t1: #F9F9F9;
+    --o-color-text-t2: #DBDBDB;
+    --o-color-text-t3: #929292;
+    --o-color-text-t4: #545454; */
+    }
+}
+
+html,
+body {
+    max-width: 100vw;
+    height: 100%;
+    overflow-x: hidden;
+    color: var(--o-color-gray-50);
+    background: linear-gradient(180deg, rgb(0, 7, 9), rgb(7, 18, 22) 99.666%);
+    font-family: 'Clash-Grotesk-Regular';
+    color-scheme: light;
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    user-select: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+input,
+textarea,
+select,
+button {
+    border: 0 none;
+    background-color: transparent;
+    outline-style: none;
+}
+
+button.not-active {
+    color: var(--o-color-gray-600);
+}
+
+@media (prefers-color-scheme: dark) {
+    html {
+        color-scheme: dark;
+    }
+}
+
+.o-image-text {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
+
+inpurt::placeholder {
+    color: var(--o-color-gray-600);
+}
+
+.quests-point-card {
+    clip-path: polygon(0 0, 84% 0, 100% 88%, 100% 100%, 0 100%);
+}
+
+.ecosystem-progress-bg {
+    background: var(--color-progrss-bg);
+}
+
+.backdrop-filter-12 {
+    backdrop-filter: blur(12px);
+}
+
+.orbiter_global_ecosystem_dapp_condition_pink {
+    white-space: nowrap;
+    font-weight: 700;
+    color: #f81e96;
+    font-family: 'Clash-Grotesk-SemiBold';
+}
+
+*::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    margin-left: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: var(--o-color-gray-700);
+    margin-left: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: transparent;
+    margin-left: 10px;
+}
+
+.o-zoom-87 {
+    zoom: 0.87;
+}
+
+.orbiter-main {
+    background: url('https://cdn.orbiter.finance/bridge-web/main-bg.png') no-repeat;
+    background-size: 100% 100%;
+    background-size: cover;
+    background-position: 50% 0;
+}
+
+.lucide {
+    stroke-width: 1.5;
+}
+
+.card {
+    width: 500px;
+    height: 500px;
+    /* background-color: rgba(0, 0, 0, 0.05); */
+    background: rgba(255, 214, 214, 0.2);
+    box-sizing: border-box;
+
+    box-shadow: 0px 0px 48px 0px rgb(0, 0, 0);
+    backdrop-filter: blur(72px);
+    /* position: relative;
+  overflow: hidden;
+  z-index: 2; */
+}
+
+.card-child {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(72px);
+}
+
+.card-top {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    border-radius: 999px;
+    background: linear-gradient(195.11deg,
+            rgb(255, 255, 255) 4.923%,
+            rgba(255, 247, 196, 0.8) 88.778%);
+    opacity: 0.23;
+    width: 80px;
+    height: 80px;
+    filter: blur(34px);
+    z-index: -1;
+}
+
+.card-bottom {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    border-radius: 999px;
+    filter: blur(34px);
+    background: linear-gradient(206.57deg, rgba(247, 196, 255, 0.8), rgb(255, 53, 53) 93.498%);
+    opacity: 0.42;
+    width: 139px;
+    height: 76px;
+    z-index: -1;
+}
+
+.card-content {
+    width: 100%;
+    height: 100%;
+}
+
+.o-linear-text {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    letter-spacing: 0px;
+}
+
+body .swiper-button-prev,
+body .swiper-button-next {
+    color: rgb(255, 177, 177);
+}
+
+body .swiper-button-prev::after,
+body .swiper-button-next::after {
+    font-size: 1.5rem;
+}
+
+.tips-group:hover .tips-content {
+    display: flex;
+}
+
+.o-text-t1 {
+    color: var(--o-color-text-t1);
+}
+
+.o-text-t2 {
+    color: var(--o-color-text-t2);
+}
+
+.o-text-t3 {
+    color: var(--o-color-text-t3);
+}
+
+.o-text-t4 {
+    color: var(--o-color-text-t4);
+}
