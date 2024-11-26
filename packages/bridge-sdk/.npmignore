@@ -1,7 +1,0 @@
-node_modules/
-test/
-coverage/
-*.log
-*.ts
-!.d.ts
-src

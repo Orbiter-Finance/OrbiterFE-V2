@@ -1,1 +1,0 @@
-export * as orbiterZksync from "zksync"
